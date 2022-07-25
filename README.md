@@ -4,6 +4,11 @@ Coming soon: "Painless linting & formatting for Clarity."
 
 ## ROADMAP
 
+- Check syntax of Clarity contract code (strict)
+- Format code with indentation
+- Correct missing parens
+- ...
+
 ## DEVELOPMENT 
 
 Execute from a terminal to start Docker with a development shell
