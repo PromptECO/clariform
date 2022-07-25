@@ -1,0 +1,14 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dependencies
+ []
+
+ :builds
+ {:cli 
+  {:target :node-script
+   :main clariform.core/main
+   :output-to "out/clariform.js"}}}
