@@ -1,6 +1,11 @@
 (ns clariform.core-test
   (:require 
-   [cljs.test :refer (deftest is)]))
+   [cljs.test :refer (deftest is)]
+   [shadow.resource :as rc]
+   [clariform.core :as clariform]))
 
-(deftest a-passing-test
-  (is (= true true)))
+(def basic-contract (rc/inline "./basic.clar"))  
+
+(deftest parse-test
+  (is (= (clariform/parse-strict basic-contract)
+         [:S [:toplevel [:list [:symbol "+"] [:int "1"] [:int "2"]]]])))

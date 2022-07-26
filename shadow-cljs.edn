@@ -5,10 +5,10 @@
   "src/test"]
 
  :dependencies
- []
+ [[instaparse/instaparse "1.4.12"]]
 
  :builds
- {:cli 
+ {:script 
   {:target    :node-script
    :main      clariform.core/main
    :output-to "out/clariform.js"}

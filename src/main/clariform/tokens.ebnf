@@ -1,0 +1,35 @@
+tokenizer = token*
+token = atom | ws | LPAR | RPAR | LCUR | RCUR |  COMMA | COLON 
+
+<atom> = literal | symbol
+<literal> = number | string | principal | identifier
+<number> = uint | hex | !hex int
+symbol = !literal CLARITY_NAME
+
+int = #'[-]?\d+'
+uint = <'u'> #'\d+'
+hex = <HEX> #'[0-9a-fA-F]*'
+string = UNICODE? <DQUOTE> #'(?:[^"\\]|\\["\\ntr0u])*' <DQUOTE>
+principal = "'" STANDARD_PRINCIPAL (&DOT identifier | !DOT )
+identifier =  '.' CONTRACT_NAME (&DOT field | !DOT ) 
+field = '.' #'[a-zA-Z0-9\\-]{1,128}'
+operator = #'[\-!\?\+<>=/\*]'
+
+<CLARITY_NAME> = #'[A-Za-z0-9_\-!\?\+<>=/\*]+'
+<STANDARD_PRINCIPAL> = #'[0-9A-Z]{28,41}'
+<CONTRACT_NAME> = #'[a-zA-Z]([a-zA-Z0-9]|[-_]){0,39}'
+
+ws = #'([\s]+|;;[^\n$]*[\n]?)+'
+
+LPAR = '('
+RPAR = ')'
+LCUR = '{' 
+RCUR = '}'
+QUOTE = "'"
+DQUOTE = '"'
+COMMA = ','
+COLON = ':'
+DOT = '.'
+<EOF> = #'[$]'
+UNICODE = <'u'>
+HEX = '0x'

@@ -2,6 +2,10 @@
 
 Coming soon: "Painless linting & formatting for Clarity."
 
+## Usage 
+
+Clariform is meant to be called from the command line.
+
 ## Roadmap
 
 - Check syntax of Clarity contract code (strict)

@@ -1,0 +1,9 @@
+S = <ws?> (!ws toplevel <ws>)*
+toplevel = form
+<form> = list | record | atom
+list = <LPAR> <ws?> (form (<ws> form)* <ws?>)? <RPAR>
+record = <LCUR> <ws?> (prop <COMMA> <ws>)* prop <COMMA?> <ws?> <RCUR>
+prop = name SEP form   
+
+<name> = !operator symbol
+<SEP> = <COLON> <ws>
