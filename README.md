@@ -34,4 +34,12 @@ $ `npm run release`
 
 Run the executable from the command line:
 
-$ `node out/clariform.js`
+$ `node out/clariform.js --help`
+
+Check if a file contains valid Clarity:
+
+$ `node out/clariform.js src/test/clariform/basic.clar`
+
+Fails with an error code on invalid Clarity:
+
+$ `node out/clariform.js src/test/clariform/invalid.clar`
