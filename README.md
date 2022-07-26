@@ -2,6 +2,9 @@
 
 Coming soon: "Painless linting & formatting for Clarity."
 
+The initial version only validates the syntax of a Clarity contract file,
+but it's a start... stay tuned.
+
 ## Usage 
 
 Clariform is meant to be called from the command line.
