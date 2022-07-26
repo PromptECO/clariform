@@ -9,6 +9,11 @@
 
  :builds
  {:cli 
-  {:target :node-script
-   :main clariform.core/main
-   :output-to "out/clariform.js"}}}
+  {:target    :node-script
+   :main      clariform.core/main
+   :output-to "out/clariform.js"}
+  :test
+  {:target    :node-test
+   :output-to "out/node-tests.js"
+   :autorun   true}}}
+ 

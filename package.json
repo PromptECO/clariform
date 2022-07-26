@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "repl": "npx shadow-cljs node-repl",
+    "test": "npx shadow-cljs compile test",
     "release": "npx shadow-cljs release cli"
   },
   "devDependencies": {
