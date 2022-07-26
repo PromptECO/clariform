@@ -6,9 +6,11 @@ Coming soon: "Painless linting & formatting for Clarity."
 
 Clariform is meant to be called from the command line.
 
+For now, follow the build instructions below to build an executable for nodejs.
+
 ## Roadmap
 
-- Check syntax of Clarity contract code (strict)
+√ Check syntax of Clarity contract code
 - Format code with indentation
 - Correct missing parens
 - ...
