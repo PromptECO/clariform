@@ -15,15 +15,15 @@ but it's a start... stay tuned.
 
 ## Usage 
 
-Clariform is meant to be called from the command line.clariform
+Clariform is meant to be called from the command line.
 
 Execute from a terminal to build clariform in [Docker](https://www.docker.com/):
 
 $ `docker-compose run build`
 
-The build opens a console in Docker with an alias from `clariform` to `node out/clariform.js`.
+The build opens a console in Docker aliasing `clariform` with `node out/clariform.js`.
 
-Run the clariform executable from the console:
+Run the `clariform` executable from the console:
 
 /home# `clariform --help`
 
@@ -44,10 +44,10 @@ $ `docker-compose run dev`
 
 To run unit testing, execute in the development shell:
 
-$ `npm run test`
+/home# `npm run test`
 
 To generate an executable:
 
-$ `npm run release`
+/home# `npm run release`
 
 
