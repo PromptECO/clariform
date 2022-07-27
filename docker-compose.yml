@@ -1,9 +1,14 @@
-# docker-compose run cljs
-
 version: "3"
 services:
+  
+  build:  
+    build: .
+    working_dir: /home
+    volumes:
+      - .:/home
+    command: /bin/bash -c "npm run release; echo 'alias clariform=\"node out/clariform.js\"' >> ~/.bashrc; /bin/bash"
     
-  cljs:  
+  dev:  
     build: .
     working_dir: /home
     ports:

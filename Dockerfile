@@ -14,9 +14,6 @@ RUN node -v
 
 WORKDIR /tmp
 
-# ------
-
-# CMD ["clojure" "--main cljs.main" "-co build.edn" "--repl-opts \"{:launch-browser false}\"" "--repl"]
-
 WORKDIR /home 
+
 CMD ["/bin/bash"]

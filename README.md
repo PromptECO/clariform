@@ -5,31 +5,44 @@ Coming soon: "Painless linting & formatting for Clarity."
 The initial version only validates the syntax of a Clarity contract file,
 but it's a start... stay tuned.
 
-## Usage 
-
-Clariform is meant to be called from the command line.
-
-For now, follow the build instructions below to build an executable for nodejs.
-
 ## Roadmap
 
-√ Check syntax of Clarity contract code
+√ Validate the syntax of Clarity contract code
+
 - Format code with indentation
 - Correct missing parens
 - ...
+
+## Usage 
+
+Clariform is meant to be called from the command line.clariform
+
+Execute from a terminal to build clariform in [Docker](https://www.docker.com/):
+
+$ `docker-compose run build`
+
+The build opens a console in Docker with an alias from `clariform` to `node out/clariform.js`.
+
+Run the clariform executable from the console:
+
+/home# `clariform --help`
+
+Check if a file contains valid Clarity:
+
+/home# `clariform src/test/clariform/basic.clar`
+
+Fails with an error code on invalid Clarity:
+
+/home# `clariform src/test/clariform/invalid.clar`
 
 ## Development 
 
 Execute from a terminal to start Docker with a development shell
 based on [shadow-cljs](https://github.com/thheller/shadow-cljs):
 
-$ `docker-compose run cljs`
+$ `docker-compose run dev`
 
-For a CLJS REPL, execute in the development shell:
-
-$ `npm run repl`
-
-To run unit testing:
+To run unit testing, execute in the development shell:
 
 $ `npm run test`
 
@@ -37,14 +50,4 @@ To generate an executable:
 
 $ `npm run release`
 
-Run the executable from the command line:
 
-$ `node out/clariform.js --help`
-
-Check if a file contains valid Clarity:
-
-$ `node out/clariform.js src/test/clariform/basic.clar`
-
-Fails with an error code on invalid Clarity:
-
-$ `node out/clariform.js src/test/clariform/invalid.clar`
