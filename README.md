@@ -15,25 +15,38 @@ but it's a start... stay tuned.
 
 ## Usage 
 
+Clariform is not yet *painless* but we're getting there. For now,
+execute in a terminal to build clariform in [Docker](https://www.docker.com/):
+
+$ `git clone https://github.com/njordhov/clariform`
+$ `cd clariform`
+$ `docker-compose run install`
+
+The build generates a file `clariform.js` and opens a console in a 
+Docker container, aliasing `clariform` with `node clariform.js`.
+
 Clariform is meant to be called from the command line.
+Execute clariform in the console:
 
-Execute from a terminal to build clariform in [Docker](https://www.docker.com/):
-
-$ `docker-compose run build`
-
-The build opens a console in Docker aliasing `clariform` with `node out/clariform.js`.
-
-Run the `clariform` executable from the console:
-
-/home# `clariform --help`
+$$ `clariform --help`
 
 Check if a file contains valid Clarity:
 
-/home# `clariform src/test/clariform/basic.clar`
+$$ `clariform src/test/clariform/basic.clar`
 
 Fails with an error code on invalid Clarity:
 
-/home# `clariform src/test/clariform/invalid.clar`
+$$ `clariform src/test/clariform/invalid.clar`
+
+To exit the console in the Docker container:
+
+$$ `exit`
+
+Note that Docker restricts file access to the clariform directory.
+As a temporary work-around, this security constraint can optionally 
+be bypassed by running the script in node from a terminal outside Docker:
+
+$ `node clariform.js --help`
 
 ## Development 
 
@@ -44,10 +57,10 @@ $ `docker-compose run dev`
 
 To run unit testing, execute in the development shell:
 
-/home# `npm run test`
+$$ `npm run test`
 
 To generate an executable:
 
-/home# `npm run release`
+$$ `npm run release`
 
 

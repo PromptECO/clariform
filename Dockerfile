@@ -12,8 +12,9 @@ RUN apt-get autoremove -y
 RUN apt-get install -y nodejs
 RUN node -v
 
-WORKDIR /tmp
-
 WORKDIR /home 
+
+RUN echo 'alias clariform="node /home/clariform.js"' >> ~/.bashrc
+RUN echo 'PS1="$\[$\] "' >> ~/.bashrc
 
 CMD ["/bin/bash"]

@@ -12,7 +12,7 @@
  {:script 
   {:target    :node-script
    :main      clariform.core/main
-   :output-to "out/clariform.js"}
+   :output-to "clariform.js"}
   :test
   {:target    :node-test
    :output-to "out/node-tests.js"

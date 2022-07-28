@@ -19,3 +19,4 @@ pom.xml.asc
 
 .hgignore
 .hg/
+clariform.js

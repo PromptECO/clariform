@@ -1,12 +1,13 @@
 version: "3"
 services:
   
-  build:  
+  install:  
     build: .
     working_dir: /home
     volumes:
       - .:/home
-    command: /bin/bash -c "npm run release; echo 'alias clariform=\"node out/clariform.js\"' >> ~/.bashrc; /bin/bash"
+      - m2:/root/.m2
+    command: /bin/bash -c "npm run release; /bin/bash"
     
   dev:  
     build: .
@@ -15,4 +16,8 @@ services:
       - "8080:8080"
     volumes:
       - .:/home
+      - m2:/root/.m2
     command: /bin/bash
+    
+volumes:
+  m2:
