@@ -16,11 +16,11 @@ but it's a start... stay tuned.
 ## Usage 
 
 Clariform is not yet *painless* but we're getting there. For now,
-execute in a terminal to build clariform in [Docker](https://www.docker.com/):
+to build clariform in [Docker](https://www.docker.com/) execute in a terminal:
 
-$ `git clone https://github.com/njordhov/clariform`
-$ `cd clariform`
-$ `docker-compose run install`
+$ `git clone https://github.com/njordhov/clariform`  
+$ `cd clariform`  
+$ `docker-compose run install`  
 
 The build generates a file `clariform.js` and opens a console in a 
 Docker container, aliasing `clariform` with `node clariform.js`.
