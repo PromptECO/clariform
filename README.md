@@ -42,9 +42,17 @@ To exit the console in the Docker container:
 
 $$ `exit`
 
-Note that Docker restricts file access to the clariform directory.
-As a temporary work-around, this security constraint can optionally 
-be bypassed by running the script in node from a terminal outside Docker:
+The installed script can be invoked with docker-compose:
+
+$ `docker-compose run clariform --help`
+
+Note that Docker wisely restricts file access to the home directory.
+To allow access to files elsewhere, mount another directory as the 'home' volume:
+
+$ `docker-compose run -v "$PWD/src/test/clariform:/home" clariform basic.clar`
+
+Alternatively, the Docker file access restriction can be bypassed by 
+running the script in node from a terminal outside Docker:
 
 $ `node clariform.js --help`
 

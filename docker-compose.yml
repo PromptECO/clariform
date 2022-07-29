@@ -8,6 +8,15 @@ services:
       - .:/home
       - m2:/root/.m2
     command: /bin/bash -c "npm run release; /bin/bash"
+  
+  clariform:  
+    build: .
+    working_dir: /home
+    volumes:
+      - .:/clariform
+      - $PWD:/home
+      - m2:/root/.m2
+    entrypoint: node /clariform/clariform.js
     
   dev:  
     build: .
