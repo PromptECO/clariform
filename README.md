@@ -5,6 +5,9 @@ Coming soon: "Painless linting & formatting for Clarity."
 The initial version only validates the syntax of a Clarity contract file,
 but it's a start... stay tuned.
 
+Please check it out and post eventual feedback, suggestions or requests on 
+the issue tracker.
+
 ## Roadmap
 
 √ Validate the syntax of Clarity contract code
