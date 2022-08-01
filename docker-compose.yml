@@ -7,7 +7,7 @@ services:
     volumes:
       - .:/home
       - m2:/root/.m2
-    command: /bin/bash -c "npm run release; /bin/bash"
+    command: /bin/bash -c "npx shadow-cljs release script; /bin/bash"
   
   clariform:  
     build: .

@@ -2,19 +2,14 @@
 
 Coming soon: "Painless linting & formatting for Clarity."
 
-The initial version only validates the syntax of a Clarity contract file,
-but it's a start... stay tuned.
+Finds and automatically fixes problems in Clarity code.
 
-Please check it out and post eventual feedback, suggestions or requests on 
-the issue tracker.
+The initial version has limited functionality, but it's a start:
 
-## Roadmap
+1. Validate the syntax of a Clarity contract file.
+2. Fix confusing indentation and dangling close-parens.
 
-√ Validate the syntax of Clarity contract code
-
-- Format code with indentation
-- Correct missing parens
-- ...
+Please take it for a spin and post your feedback on the issue tracker.
 
 ## Usage 
 
@@ -33,13 +28,13 @@ Execute clariform in the console:
 
 $$ `clariform --help`
 
-Check if a file contains valid Clarity:
+Output validated file with corrections and formatting:
 
 $$ `clariform src/test/clariform/basic.clar`
 
-Fails with an error code on invalid Clarity:
+Check the code for errors, exiting with a non-zero value on invalid Clarity:
 
-$$ `clariform src/test/clariform/invalid.clar`
+$$ `clariform --check src/test/clariform/invalid.clar`
 
 To exit the console in the Docker container:
 

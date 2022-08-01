@@ -1,6 +1,6 @@
 {
   "name": "clariform",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "repl": "npx shadow-cljs node-repl",
@@ -8,6 +8,9 @@
     "release": "npx shadow-cljs release script"
   },
   "devDependencies": {
-    "shadow-cljs": "2.19.6"
+    "shadow-cljs": "2.19.8"
+  },
+  "dependencies": {
+    "parinfer": "3.12.0"
   }
 }
