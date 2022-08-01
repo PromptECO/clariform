@@ -28,13 +28,13 @@ Execute clariform in the console:
 
 $$ `clariform --help`
 
-Output validated file with corrections and formatting:
-
-$$ `clariform src/test/clariform/basic.clar`
-
-Check the code for errors, exiting with a non-zero value on invalid Clarity:
+Check the code for errors, exiting with a non-zero value when invalid:
 
 $$ `clariform --check src/test/clariform/invalid.clar`
+
+Output validated code with consistent indentation and parens:
+
+$$ `clariform src/test/clariform/malformed.clar`
 
 To exit the console in the Docker container:
 
