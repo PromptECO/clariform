@@ -7,7 +7,7 @@ services:
     volumes:
       - .:/home
       - m2:/root/.m2
-    command: /bin/bash -c "npx shadow-cljs release script; /bin/bash"
+    entrypoint: /bin/bash -c "npx shadow-cljs release script; /bin/bash"
   
   clariform:  
     build: .
@@ -26,7 +26,7 @@ services:
     volumes:
       - .:/home
       - m2:/root/.m2
-    command: /bin/bash
+    entrypoint: /bin/bash
     
 volumes:
   m2:
