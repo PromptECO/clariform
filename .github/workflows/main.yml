@@ -1,0 +1,19 @@
+on: [push]
+
+jobs:
+  clariform_job:
+    runs-on: ubuntu-latest
+    name: Lint Clarity files
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Clariform action step
+        uses: ./ # Uses an action in the root directory
+        id: clariform
+        with:
+          path: 'src/test/clariform/basic.clar'
+      # Use the output from the `hello` step
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
