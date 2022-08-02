@@ -28,11 +28,11 @@ Execute clariform in the console:
 
 $$ `clariform --help`
 
-Check the code for errors, exiting with a non-zero value when invalid:
+Check the syntax of a Clarity file, exiting with an error when invalid:
 
 $$ `clariform --check src/test/clariform/invalid.clar`
 
-Output validated code with consistent indentation and parens:
+Format validated code to have consistent indentation and parens:
 
 $$ `clariform src/test/clariform/malformed.clar`
 

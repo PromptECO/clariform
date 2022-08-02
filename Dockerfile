@@ -17,4 +17,4 @@ WORKDIR /home
 RUN echo 'alias clariform="node /home/clariform.js"' >> ~/.bashrc
 RUN echo 'PS1="$\[$\] "' >> ~/.bashrc
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["node", "/home/clariform.js"]

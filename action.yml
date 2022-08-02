@@ -1,0 +1,20 @@
+name: 'clariform'
+description: 'Linting and formatting Clarity code'
+branding:
+  icon: 'shield'  
+  color: 'purple'
+inputs:
+  path:
+    description: 'Filename'
+    required: true
+    default: 'src/test/clariform/basic.clar'
+outputs:
+  time:
+    description: 'The time of the last run'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - "--check"
+    - ${{ inputs.path }}
+    
