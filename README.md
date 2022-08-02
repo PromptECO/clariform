@@ -1,6 +1,6 @@
 # CLARIFORM
 
-Coming soon: "Painless linting & formatting for Clarity."
+"Painless linting & formatting for Clarity."
 
 Finds and automatically fixes problems in Clarity code.
 
@@ -10,6 +10,8 @@ The initial version has limited functionality, but it's a start:
 2. Fix confusing indentation and dangling close-parens.
 
 Please take it for a spin and post your feedback on the issue tracker.
+
+Coming soon: Github action
 
 ## Usage 
 
