@@ -16,7 +16,8 @@ Coming soon: Github action
 ## Usage 
 
 Clariform is not yet *painless* but we're getting there. For now,
-to build clariform in [Docker](https://www.docker.com/) execute in a terminal:
+to build clariform, with [Docker](https://www.docker.com/) running,
+execute in a terminal:
 
 $ `git clone https://github.com/njordhov/clariform`  
 $ `cd clariform`  
