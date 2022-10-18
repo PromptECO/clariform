@@ -6,7 +6,7 @@ branding:
 inputs:
   path:
     description: 'Filename'
-    required: true
+    required: false
     default: 'src/test/clariform/basic.clar'
 outputs:
   time:

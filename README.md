@@ -26,8 +26,9 @@ $ `docker-compose run install`
 The build generates a file `clariform.js` and opens a console in a 
 Docker container, aliasing `clariform` with `node clariform.js`.
 
-Clariform is meant to be called from the command line.
-Execute clariform in the console:
+### Command Line
+
+Clariform can be called from the console command line:
 
 $$ `clariform --help`
 
@@ -56,6 +57,19 @@ Alternatively, the Docker file access restriction can be bypassed by
 running the script in node from a terminal outside Docker:
 
 $ `node clariform.js --help`
+
+### Github Action
+
+Clariform can automatically check clarity files in a github repo by configuring a workflow:
+
+https://docs.github.com/en/actions/using-workflows/about-workflows
+
+The `.github/workflows/main.yml` file activates linting of clarity 
+files in the clariform project itself. The file can be used as template for 
+workflow actions in other github repos.
+
+The `action.yml` file declares a clariform github action, and can be used 
+from workflows.
 
 ## Development 
 
