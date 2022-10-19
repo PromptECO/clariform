@@ -19,4 +19,4 @@ RUN echo 'PS1="$\[$\] "' >> ~/.bashrc
 
 WORKDIR /github/workspace
 
-ENTRYPOINT ["node", "/home/clariform.js"]
+ENTRYPOINT ["node", "/github/workspace/clariform.js"]
