@@ -21,7 +21,7 @@ execute in a terminal:
 
 $ `git clone https://github.com/njordhov/clariform`  
 $ `cd clariform` 
-$ `docker-compose build`
+$ `docker build .`
 
 ### Console
 
