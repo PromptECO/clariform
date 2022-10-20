@@ -58,6 +58,8 @@ running the script in node from a terminal outside Docker:
 
 $ `node clariform.js --help`
 
+Note: May require `node install` first.
+
 ### Github Action
 
 Clariform can automatically check clarity files in a github repo by configuring a workflow:
