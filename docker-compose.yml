@@ -7,7 +7,15 @@ services:
     volumes:
       - .:/home
       - m2:/root/.m2
-    entrypoint: /bin/bash -c "npx shadow-cljs release script; /bin/bash"
+    entrypoint: "cp /app/clariform.js /home"
+  
+  console:  
+    build: .
+    working_dir: /home
+    volumes:
+      - .:/home
+      - m2:/root/.m2
+    entrypoint: /bin/bash
   
   clariform:  
     build: .
@@ -16,7 +24,7 @@ services:
       - .:/clariform
       - $PWD:/home
       - m2:/root/.m2
-    entrypoint: node /clariform/clariform.js
+    entrypoint: node /app/clariform.js
     
   dev:  
     build: .

@@ -19,8 +19,8 @@ RUN npx shadow-cljs release script
 RUN echo 'alias clariform="node /app/clariform.js"' >> ~/.bashrc
 RUN echo 'PS1="$\[$\] "' >> ~/.bashrc
 
-RUN mkdir -p /home
-RUN cp ./clariform.js /home
+# RUN mkdir -p /home
+# RUN cp ./clariform.js /home
 
 ## WORKDIR /github/workspace
 
