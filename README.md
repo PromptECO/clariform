@@ -20,14 +20,16 @@ to build clariform, with [Docker](https://www.docker.com/) running,
 execute in a terminal:
 
 $ `git clone https://github.com/njordhov/clariform`  
-$ `cd clariform`  
-$ `docker-compose run install`  
+$ `cd clariform` 
+$ `docker-compose build`
 
-The build generates a file `clariform.js` and opens a console in a 
-Docker container, aliasing `clariform` with `node clariform.js`.
+### Console
 
-Clariform is meant to be called from the command line.
-Execute clariform in the console:
+To open a Clariform docker container console: 
+ 
+$ `docker-compose run console`  
+
+Clariform can be called from the container's console command line:
 
 $$ `clariform --help`
 
@@ -43,7 +45,9 @@ To exit the console in the Docker container:
 
 $$ `exit`
 
-The installed script can be invoked with docker-compose:
+### Command Line 
+
+Clariform can alternatively be invoked as a docker task:
 
 $ `docker-compose run clariform --help`
 
@@ -52,9 +56,15 @@ To allow access to files elsewhere, mount another directory as the 'home' volume
 
 $ `docker-compose run -v "$PWD/src/test/clariform:/home" clariform basic.clar`
 
-Alternatively, the Docker file access restriction can be bypassed by 
-running the script in node from a terminal outside Docker:
+### Node Script
 
+The Docker limited file access can be bypassed by generating a script in
+the repo and run it in node from a terminal outside Docker:
+
+$ `git clone https://github.com/njordhov/clariform`  
+$ `cd clariform`
+$ `node install`
+$ `docker-compose run install`
 $ `node clariform.js --help`
 
 ## Development 
@@ -71,5 +81,3 @@ $$ `npm run test`
 To generate an executable:
 
 $$ `npm run release`
-
-
