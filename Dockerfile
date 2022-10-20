@@ -12,7 +12,6 @@ RUN apt-get autoremove -y
 RUN apt-get install -y nodejs
 RUN node -v
 
-WORKDIR /github/workspace
 RUN pwd
 RUN ls
 RUN npx shadow-cljs release script
@@ -21,4 +20,6 @@ RUN echo 'PS1="$\[$\] "' >> ~/.bashrc
 RUN pwd
 RUN ls
 
-ENTRYPOINT ["node", "/github/workspace/clariform.js"]
+## WORKDIR /github/workspace
+
+ENTRYPOINT ["node", "clariform.js"]
