@@ -14,10 +14,13 @@ RUN node -v
 
 RUN pwd
 RUN ls
+RUN ls /
+RUN ls /home
+
+WORKDIR /home
 RUN npx shadow-cljs release script
 RUN echo 'alias clariform="node /home/clariform.js"' >> ~/.bashrc
 RUN echo 'PS1="$\[$\] "' >> ~/.bashrc
-RUN pwd
 RUN ls
 
 ## WORKDIR /github/workspace
