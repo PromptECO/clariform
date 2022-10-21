@@ -8,4 +8,6 @@
 
 (deftest parse-test
   (is (= (clariform/parse-strict basic-contract)
-         [:S [:toplevel [:list [:symbol "+"] [:int "1"] [:int "2"]]]])))
+         [:S [:toplevel [:list [:symbol "define-read-only"] 
+                         [:list [:symbol "inc"] [:list [:symbol "n"] [:symbol "int"]]] 
+                         [:list [:symbol "+"] [:symbol "n"] [:int "1"]]]]])))
