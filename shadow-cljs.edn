@@ -5,9 +5,11 @@
   "src/test"]
 
  :dependencies
- [[org.clojure/tools.cli "1.0.206"]
-  [instaparse/instaparse "1.4.12"]]
-
+ [[org.clojure/tools.cli "1.0.214"]
+  [instaparse/instaparse "1.4.12"]
+  [com.taoensso/timbre "4.10.0"]]
+ :nrepl {:port 9090}
+ :socket-repl {:port 9099}
  :builds
  {:script 
   {:target    :node-script

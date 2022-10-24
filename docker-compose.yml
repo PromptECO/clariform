@@ -29,12 +29,26 @@ services:
   dev:  
     build: .
     working_dir: /home
+    stdin_open: true
+    tty: true
     ports:
-      - "8080:8080"
+      - "9630:9630"
+      - "9090:9090"
+      - "9099:9099"
     volumes:
       - .:/home
       - m2:/root/.m2
-    entrypoint: /bin/bash
+    entrypoint: npx shadow-cljs watch script --config-merge "{:socket-repl {:port 9090} :nrepl {:port 9099}}"
     
+  repl:
+    build: .
+    working_dir: /home
+    depends_on:
+      - dev
+    volumes:
+      - .:/home
+      - m2:/root/.m2
+    entrypoint: npx shadow-cljs cljs-repl script
+  
 volumes:
   m2:
