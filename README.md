@@ -21,9 +21,23 @@ execute in a terminal:
 
 $ `git clone https://github.com/njordhov/clariform`  
 $ `cd clariform` 
-$ `docker build .`
+$ `docker-compose build clariform`
 
-### Console
+Execute the `clariform` image in Docker: 
+
+$ `docker-compose run clariform --help`
+
+Format a mangled but valid Clarity file:
+
+$ `docker-compose run clariform --format=retain src/test/clariform/malformed.clar`
+$ `docker-compose run clariform --format=indent src/test/clariform/malformed.clar`
+$ `docker-compose run clariform --format=compact src/test/clariform/malformed.clar`
+
+Check whether Clarity code is invalid:
+
+$ `docker-compose run clariform --check src/test/clariform/invalid.clar`
+
+## Console
 
 To open a Clariform docker container console: 
  
@@ -45,7 +59,7 @@ To exit the console in the Docker container:
 
 $$ `exit`
 
-### Command Line 
+## Command Line 
 
 Clariform can alternatively be invoked as a docker task:
 
@@ -72,7 +86,13 @@ $ `node clariform.js --help`
 Execute from a terminal to start Docker with a development shell
 based on [shadow-cljs](https://github.com/thheller/shadow-cljs):
 
-$ `docker-compose run dev`
+$ `docker-compose run --service-ports repl`
+
+Call clariform just as in the user console:
+
+$$ `clariform --format src/test/clariform/basic.clar`
+
+$$ `clariform --check src/test/clariform/invalid.clar`
 
 To run unit testing, execute in the development shell:
 

@@ -52,10 +52,9 @@
   [[nil "--version"]
    ["-h" "--help"]
    [nil "--check" "Exit with error on invalid code, supressing output"]
-   [nil "--format" "Format code"]])
+   [nil "--format FORMAT" "Output format"]])
 
 (defn execute-command [{:keys [arguments options summary errors] :as opts}]
-  (tap> arguments)
   (cond
     (not-empty errors)
     (exit 1 (clojure.string/join "\n" errors))
@@ -77,7 +76,13 @@
     (doseq [item arguments]
       (let [code (slurp item)]
         (when-let [ast (parse-strict! code)]
-          (print (format-compact ast code)))))
+          (case (:format options)
+            "indent" 
+            (print (indent-code code))
+            "compact" 
+            (print (format-compact ast code))
+            "retain" 
+            (print code)))))
     (empty? options)
     (doseq [item arguments]
       (let [code (slurp item)]
@@ -91,6 +96,7 @@
 (defn main [& args]
   (let [{:keys [arguments options summary errors] :as opts}
         (parse-opts args cli-options)]
+    #_(prn options)
     (execute-command opts)))
 
 (defn ^:dev/after-load start []
