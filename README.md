@@ -21,7 +21,7 @@ Please take it for a spin and post your feedback on the issue tracker.
 There are several experimental ways to run Clariform based on using
 [Docker](https://www.docker.com/):
 
-### 1: Docker
+### Docker
 
 Build clariform in Docker:
 
@@ -40,9 +40,9 @@ $ `docker run -v ``pwd``:/home clariform src/test/clariform/malformed.clar`
 
 As alternative to ``pwd`` use the absolute path of a directory containing Clarity files.
  
-### 2: Compose
+### Compose
 
-To build clariform, execute in a terminal:
+To build clariform with docker-compose, execute in a terminal:
 
 $ `git clone https://github.com/njordhov/clariform`    
 $ `cd clariform`   
@@ -62,7 +62,7 @@ Check whether Clarity code is invalid:
 
 $ `docker-compose run clariform --check src/test/clariform/invalid.clar`
 
-### 3. Console
+### Console
 
 To open a Clariform docker container console: 
  
@@ -84,9 +84,9 @@ To exit the console in the Docker container:
 
 $$ `exit`
 
-### 4. Command Line 
+### Command Line 
 
-Clariform can alternatively be invoked as a docker task:
+To run Clariform as a docker task:
 
 $ `docker-compose run clariform --help`
 
@@ -94,7 +94,7 @@ To allow access to files elsewhere, mount another directory as the 'home' volume
 
 $ `docker-compose run -v "$PWD/src/test/clariform:/home" clariform basic.clar`
 
-### 5. Node Script
+### Node Script
 
 The Docker limited file access can be bypassed by generating a script in
 the repo and run it in [node](https://nodejs.org/en/) from a terminal outside Docker:
