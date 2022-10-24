@@ -10,35 +10,59 @@ This early version has limited functionality, but it's a start:
 2. Fix confusing indentation and dangling close-parens.
 3. Custom formatting of the output code.
 
-Please take it for a spin and post your feedback on the issue tracker.
-
 Coming soon: Github action
 
 ## Usage 
 
-Clariform is not yet *painless* but we're getting there. For now,
-to build clariform, with [Docker](https://www.docker.com/) running,
-execute in a terminal:
+Clariform is not yet *painless* but we're getting there.
 
-$ `git clone https://github.com/njordhov/clariform`  
-$ `cd clariform` 
-$ `docker-compose build clariform`
+Please take it for a spin and post your feedback on the issue tracker.
+
+There are several experimental ways to run Clariform based on using
+[Docker](https://www.docker.com/):
+
+### 1: Docker
+
+Build clariform in Docker:
+
+$ `git clone https://github.com/njordhov/clariform`   
+$ `cd clariform`   
+$ `docker build -t clariform .`  
+
+Run the clariform image:
+
+$ `docker run clariform --help`
+
+Note that Docker by default restricts file system access, which benefits security.
+[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly allow access to the files in `src/test/clariform`:
+
+$ `docker run -v ``pwd``:/home clariform src/test/clariform/malformed.clar`
+
+As alternative to ``pwd`` use the absolute path of a directory containing Clarity files.
+ 
+### 2: Compose
+
+To build clariform, execute in a terminal:
+
+$ `git clone https://github.com/njordhov/clariform`    
+$ `cd clariform`   
+$ `docker-compose build clariform`  
 
 Execute the `clariform` image in Docker: 
 
 $ `docker-compose run clariform --help`
 
-Format a mangled but valid Clarity file:
+Format a valid but mangled Clarity file:
 
-$ `docker-compose run clariform --format=retain src/test/clariform/malformed.clar`
-$ `docker-compose run clariform --format=indent src/test/clariform/malformed.clar`
-$ `docker-compose run clariform --format=compact src/test/clariform/malformed.clar`
+$ `docker-compose run clariform --format=retain src/test/clariform/malformed.clar`  
+$ `docker-compose run clariform --format=indent src/test/clariform/malformed.clar`  
+$ `docker-compose run clariform --format=compact src/test/clariform/malformed.clar`  
 
 Check whether Clarity code is invalid:
 
 $ `docker-compose run clariform --check src/test/clariform/invalid.clar`
 
-## Console
+### 3. Console
 
 To open a Clariform docker container console: 
  
@@ -60,27 +84,26 @@ To exit the console in the Docker container:
 
 $$ `exit`
 
-## Command Line 
+### 4. Command Line 
 
 Clariform can alternatively be invoked as a docker task:
 
 $ `docker-compose run clariform --help`
 
-Note that Docker wisely restricts file access to the home directory.
 To allow access to files elsewhere, mount another directory as the 'home' volume:
 
 $ `docker-compose run -v "$PWD/src/test/clariform:/home" clariform basic.clar`
 
-### Node Script
+### 5. Node Script
 
 The Docker limited file access can be bypassed by generating a script in
-the repo and run it in node from a terminal outside Docker:
+the repo and run it in [node](https://nodejs.org/en/) from a terminal outside Docker:
 
-$ `git clone https://github.com/njordhov/clariform`  
-$ `cd clariform`
-$ `node install`
-$ `docker-compose run install`
-$ `node clariform.js --help`
+$ `git clone https://github.com/njordhov/clariform`    
+$ `cd clariform`  
+$ `node install`  
+$ `docker-compose run install`  
+$ `node clariform.js --help`  
 
 ## Development 
 
