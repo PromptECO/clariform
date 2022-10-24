@@ -66,7 +66,7 @@
       (println "Options:")
       (println summary))
     (some? (:version options))
-    "0.0.3"
+    (prn "0.0.3")
     (some? (:check options))
     (when (not-empty arguments)
       (doseq [item arguments]
