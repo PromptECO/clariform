@@ -5,7 +5,8 @@
    [shadow.resource :as rc]
    ["parinfer" :as parinfer]
    [instaparse.core :as insta
-    :refer-macros [defparser]]))
+    :refer-macros [defparser]]
+   [clariform.serialize :as serialize]))
 
 (defn exit [status msg]
   (println msg)
@@ -15,7 +16,7 @@
   (str (rc/inline "./strict.ebnf")
        (rc/inline "./tokens.ebnf")))
 
-(defn check-strict! [s]
+(defn parse-strict! [s]
   (let [ast (parse-strict s)]
     (if (insta/failure? ast)
       (exit 1 (pr-str ast))
@@ -25,7 +26,7 @@
   (let [fs (js/require "fs")]
     (.readFileSync fs path "utf8")))
 
-(defn structural-indent [code]
+(defn indent-code [code]
   (let [{:keys [text success]} 
         (-> (.parenMode parinfer code #js {:cursorLine 0 :cursorX 0})
             (js->clj :keywordize-keys true))]
@@ -39,37 +40,59 @@
            (clojure.string/join "\n"))           
       (exit 1 "Misformed parens"))))
 
+#_
+(defn format-indent [ast code]
+  (-> (serialize/format-align ast)
+      indent-code))
+
+(defn format-compact [ast code]
+  (serialize/format-compact ast))
+
 (def cli-options
   [[nil "--version"]
    ["-h" "--help"]
-   [nil "--check" "Exit with error on invalid code, supressing output"]])
+   [nil "--check" "Exit with error on invalid code, supressing output"]
+   [nil "--format" "Format code"]])
+
+(defn execute-command [{:keys [arguments options summary errors] :as opts}]
+  (tap> arguments)
+  (cond
+    (not-empty errors)
+    (exit 1 (clojure.string/join "\n" errors))
+    (some? (:help options))
+    (do
+      (println "Painless linting and formatting for Clarity.")
+      (println "Usage: clariform [options] file")
+      (println "Options:")
+      (println summary))
+    (some? (:version options))
+    "0.0.3"
+    (some? (:check options))
+    (when (not-empty arguments)
+      (doseq [item arguments]
+        (->> item 
+             (slurp)
+             (parse-strict!))))
+    (some? (:format options))
+    (doseq [item arguments]
+      (let [code (slurp item)]
+        (when-let [ast (parse-strict! code)]
+          (print (format-compact ast code)))))
+    (empty? options)
+    (doseq [item arguments]
+      (let [code (slurp item)]
+        (when-let [ast (parse-strict! code)]
+          (print (indent-code code)))))
+    :else 
+    (do
+      (prn (pr-str opts))
+      (exit 1 "Invalid command"))))
 
 (defn main [& args]
   (let [{:keys [arguments options summary errors] :as opts}
         (parse-opts args cli-options)]
-    (cond
-      (not-empty errors)
-      (exit 1 (clojure.string/join "\n" errors))
-      (some? (:help options))
-      (do
-        (println "Painless linting and formatting for Clarity.")
-        (println "Usage: clariform [options] file")
-        (println "Options:")
-        (println summary))
-      (some? (:version options))
-      "0.0.3"
-      (some? (:check options))
-      (when (not-empty arguments)
-        (doseq [item arguments]
-          (->> item 
-               (slurp)
-               (check-strict!))))
-      (not-empty arguments)
-      (doseq [item arguments]
-        (let [code (slurp item)]
-          (when (check-strict! code)
-            (print (structural-indent code)))))
-      :else 
-      (do
-        (prn (pr-str opts))
-        (exit 1 "Invalid command")))))
+    (execute-command opts)))
+
+(defn ^:dev/after-load start []
+  (main))
+    
