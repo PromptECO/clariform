@@ -4,10 +4,11 @@
 
 Finds and automatically fixes problems in Clarity code.
 
-The initial version has limited functionality, but it's a start:
+This early version has limited functionality, but it's a start:
 
 1. Validate the syntax of a Clarity contract file.
 2. Fix confusing indentation and dangling close-parens.
+3. Custom formatting of the output code.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
