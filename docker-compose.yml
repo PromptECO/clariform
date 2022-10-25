@@ -32,8 +32,8 @@ services:
   watch:  
     build: .
     working_dir: /home
-    stdin_open: true
-    tty: true
+    # stdin_open: true
+    # tty: true
     ports:
       - "9630:9630"
       #- "9090:9090"
@@ -55,7 +55,7 @@ services:
       - m2:/root/.m2
     networks:
       - default
-    entrypoint: node clariform.js
+    entrypoint: ["node", "clariform.js"]
     
   test:
     build: .
@@ -67,7 +67,7 @@ services:
       - m2:/root/.m2
     networks:
       - default
-    entrypoint: npx shadow-cljs compile test 
+    entrypoint: ["npx", "shadow-cljs", "compile", "test"]
     
   repl:
     build: .
@@ -79,4 +79,4 @@ services:
       - m2:/root/.m2
     networks:
       - default
-    entrypoint: /bin/bash ## npx shadow-cljs cljs-repl script ## not yet working right
+    entrypoint: ["/bin/bash"] ## npx shadow-cljs cljs-repl script ## not yet working right

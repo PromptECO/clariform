@@ -111,18 +111,30 @@ $ `node clariform.js --help`
 The development environment is based on [shadow-cljs](https://github.com/thheller/shadow-cljs)
 providing hot-loading of the recompiled clariform script.
 
-Execute from a terminal to run the development script and implicitly start 
-a watcher to recompile the script whenever files are changed:
+Start a watcher in the background recompiling the script whenever files are changed:
+
+$ `docker-compose up -d watch`
+
+Open a dashboard for the watcher from a web browser:
+
+http://localhost:9630/dashboard
+
+Tip: Don't use the dashboard to stop the script...
+
+Execute from a terminal to run the development script in a loop (with hotloading):
 
 $ `docker-compose run script --help`
+
+Troubleshooting: If it outputs "shadow-cljs: giving up trying to connect", wait 
+a little for the watch to complete launching and repeat running the script. 
+
+Edit and save any project file to trigger recompilation and execution of script.
+
+Detach from the container with a CTRL-p CTRL-q key sequence.
 
 $ `docker-compose run script --format src/test/clariform/basic.clar`
 
 $ `docker-compose run script --check src/test/clariform/invalid.clar`
-
-A dashboard for the watcher is available in a web browser:
-
-http://localhost:9630/dashboard
 
 To run unit testing, execute in the development shell:
 
