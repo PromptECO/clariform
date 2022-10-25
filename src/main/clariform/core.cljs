@@ -24,6 +24,11 @@
       (exit 1 (pr-str ast))
       ast)))
 
+(defn parse-code [code]
+  (->> (parse-strict code)
+       (insta/add-line-and-column-info-to-metadata code)
+       (#(add-between-to-metadata % code))))
+
 (defn slurp [path]
   (let [fs (js/require "fs")]
     (.readFileSync fs path "utf8")))
@@ -78,9 +83,11 @@
     (some? (:format options))
     (doseq [item arguments]
       (let [code (slurp item)]
-        (when-let [ast (parse-strict! code)]
+        (when-let [ast (parse-code code)]
           (case (:format options)
             "indent" 
+            (print (indent-code code))
+            "align" 
             (print (indent-code code))
             "compact" 
             (print (format-compact ast code))
