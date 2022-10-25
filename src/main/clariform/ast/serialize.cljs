@@ -1,4 +1,4 @@
-(ns clariform.serialize
+(ns clariform.ast.serialize
   (:require
    [clojure.spec.alpha :as spec]
    [clojure.string :as string]

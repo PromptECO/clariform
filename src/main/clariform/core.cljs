@@ -6,7 +6,9 @@
    ["parinfer" :as parinfer]
    [instaparse.core :as insta
     :refer-macros [defparser]]
-   [clariform.serialize :as serialize]))
+   [clariform.ast.between :as between
+    :refer [add-between-to-metadata]]
+   [clariform.ast.serialize :as serialize]))
 
 (defn exit [status msg]
   (println msg)
