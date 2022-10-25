@@ -10,13 +10,17 @@
   [com.taoensso/timbre "4.10.0"]]
  :nrepl {:port 9090}
  :socket-repl {:port 9099}
+ :http {:host "watch"}
  :builds
  {:script 
   {:target    :node-script
+   :devtools {:devtools-url "http://watch:9630"
+              :autoload true
+              :ignore-warnings true}
    :main      clariform.core/main
    :output-to "clariform.js"}
   :test
   {:target    :node-test
    :output-to "out/node-tests.js"
    :autorun   true}}}
- 
+  

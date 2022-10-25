@@ -18,8 +18,9 @@ Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
-There are several experimental ways to run Clariform based on using
-[Docker](https://www.docker.com/):
+There are several experimental ways to run Clariform, all requiring
+[Docker](https://www.docker.com/) to be [installed](https://docs.docker.com/engine/install/)
+and up running. 
 
 ### Docker
 
@@ -107,16 +108,21 @@ $ `node clariform.js --help`
 
 ## Development 
 
-Execute from a terminal to start Docker with a development shell
-based on [shadow-cljs](https://github.com/thheller/shadow-cljs):
+The development environment is based on [shadow-cljs](https://github.com/thheller/shadow-cljs)
+providing hot-loading of the recompiled clariform script.
 
-$ `docker-compose run --service-ports repl`
+Execute from a terminal to run the development script and implicitly start 
+a watcher to recompile the script whenever files are changed:
 
-Call clariform just as in the user console:
+$ `docker-compose run script --help`
 
-$$ `clariform --format src/test/clariform/basic.clar`
+$ `docker-compose run script --format src/test/clariform/basic.clar`
 
-$$ `clariform --check src/test/clariform/invalid.clar`
+$ `docker-compose run script --check src/test/clariform/invalid.clar`
+
+A dashboard for the watcher is available in a web browser:
+
+http://localhost:9630/dashboard
 
 To run unit testing, execute in the development shell:
 

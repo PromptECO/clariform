@@ -52,7 +52,8 @@
   [[nil "--version"]
    ["-h" "--help"]
    [nil "--check" "Exit with error on invalid code, supressing output"]
-   [nil "--format FORMAT" "Output format"]])
+   [nil "--format FORMAT" "Output format"]
+   [nil "--verbose"]])
 
 (defn execute-command [{:keys [arguments options summary errors] :as opts}]
   (cond
@@ -90,15 +91,20 @@
           (print (indent-code code)))))
     :else 
     (do
-      (prn (pr-str opts))
-      (exit 1 "Invalid command"))))
+      (prn (pr-str opts)))))
+
+(defonce command (atom nil))
 
 (defn main [& args]
   (let [{:keys [arguments options summary errors] :as opts}
         (parse-opts args cli-options)]
-    #_(prn options)
-    (execute-command opts)))
+    (execute-command opts)
+    (reset! command opts)))
 
-(defn ^:dev/after-load start []
-  (main))
-    
+(defn ^:dev/before-load reload! []
+  (println "== RELOADING SCRIPT =="))
+
+(defn ^:dev/after-load activate! []
+  (println "Executing command:")
+  (execute-command @command))
+
