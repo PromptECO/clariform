@@ -47,10 +47,8 @@
            (clojure.string/join "\n"))           
       (exit 1 "Misformed parens"))))
 
-#_
-(defn format-indent [ast code]
-  (-> (serialize/format-align ast)
-      indent-code))
+(defn format-retain [ast code]
+  (serialize/format-retain ast))
 
 (defn format-align [ast code]
   (serialize/format-align ast))
@@ -89,13 +87,18 @@
         (when-let [ast (parse-code code)]
           (case (:format options)
             "indent" 
-            (print (indent-code code))
+            (-> (format-align ast code)
+                indent-code
+                print)
             "align" 
-            (print (format-align ast code))
+            (-> (format-align ast code)
+                print)
             "compact" 
-            (print (format-compact ast code))
+            (-> (format-compact ast code)
+                print)
             "retain" 
-            (print code)))))
+            (-> (format-retain ast code)
+                print)))))
     (empty? options)
     (doseq [item arguments]
       (let [code (slurp item)]

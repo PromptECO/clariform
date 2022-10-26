@@ -18,6 +18,29 @@
 (defn output? [inst]
   (satisfies? Output inst))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn spacing-segments [s]
+  "Spacing as a sequence of strings separating comments, other whitespace, and special tokens (colon and comma)"
+  (loop [s s
+         result []]
+    (if (empty? s)
+      result
+      (case (first s)
+        (";") 
+        (let [seg (first (re-seq #";[^\\n]*[\\n]?" s))]
+          (recur
+            (subs s (count seg))
+            (conj result seg)))
+        (":" ",") 
+        (recur 
+          (subs s 1)
+          (conj result (first s)))
+        (let [seg (first (re-seq #"[.]*[\\n]?" s))]
+          (recur 
+            (subs s (max 1 (count seg)))
+            (conj result seg)))))))
+
 (defn toplevel-gap [gap]
   "Trim toplevel gap(s) down to max two newlines and no invisible spaces"
   (string/replace gap #"\n[\s]+\n" "\n\n"))
@@ -35,7 +58,47 @@
   (let [post-process (or post-process identity)]
     (some-> form meta (get-in [:between where]) post-process)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn retain-spacing [mode front back]
+  "Retain explicit visible spacing unless excessive"
+  (let [pre (get-spacing front :after stringify)
+        sep (get-spacing back :before stringify)
+        gap (trim-lines (str pre sep))
+        edge (or (nil? front) (nil? back))]
+    (case mode 
+      (:toplevel)
+      (if-not edge
+        (if (empty? gap) "\n\n" (toplevel-gap gap)) 
+        (if (string/blank? gap) "" (toplevel-gap gap)))
+      (:list :<>)
+      (if (empty? gap) 
+        (if-not edge " ")
+        gap)
+      ;; TODO: retain spacing
+      (:prop) 
+      (cond 
+        edge gap
+        (empty? gap) ": "
+        (string/blank? gap) ": "
+        (= gap ":") ": "
+        (string/blank? (first gap)) (str ":" gap)
+        (string/starts-with? gap ":") gap
+        :else (str ": " gap))
+      (:record) 
+      (cond
+        (nil? front)
+        (->> (spacing-segments gap)
+             (remove (partial = ","))
+             (apply str))
+        edge gap
+        (empty? gap) ", "
+        (string/blank? gap) (str "," gap)
+        (= gap ",") ", "
+        (string/starts-with? gap ",") gap
+        :else (str ", " gap))
+      (do (timbre/warn "Cannot retain spacing for:" mode)
+        ""))))
 
 (defn align-spacing [mode front back]
   "Left-align by stripping whitespace after newline (roundtripable)"
@@ -104,6 +167,7 @@
   {:post [string?]}
   ;; ensures required separators}
   (let [spacing (-> (case layout
+                      ("retain") retain-spacing
                       ("align") align-spacing
                       ("compact") compact-spacing)
                     (partial mode))]
@@ -189,6 +253,9 @@
         :else sep))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn format-retain [ast]
+  (format-form ast {:layout "retain"}))
 
 (defn format-align [ast]
   (format-form ast {:layout "align"}))
