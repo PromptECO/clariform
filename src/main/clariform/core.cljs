@@ -52,6 +52,9 @@
   (-> (serialize/format-align ast)
       indent-code))
 
+(defn format-align [ast code]
+  (serialize/format-align ast))
+
 (defn format-compact [ast code]
   (serialize/format-compact ast))
 
@@ -88,7 +91,7 @@
             "indent" 
             (print (indent-code code))
             "align" 
-            (print (indent-code code))
+            (print (format-align ast code))
             "compact" 
             (print (format-compact ast code))
             "retain" 

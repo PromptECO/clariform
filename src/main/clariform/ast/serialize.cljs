@@ -3,7 +3,74 @@
    [clojure.spec.alpha :as spec]
    [clojure.string :as string]
    [taoensso.timbre :as timbre]
-   [clariform.token :as token]))  
+   [clariform.token :as token]
+   [clariform.ast.between :as between
+     :refer [ToplevelSeparator Separator]]))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defprotocol Output 
+  (stringify [_] 
+    "String representation of token in canonical Clarity for code generation")
+  (format [_ options]
+    "Formatted string representation depending on formatting options"))
+
+(defn output? [inst]
+  (satisfies? Output inst))
+
+(defn toplevel-gap [gap]
+  "Trim toplevel gap(s) down to max two newlines and no invisible spaces"
+  (string/replace gap #"\n[\s]+\n" "\n\n"))
+
+(defn trim-lines [gap]
+  "Remove blanks before newlines"
+  (let [lines (string/split gap #"\r?\n" -1)] ;; split-lines ignores trailing newlines
+    (string/join "\n"
+      (concat (some->> 
+                (butlast lines)
+                (map string/trimr))
+              (take-last 1 lines)))))
+
+(defn get-spacing [form where & [post-process]]
+  (let [post-process (or post-process identity)]
+    (some-> form meta (get-in [:between where]) post-process)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn align-spacing [mode front back]
+  "Left-align by stripping whitespace after newline (roundtripable)"
+  (let [pre (get-spacing front :after stringify)
+        sep (get-spacing back :before stringify)
+        align (fn [s]
+                (string/replace s #"\n[ ]+" "\n"))
+        gap (align (trim-lines (str pre sep)))
+        edge (or (nil? front) (nil? back))]
+    (case mode 
+      (:toplevel)
+      (if-not edge
+        (if (empty? gap) "\n\n" (toplevel-gap gap)) 
+        (if (string/blank? gap) "" (toplevel-gap gap)))
+      (:list :<>)
+      (if (empty? gap) 
+        (if-not edge " ") 
+        gap)
+      ;; TODO: retain spacing
+      (:prop) 
+      (if-not edge 
+         (cond (empty? gap) ": "
+               (string/blank? gap) ": "
+               (= gap ":") ": "
+               (string/blank? (first gap)) (str ":" gap)
+               (string/starts-with? gap ":") gap
+               :else (str ": " gap))
+         gap)
+      (:record) 
+      (if-not edge
+        (cond (empty? gap) ", "
+              (string/blank? gap) (str "," gap)
+              (= gap ",") ", "
+              :else gap)
+        gap))))
 
 (defn compact-spacing [mode front back]
   "Minimalistic spacing, each toplevel on its own line"
@@ -26,9 +93,6 @@
 (defn format-around [form options]
   (format-form form options))
 
-(defn format [form options]
-  (format-form form options))
-
 (defn format-separated-form [spacing [front back] options]
   "Prefix a form with approproate separation"
   (str
@@ -40,6 +104,7 @@
   {:post [string?]}
   ;; ensures required separators}
   (let [spacing (-> (case layout
+                      ("align") align-spacing
                       ("compact") compact-spacing)
                     (partial mode))]
     (apply str 
@@ -98,6 +163,35 @@
 
 (defmethod format-form :S [form options]
   (format-separated-items :toplevel (token/content form) options))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(extend-type default
+  Output
+  (stringify [tree]
+    (format tree nil))
+  (format [tree options]
+    (format-form tree options)))
+
+(extend-type Separator
+  Output
+  (format [self options] (or (:text self) " ")))
+
+(extend-type ToplevelSeparator
+  Output
+  (stringify [self] (:sep self))
+  (format [self {:keys [layout] :as options}]
+    (let [{edge :edge sep :sep} self]
+      (cond 
+        (= layout "compact") (if edge "" "\n")
+        (empty? sep) (if edge "" "\n\n")
+        (string/blank? sep) (if edge "" sep)
+        :else sep))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn format-align [ast]
+  (format-form ast {:layout "align"}))
 
 (defn format-compact [ast]
   (format-form ast {:layout "compact"}))
