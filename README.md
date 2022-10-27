@@ -18,7 +18,7 @@ Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
-There are several experimental ways to run Clariform, all requiring
+Below are several experimental ways to run Clariform, all requiring
 [Docker](https://www.docker.com/) to be [installed](https://docs.docker.com/engine/install/)
 and up running. 
 
