@@ -6,7 +6,9 @@
    ["parinfer" :as parinfer]
    [instaparse.core :as insta
     :refer-macros [defparser]]
-   [clariform.serialize :as serialize]))
+   [clariform.ast.between :as between
+    :refer [add-between-to-metadata]]
+   [clariform.ast.serialize :as serialize]))
 
 (defn exit [status msg]
   (println msg)
@@ -21,6 +23,11 @@
     (if (insta/failure? ast)
       (exit 1 (pr-str ast))
       ast)))
+
+(defn parse-code [code]
+  (->> (parse-strict code)
+       (insta/add-line-and-column-info-to-metadata code)
+       (#(add-between-to-metadata % code))))
 
 (defn slurp [path]
   (let [fs (js/require "fs")]
@@ -40,10 +47,11 @@
            (clojure.string/join "\n"))           
       (exit 1 "Misformed parens"))))
 
-#_
-(defn format-indent [ast code]
-  (-> (serialize/format-align ast)
-      indent-code))
+(defn format-retain [ast code]
+  (serialize/format-retain ast))
+
+(defn format-align [ast code]
+  (serialize/format-align ast))
 
 (defn format-compact [ast code]
   (serialize/format-compact ast))
@@ -52,7 +60,8 @@
   [[nil "--version"]
    ["-h" "--help"]
    [nil "--check" "Exit with error on invalid code, supressing output"]
-   [nil "--format FORMAT" "Output format"]])
+   [nil "--format FORMAT" "Output format"]
+   [nil "--verbose"]])
 
 (defn execute-command [{:keys [arguments options summary errors] :as opts}]
   (cond
@@ -75,14 +84,21 @@
     (some? (:format options))
     (doseq [item arguments]
       (let [code (slurp item)]
-        (when-let [ast (parse-strict! code)]
+        (when-let [ast (parse-code code)]
           (case (:format options)
             "indent" 
-            (print (indent-code code))
+            (-> (format-align ast code)
+                indent-code
+                print)
+            "align" 
+            (-> (format-align ast code)
+                print)
             "compact" 
-            (print (format-compact ast code))
+            (-> (format-compact ast code)
+                print)
             "retain" 
-            (print code)))))
+            (-> (format-retain ast code)
+                print)))))
     (empty? options)
     (doseq [item arguments]
       (let [code (slurp item)]
@@ -90,15 +106,20 @@
           (print (indent-code code)))))
     :else 
     (do
-      (prn (pr-str opts))
-      (exit 1 "Invalid command"))))
+      (prn (pr-str opts)))))
+
+(defonce command (atom nil))
 
 (defn main [& args]
   (let [{:keys [arguments options summary errors] :as opts}
         (parse-opts args cli-options)]
-    #_(prn options)
-    (execute-command opts)))
+    (execute-command opts)
+    (reset! command opts)))
 
-(defn ^:dev/after-load start []
-  (main))
-    
+(defn ^:dev/before-load reload! []
+  (println "== RELOADING SCRIPT =="))
+
+(defn ^:dev/after-load activate! []
+  (println "Executing command:")
+  (execute-command @command))
+

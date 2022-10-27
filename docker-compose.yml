@@ -1,6 +1,9 @@
 version: "3"
+
+volumes:
+  m2:
+
 services:
-  
   install:  
     build: .
     working_dir: /home
@@ -26,29 +29,54 @@ services:
       - m2:/root/.m2
     entrypoint: node /app/clariform.js
     
-  dev:  
+  watch:  
     build: .
     working_dir: /home
-    stdin_open: true
-    tty: true
+    # stdin_open: true
+    # tty: true
     ports:
       - "9630:9630"
-      - "9090:9090"
-      - "9099:9099"
+      #- "9090:9090"
+      #- "9099:9099"
     volumes:
       - .:/home
       - m2:/root/.m2
-    entrypoint: npx shadow-cljs watch script --config-merge "{:socket-repl {:port 9090} :nrepl {:port 9099}}"
+    networks:
+      - default
+    entrypoint: npx shadow-cljs watch script --config-merge '{:http {:host "watch"} :socket-repl {:port 9090} :nrepl {:port 9099}}'
+    
+  script:
+    build: .
+    working_dir: /home
+    depends_on:
+      - watch
+    volumes:
+      - .:/home
+      - m2:/root/.m2
+    networks:
+      - default
+    entrypoint: ["node", "clariform.js"]
+    
+  test:
+    build: .
+    working_dir: /home
+    depends_on:
+      - watch
+    volumes:
+      - .:/home
+      - m2:/root/.m2
+    networks:
+      - default
+    entrypoint: ["npx", "shadow-cljs", "compile", "test"]
     
   repl:
     build: .
     working_dir: /home
     depends_on:
-      - dev
+      - watch
     volumes:
       - .:/home
       - m2:/root/.m2
-    entrypoint: npx shadow-cljs cljs-repl script
-  
-volumes:
-  m2:
+    networks:
+      - default
+    entrypoint: ["/bin/bash"] ## npx shadow-cljs cljs-repl script ## not yet working right

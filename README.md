@@ -18,8 +18,9 @@ Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
-There are several experimental ways to run Clariform based on using
-[Docker](https://www.docker.com/):
+Below are several experimental ways to run Clariform, all requiring
+[Docker](https://www.docker.com/) to be [installed](https://docs.docker.com/engine/install/)
+and up running. 
 
 ### Docker
 
@@ -107,16 +108,33 @@ $ `node clariform.js --help`
 
 ## Development 
 
-Execute from a terminal to start Docker with a development shell
-based on [shadow-cljs](https://github.com/thheller/shadow-cljs):
+The development environment is based on [shadow-cljs](https://github.com/thheller/shadow-cljs)
+providing hot-loading of the recompiled clariform script.
 
-$ `docker-compose run --service-ports repl`
+Start a watcher in the background recompiling the script whenever files are changed:
 
-Call clariform just as in the user console:
+$ `docker-compose up -d watch`
 
-$$ `clariform --format src/test/clariform/basic.clar`
+Open a dashboard for the watcher from a web browser:
 
-$$ `clariform --check src/test/clariform/invalid.clar`
+http://localhost:9630/dashboard
+
+Tip: Don't use the dashboard to stop the script...
+
+Execute from a terminal to run the development script in a loop (with hotloading):
+
+$ `docker-compose run script --help`
+
+Troubleshooting: If it outputs "shadow-cljs: giving up trying to connect", wait 
+a little for the watch to complete launching and repeat running the script. 
+
+Edit and save any project file to trigger recompilation and execution of script.
+
+Detach from the container with a CTRL-p CTRL-q key sequence.
+
+$ `docker-compose run script --format src/test/clariform/basic.clar`
+
+$ `docker-compose run script --check src/test/clariform/invalid.clar`
 
 To run unit testing, execute in the development shell:
 
