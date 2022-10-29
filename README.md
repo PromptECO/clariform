@@ -38,7 +38,7 @@ Docker will by default restrict filesystem access, which benefits security.
 
 $ `docker run -v ``pwd``:/home clariform`
 
-### Docker
+### Build from Repo
 
 Build clariform in Docker:
 
@@ -57,7 +57,7 @@ $ `docker run -v ``pwd``:/home clariform src/test/clariform/malformed.clar`
 
 As alternative to ``pwd`` use the absolute path of a directory containing Clarity files.
  
-### Compose
+### Start with Compose
 
 To build clariform with docker-compose, execute in a terminal:
 
@@ -79,7 +79,7 @@ Check whether Clarity code is invalid:
 
 $ `docker-compose run clariform --check src/test/clariform/invalid.clar`
 
-### Console
+### Run in Console
 
 To open a Clariform docker container console: 
  
