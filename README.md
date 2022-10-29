@@ -12,6 +12,8 @@ This early version has limited functionality, but it's a start:
 
 Coming soon: Github action!
 
+[![Clariform](https://github.com/njordhov/clariform/actions/workflows/main.yml/badge.svg)](https://github.com/njordhov/clariform/actions/workflows/main.yml)
+
 ## Usage 
 
 Clariform is not yet *painless* but we're getting there.
