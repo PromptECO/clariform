@@ -1,3 +1,5 @@
+name: Clariform
+
 on: [push]
 
 jobs:
