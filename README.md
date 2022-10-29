@@ -20,9 +20,12 @@ Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
-Below are several experimental ways to run Clariform, all requiring
-[Docker](https://www.docker.com/) to be [installed](https://docs.docker.com/engine/install/)
-and up running. 
+If [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/)
+and up running, Clariform can be run from a prebuilt container image:
+
+$ `docker run ghcr.io/njordhov/clariform:main --help`
+
+Below are other ways to run Clariform.
 
 ### Docker
 
