@@ -20,12 +20,23 @@ Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
-If [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/)
-and up running, Clariform can be run from a prebuilt container image:
+Below are different ways to run Clariform, most assuming [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/) and up running.
+
+### Quick Start
+
+Clariform can be run from a prebuilt container image:
 
 $ `docker run ghcr.io/njordhov/clariform:main --help`
 
-Below are other ways to run Clariform.
+For convenience, the prebuilt image can be named:
+
+$ `docker create --name clariform ghcr.io/njordhov/clariform:main`
+$ `docker run clariform --help`
+
+Docker will by default restrict filesystem access, which benefits security.
+[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly allow access to the files in the current directory:
+
+$ `docker run -v ``pwd``:/home clariform`
 
 ### Docker
 
