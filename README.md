@@ -10,7 +10,7 @@ This early version has limited functionality, but it's a start:
 2. Fix confusing indentation and dangling close-parens.
 3. Custom formatting of the output code.
 
-Coming soon: Github action
+Coming soon: Github action!
 
 ## Usage 
 
@@ -34,8 +34,8 @@ Run the clariform image:
 
 $ `docker run clariform --help`
 
-Note that Docker by default restricts file system access, which benefits security.
-[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly allow access to the files in `src/test/clariform`:
+Note that Docker by default restricts filesystem access, which benefits security.
+[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly allow access to the filesystem:
 
 $ `docker run -v ``pwd``:/home clariform src/test/clariform/malformed.clar`
 
