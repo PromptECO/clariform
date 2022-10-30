@@ -8,24 +8,21 @@
     :refer-macros [defparser]]
    [clariform.ast.between :as between
     :refer [add-between-to-metadata]]
-   [clariform.ast.serialize :as serialize]))
+   [clariform.ast.serialize :as serialize]
+   [clariform.ast.parser :as parser]))
 
 (defn exit [status msg]
   (println msg)
   (.exit js/process status))
 
-(defparser parse-strict
-  (str (rc/inline "./strict.ebnf")
-       (rc/inline "./tokens.ebnf")))
-
 (defn parse-strict! [s]
-  (let [ast (parse-strict s)]
+  (let [ast (parser/parse-strict s)]
     (if (insta/failure? ast)
       (exit 1 (pr-str ast))
       ast)))
 
 (defn parse-code [code]
-  (->> (parse-strict code)
+  (->> (parser/parse-strict code)
        (insta/add-line-and-column-info-to-metadata code)
        (#(add-between-to-metadata % code))))
 
@@ -76,7 +73,7 @@
 
 (defn check-file [path options]
   (let [code (slurp path) 
-        ast (parse-strict code)]
+        ast (parser/parse-strict code)]
     (if (insta/failure? ast)
       ast)))
 
@@ -103,22 +100,25 @@
     (when (not-empty arguments)
       (doseq [path arguments]
         (if-let [err (check-file path options)]
-          (do 
-            (pr err)
+          (do
+            (binding [*print-fn* *print-err-fn*]
+              (println err))
             (exit 1))
           (if (:verbose options)
             (println path)))))
     (some? (:format options))
     (doseq [path arguments]
       (format-file path options))
-    (empty? options)
-    (doseq [item arguments]
-      (let [code (slurp item)]
-        (when-let [ast (parse-strict! code)]
-          (print (indent-code code)))))
     :else 
-    (do
-      (prn (pr-str opts)))))
+    (doseq [path arguments]
+      (if (:verbose options)
+        (println path))
+      (let [code (slurp path)
+            ast (parser/parse-strict code)]
+        (if (insta/failure? ast)
+          (binding [*print-fn* *print-err-fn*]
+            (println ast))
+          (print (indent-code code)))))))
 
 (defonce command (atom nil))
 
