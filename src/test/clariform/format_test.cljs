@@ -1,4 +1,4 @@
-(ns clariform.parse-test
+(ns clariform.format-test
   (:require 
    [cljs.test :refer (deftest is)]
    [clojure.string :as string]
@@ -15,19 +15,33 @@
                          [:list [:symbol "inc"] [:list [:symbol "n"] [:symbol "int"]]] 
                          [:list [:symbol "+"] [:symbol "n"] [:int "1"]]]]])))
 
+(defn process-retain [code]
+  (-> (format/parse-code code)
+      (format/format-retain code)))
+
+(deftest infer-parens-test
+  (is (= (format/infer-parens "(hello")
+         "(hello)"))
+  (is (= (process-retain "(hello)")
+         "(hello)"))
+  (is (= (process-retain "(hello")
+         "(hello)")
+      "Append missing endparen")
+  (is (= (process-retain "hello)")
+         "hello")
+      "Remove dangling endparen (is this preferable?)"))
+
 (deftest format-retain-test
-  (is (= (-> (parser/parse-code basic-contract)
-             (format/format-retain basic-contract))
+  (is (= (process-retain basic-contract)
          (string/trim basic-contract))))
 
 (deftest format-align-test
-  (is (= (-> (parser/parse-code basic-contract)
+  (is (= (-> (format/parse-code basic-contract)
              (format/format-align basic-contract))
          (str "(define-read-only (inc (n int))\n" 
               "(+ n 1))"))))
 
 (deftest format-compact-test
-  (is (= (-> (parser/parse-code basic-contract)
+  (is (= (-> (format/parse-code basic-contract)
              (format/format-compact basic-contract))
          "(define-read-only (inc (n int)) (+ n 1))")))
-

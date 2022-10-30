@@ -11,10 +11,19 @@
    [clariform.ast.serialize :as serialize]
    [clariform.ast.parser :as parser]))
 
+(defn infer-parens [code]
+  (-> (.indentMode parinfer code #js {:cursorLine 0 :cursorX 0})
+      (js->clj :keywordize-keys true)
+      :text))
+
+(defn parse-code [code & [strict]]
+  (let [parse (if strict parser/parse-strict parser/parse-robust)]
+    (->> (parse (if strict code (infer-parens code)))
+         (insta/add-line-and-column-info-to-metadata code)
+         (#(add-between-to-metadata % code)))))
+
 (defn indent-code [code]
-  (let [{:keys [text success]} 
-        (-> (.parenMode parinfer code #js {:cursorLine 0 :cursorX 0})
-            (js->clj :keywordize-keys true))]
+  (let [{:keys [text success]} (infer-parens code)]
     (if success
       (->> (map string/split-lines [text code])
            (apply map vector)
@@ -35,14 +44,14 @@
   (serialize/format-compact ast))
 
 (defn format-code [code {:keys [format strict]}]
-  (when-let [ast (parser/parse-code code strict)]
+  (when-let [ast (parse-code code strict)]
     (case format
       "indent" 
       (-> (format-align ast code)
           indent-code)
       "align" 
-      (-> (format-align ast code))
+      (format-align ast code)
       "compact" 
-      (-> (format-compact ast code))
-      "retain" 
-      (-> (format-retain ast code)))))
+      (format-compact ast code)
+      ("retain" nil) 
+      (format-retain ast code))))
