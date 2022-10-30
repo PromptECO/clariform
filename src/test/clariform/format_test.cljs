@@ -45,3 +45,20 @@
   (is (= (-> (format/parse-code basic-contract)
              (format/format-compact basic-contract))
          "(define-read-only (inc (n int)) (+ n 1))")))
+
+(deftest record-shorthand-test
+  (is (= (process-retain "{a:1}")
+         (process-retain "{a: 1}")
+         (process-retain "{a:  1}")
+         "{a: 1}")
+      "Normalize property with a single space before value")
+  (is (= (process-retain "{a}")
+         "{a: a}")
+      "Implicit property value is same as name")
+  (is (= (process-retain "{a,b}")
+         "{a: a, b: b}")
+      "Complete multiple implicit property values")
+  (is (= (process-retain "{a: 1,b}")
+         "{a: 1, b: b}")
+      "Mix implicit and explicit property values"))
+
