@@ -8,7 +8,9 @@ This early version has limited functionality, but it's a start:
 
 1. Validate the syntax of a Clarity contract file.
 2. Fix confusing indentation and dangling close-parens.
-3. Custom formatting of the output code.
+3. Normalize whitespace and decorative tokens.
+4. Expand record shorthands.
+5. Custom formatting of the output code.
 
 Coming soon: Github action!
 
