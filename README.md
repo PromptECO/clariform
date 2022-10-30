@@ -9,7 +9,7 @@ This early version has limited functionality, but it's a start:
 1. Validate the syntax of a Clarity contract file.
 2. Fix confusing indentation and dangling close-parens.
 3. Normalize whitespace and decorative tokens.
-4. Expand record shorthands.
+4. Expand record shorthand notation
 5. Custom formatting of the output code.
 
 Coming soon: Github action!
@@ -123,41 +123,3 @@ $ `cd clariform`
 $ `node install`  
 $ `docker-compose run install`  
 $ `node clariform.js --help`  
-
-## Development 
-
-The development environment is based on [shadow-cljs](https://github.com/thheller/shadow-cljs)
-providing hot-loading of the recompiled clariform script.
-
-Start a watcher in the background recompiling the script whenever files are changed:
-
-$ `docker-compose up -d watch`
-
-Open a dashboard for the watcher from a web browser (if at first you fail, try again):
-
-http://localhost:9630/dashboard
-
-Tip: Don't use the dashboard to stop the script...
-
-Execute from a terminal to run the development script in a loop (with hotloading):
-
-$ `docker-compose run script --help`
-
-Troubleshooting: If it outputs "shadow-cljs: giving up trying to connect", wait 
-a little for the watch to complete launching and repeat running the script. 
-
-Edit and save any project file to trigger recompilation and execution of script.
-
-Detach from the container with a CTRL-p CTRL-q key sequence.
-
-$ `docker-compose run script --format src/test/clariform/basic.clar`
-
-$ `docker-compose run script --check src/test/clariform/invalid.clar`
-
-To run unit testing, execute in the development shell:
-
-$$ `npm run test`
-
-To generate an executable:
-
-$$ `npm run release`
