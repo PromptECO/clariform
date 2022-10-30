@@ -1,0 +1,33 @@
+S = <OWS> (!ws toplevel <OWS>)*
+toplevel = form | !form ( !WS bypass / forward)  (* emulate reader to fail on individual toplevel forms *)
+<safe-form> = form | !form !WS skip
+<form> = list | vector | record | atom
+list = <LPAR> <OWS> (!RPAR safe-form <OWS>)* <RPAR>
+vector = <LBRA> <OWS> (!<RBRA> form <OWS>)* <RBRA>
+record = <LCUR> <OWS> (&RCUR missing | !RCUR content) <RCUR>
+<content> = (!ws !RCUR !COMMA prop <OWS> (<COMMA> <OWS>)? )+
+prop = name (&COLON SEP (form | !form missing)
+         |  !COLON <ws> ( &RCUR | form | !RCUR !form missing)
+         |  !SEP (&COMMA | &(OWS RCUR) 
+                        | !(COMMA|OWS RCUR) missing)) 
+   | !name (SEP missing form 
+          |!SEP (&form missing form | !form skip (safe-form / missing)))  
+
+<name> = !operator symbol
+<SEP> = <COLON> (&ws <ws> | !ws) | !<COLON> <ws>
+<OWS> = #'([\s]+|(;[^\n]*[\n]?))*'
+<WS> = #'([\s]+|(;[^\n]*[\n]?))+'
+<bypass> =  skip | !skip invalid  (* for toplevel *)
+<forward> = (#'[^\n]*\n')* &LPAR  (* skips to next toplevel *) 
+skip = #'[^\s\(\)\{\}\[\]\;\\"]+' 
+invalid = #'[^\s]'
+missing = Epsilon
+
+LBRA = '['
+RBRA = ']'
+
+bracket = #'[\(\{\[\)\}\]]'
+<terminator> = #'[\s\)\}\]]'
+
+<ws1> = #'[\s]+' | comment
+comment = #';;[^\n$]*[\n]?'
