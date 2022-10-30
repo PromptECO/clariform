@@ -30,13 +30,13 @@ $ `docker run ghcr.io/njordhov/clariform:main --help`
 
 For convenience, the prebuilt image can be named:
 
-$ `docker create --name clariform ghcr.io/njordhov/clariform:main`
+$ `docker create --name clariform ghcr.io/njordhov/clariform:main`  
 $ `docker run clariform --help`
 
-Docker will by default restrict filesystem access, which benefits security.
-[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly allow access to the files in the current directory:
+Docker will by default restrict filesystem access.
+[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to check the files in the current directory:
 
-$ `docker run -v ``pwd``:/home clariform`
+$ `docker run -v ``pwd``:/home clariform --check *.clar`
 
 ### Build from Repo
 
@@ -131,7 +131,7 @@ Start a watcher in the background recompiling the script whenever files are chan
 
 $ `docker-compose up -d watch`
 
-Open a dashboard for the watcher from a web browser:
+Open a dashboard for the watcher from a web browser (if at first you fail, try again):
 
 http://localhost:9630/dashboard
 

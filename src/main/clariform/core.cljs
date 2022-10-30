@@ -56,6 +56,30 @@
 (defn format-compact [ast code]
   (serialize/format-compact ast))
 
+(defn format-file [path {:keys [format]}]
+  (let [code (slurp path)]
+    (when-let [ast (parse-code code)]
+      (case format
+        "indent" 
+        (-> (format-align ast code)
+            indent-code
+            print)
+        "align" 
+        (-> (format-align ast code)
+            print)
+        "compact" 
+        (-> (format-compact ast code)
+            print)
+        "retain" 
+        (-> (format-retain ast code)
+            print)))))
+
+(defn check-file [path options]
+  (let [code (slurp path) 
+        ast (parse-strict code)]
+    (if (insta/failure? ast)
+      ast)))
+
 (def cli-options
   [[nil "--version"]
    ["-h" "--help"]
@@ -77,28 +101,16 @@
     (prn "0.0.3")
     (some? (:check options))
     (when (not-empty arguments)
-      (doseq [item arguments]
-        (->> item 
-             (slurp)
-             (parse-strict!))))
+      (doseq [path arguments]
+        (if-let [err (check-file path options)]
+          (do 
+            (pr err)
+            (exit 1))
+          (if (:verbose options)
+            (println path)))))
     (some? (:format options))
-    (doseq [item arguments]
-      (let [code (slurp item)]
-        (when-let [ast (parse-code code)]
-          (case (:format options)
-            "indent" 
-            (-> (format-align ast code)
-                indent-code
-                print)
-            "align" 
-            (-> (format-align ast code)
-                print)
-            "compact" 
-            (-> (format-compact ast code)
-                print)
-            "retain" 
-            (-> (format-retain ast code)
-                print)))))
+    (doseq [path arguments]
+      (format-file path options))
     (empty? options)
     (doseq [item arguments]
       (let [code (slurp item)]
@@ -117,9 +129,9 @@
     (reset! command opts)))
 
 (defn ^:dev/before-load reload! []
-  (println "== RELOADING SCRIPT =="))
+  (println "# RELOADING SCRIPT"))
 
 (defn ^:dev/after-load activate! []
-  (println "Executing command:")
+  (println "# Executing command")
   (execute-command @command))
 
