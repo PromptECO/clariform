@@ -31,8 +31,6 @@ $ docker run ghcr.io/njordhov/clariform:main --help
 
 The package is published at: https://github.com/njordhov/clariform/pkgs/container/clariform
 
-The package is published at: https://github.com/njordhov/clariform/pkgs/container/clariform
-
 For convenience, the prebuilt image can be preloaded and named:
 
 $ docker create --rm --name clariform ghcr.io/njordhov/clariform:main 
