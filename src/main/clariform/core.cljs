@@ -4,6 +4,8 @@
    [clojure.string :as string]
    [shadow.resource :as rc]
    ["parinfer" :as parinfer]
+   [cljs-node-io.core :as io 
+    :refer [slurp]]
    [instaparse.core :as insta
     :refer-macros [defparser]]
    [clariform.ast.serialize :as serialize]
@@ -20,10 +22,6 @@
     (if (insta/failure? ast)
       (exit 1 (pr-str ast))
       ast)))
-
-(defn slurp [path]
-  (let [fs (js/require "fs")]
-    (.readFileSync fs path "utf8")))
 
 (defn check-file [path options]
   (let [code (slurp path) 
