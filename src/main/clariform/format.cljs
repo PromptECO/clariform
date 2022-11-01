@@ -12,7 +12,7 @@
    [clariform.ast.parser :as parser]))
 
 (defn infer-indent [code]
-  (-> (.indentMode parinfer code #js {:cursorLine 0 :cursorX 0})
+  (-> (.parenMode parinfer code #js {:cursorLine 0 :cursorX 0})
       (js->clj :keywordize-keys true)
       :text))
 
@@ -25,8 +25,9 @@
   (-> code infer-indent infer-parens))
 
 (defn parse-code [code & [strict]]
-  (let [parse (if strict parser/parse-strict parser/parse-robust)]
-    (->> (parse (if strict code (infer-parens code)))
+  (let [parse (if strict parser/parse-strict parser/parse-robust)
+        code (if strict code (infer-normalize code))]
+    (->> (parse code)
          (insta/add-line-and-column-info-to-metadata code)
          (#(add-between-to-metadata % code)))))
 
@@ -40,24 +41,26 @@
          (map first)
          (clojure.string/join "\n"))))
 
-(defn format-retain [ast code]
+(defn format-retain [ast]
   (serialize/format-retain ast))
 
-(defn format-align [ast code]
+(defn format-align [ast]
   (serialize/format-align ast))
 
-(defn format-compact [ast code]
+(defn format-compact [ast]
   (serialize/format-compact ast))
 
-(defn format-code [code {:keys [format strict]}]
-  (when-let [ast (parse-code code strict)]
-    (case format
-      "indent" 
-      (-> (format-align ast code)
-          indent-code)
-      "align" 
-      (format-align ast code)
-      "compact" 
-      (format-compact ast code)
-      ("retain" nil) 
-      (format-retain ast code))))
+(defn format-indent [ast]
+  (-> (format-align ast)
+      indent-code))
+
+(defn format-code [ast {:keys [format strict]}]
+  (case format
+    "indent" 
+    (format-indent ast)
+    "align" 
+    (format-align ast)
+    "compact" 
+    (format-compact ast)
+    ("retain" nil) 
+    (format-retain ast)))

@@ -18,6 +18,9 @@
 (defn file-path [file]
   (.getPath ^File file))
 
+(defn file-ext [file]
+  (.getExt ^File file))
+
 (defn printerr [e]
   (binding [*print-fn* *print-err-fn*]
     (println e)))
@@ -30,8 +33,7 @@
   (->> (io/file-seq (or path "."))
        (filter #(.isFile %))
        (filter #(or (= (file-path %) path)
-                    (= (file-path %) ".clar")))
-       identity))
+                    (= (file-ext %) ".clar")))))
 
 (defn parse-strict! [s]
   (let [ast (parser/parse-strict s)]
@@ -45,15 +47,49 @@
     (if (insta/failure? ast)
       ast)))
 
+(defn check-all [{:keys [arguments options summary errors] :as params}]
+  (when (not-empty arguments)
+    (doseq [path arguments]
+      (if-let [err (check-file path options)]
+        (do
+          (binding [*print-fn* *print-err-fn*]
+            (println err))
+          (exit 1 (pr-str err)))
+        (if (:verbose options)
+          (println path))))))
+
+(defn format-all [{:keys [arguments options summary errors] :as opts}]
+  (let [files (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))
+        options (update options :format (fnil identity "indent"))]
+    (when (:debug options)
+      (println "DEBUG:" options))
+    (doseq [path files]
+      (if (or (:verbose options)
+              (some? (next files)))
+        (println (file-path path)))
+      (let [code (slurp path)
+            ast (format/parse-code code (:strict options))]
+        (if (insta/failure? ast)
+          (let [failure (insta/get-failure ast)]
+            (printerr failure))
+          (try
+            (print (format-code ast code options))
+            (catch ExceptionInfo e
+              (printerr (ex-message e))
+              (printerr (ex-data e)))))))))
+
 (def cli-options
   [[nil "--version"]
    ["-h" "--help"]
    [nil "--check" "Exit with error on invalid code, supressing output"]
    [nil "--format FORMAT" "Output format"]
    [nil "--strict" "Expect strict Clarity syntax"]
-   [nil "--verbose"]])
+   [nil "--verbose"]
+   [nil "--debug"]])
 
-(defn execute-command [{:keys [arguments options summary errors] :as opts}]
+(defn execute-command [{:keys [arguments options summary errors] :as params}]
+  (when (:debug options)
+    (println "EXECUTE:" params))
   (cond
     (not-empty errors)
     (exit 1 (clojure.string/join "\n" errors))
@@ -64,39 +100,12 @@
       (println "Options:")
       (println summary))
     (some? (:version options))
-    (prn "0.0.3")
+    (prn "0.0.4")
     (some? (:check options))
-    (when (not-empty arguments)
-      (doseq [path arguments]
-        (if-let [err (check-file path options)]
-          (do
-            (binding [*print-fn* *print-err-fn*]
-              (println err))
-            (exit 1 (pr-str err)))
-          (if (:verbose options)
-            (println path)))))
-    (some? (:format options))
-    (doseq [path arguments]
-      (-> (slurp path)
-          (format-code options)
-          (print)))
+    (check-all params)
     :else
-    (let [files (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
-      (doseq [path files]
-        (if (or (:verbose options)
-                (some? (next files)))
-          (println (file-path path)))
-        (let [code (slurp path)
-              ast (parser/parse-strict code)]
-          (if (insta/failure? ast)
-            (let [failure (insta/get-failure ast)]
-              (printerr failure))
-            (try
-              (print (format/indent-code code))
-              (catch ExceptionInfo e
-                (printerr (ex-message e))
-                (printerr (ex-data e))))))))))
-
+    (format-all params)))
+    
 (defonce command (atom nil))
 
 (defn main [& args]
@@ -109,5 +118,5 @@
   (println "# RELOADING SCRIPT" @command))
 
 (defn ^:dev/after-load activate! []
-  (println "# Executing command" @command)
+  (println "# Executing command:" @command)
   (execute-command @command))

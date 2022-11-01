@@ -7,7 +7,9 @@
    [clariform.ast.parser :as parser]
    [clariform.format :as format]))
 
-(def basic-contract (rc/inline "./basic.clar"))  
+(def basic-contract (rc/inline "./basic.clar")) 
+
+(def malformed-contract (rc/inline "./malformed.clar"))
 
 (deftest parse-test
   (is (= (parser/parse-strict basic-contract)
@@ -17,7 +19,15 @@
 
 (defn process-retain [code]
   (-> (format/parse-code code)
-      (format/format-retain code)))
+      (format/format-retain)))
+
+(defn process-align [code]
+  (-> (format/parse-code code)
+      (format/format-align)))
+
+(defn process-indent [code]
+  (-> (format/parse-code code)
+      (format/format-indent)))
 
 (deftest infer-parens-test
   (is (= (format/infer-parens "(hello")
@@ -31,19 +41,23 @@
          "hello")
       "Remove dangling endparen (is this preferable?)"))
 
+(deftest infer-indent-test
+  (is (= (format/infer-indent "(XXX\nYYY)")
+         "(XXX\n YYY)")))
+
 (deftest format-retain-test
   (is (= (process-retain basic-contract)
          (string/trim basic-contract))))
 
 (deftest format-align-test
   (is (= (-> (format/parse-code basic-contract)
-             (format/format-align basic-contract))
+             (format/format-align))
          (str "(define-read-only (inc (n int))\n" 
               "(+ n 1))"))))
 
 (deftest format-compact-test
   (is (= (-> (format/parse-code basic-contract)
-             (format/format-compact basic-contract))
+             (format/format-compact))
          "(define-read-only (inc (n int)) (+ n 1))")))
 
 (deftest record-shorthand-test
@@ -62,3 +76,16 @@
          "{a: 1, b: b}")
       "Mix implicit and explicit property values"))
 
+(deftest malformed-correct-test 
+  (is (= (format/parse-code malformed-contract)
+         [:S [:toplevel [:list [:symbol "define-read-only"] 
+                         [:list [:symbol "plus"] [:list [:symbol "n"] [:symbol "int"]]] 
+                         [:list [:symbol "let"] [:list [:list [:symbol "value"] 
+                                                              [:list [:symbol "+"] [:symbol "n"] [:int "1"]]]] 
+                          [:symbol "value"]]]]])
+      "Parse robustly even if the indent is messed up")
+  (is (= (process-align malformed-contract)
+         (str "(define-read-only (plus\n(n int))\n\n"
+              "(let (\n(value (+ n 1)))\n\nvalue))\n\n"
+              ";; EOF\n"))
+      "Should eliminate unnecessary newlines (doesn't yet)"))
