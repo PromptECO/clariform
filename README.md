@@ -54,8 +54,8 @@ output an autocorrected indented version, or report a syntax error.
 
 ### Create Shortcut
 
-Tips: Create a shortcut for the `clariform` command. On Mac/Unix this may be 
-accomplished by creating an executable script, or just an alias: 
+For convenience you may create a shortcut for the `clariform` command. 
+On Mac/Unix this may be accomplished by creating an executable script, or just an alias: 
 
 ```
 $ alias clariform="docker run -v \`pwd\`:/home clariform"
