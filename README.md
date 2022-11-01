@@ -21,7 +21,7 @@ Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
-[Docker](https://www.docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running.
+Before continuing, ensure [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/) and up running.
 
 ### Quick Start
 
