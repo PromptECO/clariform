@@ -15,15 +15,15 @@ This early version has limited functionality, but it's a start:
 
 [![Clariform](https://github.com/njordhov/clariform/actions/workflows/main.yml/badge.svg)](https://github.com/njordhov/clariform/actions/workflows/main.yml)
 
-## Usage 
-
 Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
 Below are different ways to run Clariform, most assuming [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/) and up running.
 
-### Quick Start
+## Quick Start
+
+[Docker](https://www.docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running.
 
 Clariform can be run from a prebuilt container image distributed as a github package:
 
@@ -62,6 +62,38 @@ To disable autocorrect and validate correct Clarity syntax, add a `--strict` fla
 $ docker run -v `pwd`:/home clariform --strict
 ```
 
+Tips: Create a shortcut for the `clariform` command. On Mac/Unix this may be 
+accomplished by creating an executable script, or just an alias: 
+
+```
+$ alias clariform="docker run -v \`pwd\`:/home clariform"
+```
+
+With this alias, clariform can process contracts in the current working directory 
+by executing: 
+
+```
+$ clariform *.clar
+```
+
+The rest of this section assumes a `clariform` alias. If not, use this in place 
+of the clariform command below: `docker run -v ``pwd``:/home clariform` 
+
+## Formatting
+
+The output formatting can be specified with the `--format` option:
+
+```
+$ clariform --format=indent src/contract/basic.clar 
+$ clariform --format=align src/contract/basic.clar  
+$ clariform --format=compact src/contract/basic.clar 
+$ clariform --format=retain src/contract/basic.clar   
+```
+
+## Usage Alternatives 
+
+Below are alternative ways to run Clariform, most assuming [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/) and up running.
+ 
 ### Build from Repo
 
 Build clariform in Docker:
@@ -101,14 +133,6 @@ Execute the `clariform` image in Docker:
 
 ```
 $ docker-compose run clariform --help
-```
-
-Format a valid but mangled Clarity file:
-
-```
-$ docker-compose run clariform --format=retain src/test/clariform/malformed.clar  
-$ docker-compose run clariform --format=indent src/test/clariform/malformed.clar  
-$ docker-compose run clariform --format=compact src/test/clariform/malformed.clar  
 ```
 
 Check whether Clarity code is invalid:
@@ -175,3 +199,4 @@ $ node install
 $ docker-compose run install  
 $ node clariform.js --help
 ```  
+
