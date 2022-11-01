@@ -11,9 +11,9 @@ $ `docker-compose up -d watch`
 
 Open a dashboard for the watcher from a web browser (if at first you fail, try again):
 
-http://localhost:9630/dashboard
+$ `open http://localhost:9630/dashboard`
 
-Tip: Don't use the dashboard to stop the script...
+Tip: Don't stop the script from the dashboard.
 
 ## RUN SCRIPT
 

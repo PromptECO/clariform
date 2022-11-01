@@ -6,13 +6,12 @@ Finds and automatically fixes problems in Clarity code.
 
 This early version has limited functionality, but it's a start:
 
-1. Validate the syntax of a Clarity contract file.
-2. Fix confusing indentation and dangling close-parens.
-3. Normalize whitespace and decorative tokens.
-4. Expand record shorthand notation
-5. Custom formatting of the output code.
-
-Coming soon: Github action!
+- [x] Validate the syntax of a Clarity contract file.
+- [x] Fix confusing indentation and dangling close-parens.
+- [x] Normalize whitespace and decorative tokens.
+- [x] Expand record shorthand notation
+- [x] Custom formatting of the output code.
+- [ ] Github action!
 
 [![Clariform](https://github.com/njordhov/clariform/actions/workflows/main.yml/badge.svg)](https://github.com/njordhov/clariform/actions/workflows/main.yml)
 
@@ -26,11 +25,11 @@ Below are different ways to run Clariform, most assuming [Docker](https://www.do
 
 ### Quick Start
 
-Clariform can be run from a prebuilt container image:
+Clariform can be run from a prebuilt container image distributed as a github package:
 
 $ `docker run ghcr.io/njordhov/clariform:main --help`
 
-For convenience, the prebuilt image can be named:
+For convenience, the prebuilt image can be preloaded and named:
 
 $ `docker create --name clariform ghcr.io/njordhov/clariform:main`  
 $ `docker run clariform --help`
@@ -38,7 +37,18 @@ $ `docker run clariform --help`
 Docker will by default restrict filesystem access.
 [Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to check the files in the current directory:
 
-$ `docker run -v ``pwd``:/home clariform --check *.clar`
+$ `docker run -v ``pwd``:/home clariform`
+
+This will traverse all Clarity contract files (".clar") in the working directory and either
+output an autocorrected indented version, or report a syntax error. 
+
+Filenames and directories can be explicitly specified as arguments:
+
+$ `docker run -v ``pwd``:/home clariform *.clar`
+
+To disable autocorrect and validate correct Clarity syntax, add a `--strict` flag:
+
+$ `docker run -v ``pwd``:/home clariform --strict`
 
 ### Build from Repo
 
