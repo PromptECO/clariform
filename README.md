@@ -77,13 +77,13 @@ If not, use this in place of the clariform command below:
 Filenames and directories can be explicitly specified as arguments:
 
 ```
-$ docker run -v `pwd`:/home clariform *.clar
+$ clariform *.clar
 ```
 
 To disable autocorrect and validate correct Clarity syntax, add a `--strict` flag:
 
 ```
-$ docker run -v `pwd`:/home clariform --strict
+$ clariform --strict
 ```
 
 ### Format Output
