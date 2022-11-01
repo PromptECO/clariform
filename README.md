@@ -15,13 +15,11 @@ This early version has limited functionality, but it's a start:
 
 [![Clariform](https://github.com/njordhov/clariform/actions/workflows/main.yml/badge.svg)](https://github.com/njordhov/clariform/actions/workflows/main.yml)
 
+## Usage
+
 Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
-
-Below are different ways to run Clariform, most assuming [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/) and up running.
-
-## Usage
 
 [Docker](https://www.docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running.
 
