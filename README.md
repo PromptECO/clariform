@@ -79,15 +79,22 @@ $ clariform *.clar
 The rest of this section assumes a `clariform` alias. If not, use this in place 
 of the clariform command below: `docker run -v ``pwd``:/home clariform` 
 
-## Formatting
+### Formatting
 
 The output formatting can be specified with the `--format` option:
 
+* `indent`: Visualize the structure of the expressions in the code for readability.
+* `retain`: Keeps the whitespace similar as in the source.
+* `align`: Remove whitespace from the start of every line (uses less space; can be rehydrated with indent).
+* `compact`: Minimize whitespace so each toplevel form is on a single line (useful for code meant to be evaluated by software rather than read by humans). 
+
+Examples:
+
 ```
 $ clariform --format=indent src/contract/basic.clar 
+$ clariform --format=retain src/contract/basic.clar   
 $ clariform --format=align src/contract/basic.clar  
 $ clariform --format=compact src/contract/basic.clar 
-$ clariform --format=retain src/contract/basic.clar   
 ```
 
 ## Usage Alternatives 
