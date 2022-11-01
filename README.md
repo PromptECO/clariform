@@ -21,9 +21,11 @@ Please take it for a spin and post your feedback on the issue tracker.
 
 Below are different ways to run Clariform, most assuming [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/) and up running.
 
-## Quick Start
+## Usage
 
 [Docker](https://www.docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running.
+
+### Quick Start
 
 Clariform can be run from a prebuilt container image distributed as a github package:
 
@@ -48,19 +50,9 @@ $ docker run -v `pwd`:/home clariform`
 ```
 
 This will traverse all Clarity contract files (".clar") in the working directory and either
-output an autocorrected indented version, or report a syntax error. 
+output an autocorrected indented version, or report a syntax error.
 
-Filenames and directories can be explicitly specified as arguments:
-
-```
-$ docker run -v `pwd`:/home clariform *.clar
-```
-
-To disable autocorrect and validate correct Clarity syntax, add a `--strict` flag:
-
-```
-$ docker run -v `pwd`:/home clariform --strict
-```
+### Create Shortcut
 
 Tips: Create a shortcut for the `clariform` command. On Mac/Unix this may be 
 accomplished by creating an executable script, or just an alias: 
@@ -76,10 +68,25 @@ by executing:
 $ clariform *.clar
 ```
 
-The rest of this section assumes a `clariform` alias. If not, use this in place 
-of the clariform command below: `docker run -v ``pwd``:/home clariform` 
+The rest of this section assumes there is a `clariform` alias. 
+If not, use this in place of the clariform command below: 
+`docker run -v ``pwd``:/home clariform` 
 
-### Formatting
+### Select Files 
+
+Filenames and directories can be explicitly specified as arguments:
+
+```
+$ docker run -v `pwd`:/home clariform *.clar
+```
+
+To disable autocorrect and validate correct Clarity syntax, add a `--strict` flag:
+
+```
+$ docker run -v `pwd`:/home clariform --strict
+```
+
+### Format Output
 
 The output formatting can be specified with the `--format` option:
 
