@@ -11,10 +11,18 @@
    [clariform.ast.serialize :as serialize]
    [clariform.ast.parser :as parser]))
 
+(defn infer-indent [code]
+  (-> (.indentMode parinfer code #js {:cursorLine 0 :cursorX 0})
+      (js->clj :keywordize-keys true)
+      :text))
+
 (defn infer-parens [code]
   (-> (.indentMode parinfer code #js {:cursorLine 0 :cursorX 0})
       (js->clj :keywordize-keys true)
       :text))
+
+(defn infer-normalize [code]
+  (-> code infer-indent infer-parens))
 
 (defn parse-code [code & [strict]]
   (let [parse (if strict parser/parse-strict parser/parse-robust)]
@@ -23,16 +31,14 @@
          (#(add-between-to-metadata % code)))))
 
 (defn indent-code [code]
-  (let [{:keys [text success]} (infer-parens code)]
-    (if success
-      (->> (map string/split-lines [text code])
-           (apply map vector)
-           (remove (fn [[indented-line code-line]]
-                     (and (string/blank? indented-line)
-                          (not (string/blank? code-line)))))
-           (map first)
-           (clojure.string/join "\n"))           
-      (throw (ex-info "Misformed parens" {})))))
+  (let [text (infer-parens code)]
+    (->> (map string/split-lines [text code])
+         (apply map vector)
+         (remove (fn [[indented-line code-line]]
+                   (and (string/blank? indented-line)
+                        (not (string/blank? code-line)))))
+         (map first)
+         (clojure.string/join "\n"))))
 
 (defn format-retain [ast code]
   (serialize/format-retain ast))

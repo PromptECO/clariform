@@ -6,6 +6,8 @@
    ["parinfer" :as parinfer]
    [cljs-node-io.core :as io 
     :refer [slurp]]
+   [cljs-node-io.file :as file
+    :refer [File]]
    [instaparse.core :as insta
     :refer-macros [defparser]]
    [clariform.ast.serialize :as serialize]
@@ -13,9 +15,23 @@
    [clariform.format :as format
     :refer [format-code]]))
 
+(defn file-path [file]
+  (.getPath ^File file))
+
+(defn printerr [e]
+  (binding [*print-fn* *print-err-fn*]
+    (println e)))
+
 (defn exit [status msg]
-  (println msg)
+  (printerr msg)
   (.exit js/process status))
+
+(defn contracts-seq [& [path]]
+  (->> (io/file-seq (or path "."))
+       (filter #(.isFile %))
+       (filter #(or (= (file-path %) path)
+                    (= (file-path %) ".clar")))
+       identity))
 
 (defn parse-strict! [s]
   (let [ast (parser/parse-strict s)]
@@ -64,16 +80,22 @@
       (-> (slurp path)
           (format-code options)
           (print)))
-    :else 
-    (doseq [path arguments]
-      (if (:verbose options)
-        (println path))
-      (let [code (slurp path)
-            ast (parser/parse-strict code)]
-        (if (insta/failure? ast)
-          (binding [*print-fn* *print-err-fn*]
-            (println ast))
-          (print (format/indent-code code)))))))
+    :else
+    (let [files (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
+      (doseq [path files]
+        (if (or (:verbose options)
+                (some? (next files)))
+          (println (file-path path)))
+        (let [code (slurp path)
+              ast (parser/parse-strict code)]
+          (if (insta/failure? ast)
+            (let [failure (insta/get-failure ast)]
+              (printerr failure))
+            (try
+              (print (format/indent-code code))
+              (catch ExceptionInfo e
+                (printerr (ex-message e))
+                (printerr (ex-data e))))))))))
 
 (defonce command (atom nil))
 
@@ -84,9 +106,8 @@
     (reset! command opts)))
 
 (defn ^:dev/before-load reload! []
-  (println "# RELOADING SCRIPT"))
+  (println "# RELOADING SCRIPT" @command))
 
 (defn ^:dev/after-load activate! []
-  (println "# Executing command")
+  (println "# Executing command" @command)
   (execute-command @command))
-
