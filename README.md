@@ -31,7 +31,7 @@ $ `docker run ghcr.io/njordhov/clariform:main --help`
 
 For convenience, the prebuilt image can be preloaded and named:
 
-$ `docker create --name clariform ghcr.io/njordhov/clariform:main`  
+$ `docker create --rm --name clariform ghcr.io/njordhov/clariform:main` 
 $ `docker run clariform --help`
 
 Docker will by default restrict filesystem access.
