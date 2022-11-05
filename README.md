@@ -31,17 +31,21 @@ Clariform can be run from a prebuilt container image distributed as a github pac
 $ docker run ghcr.io/njordhov/clariform:main --help
 ```
 
-The package is published at: https://github.com/njordhov/clariform/pkgs/container/clariform
-
 For convenience, the prebuilt image can be preloaded and named:
 
 ```
-$ docker create --rm --name clariform ghcr.io/njordhov/clariform:main 
+$ docker create --rm --name clariform ghcr.io/njordhov/clariform:main
+```
+
+Now you can run the preloaded container to execute clariform:
+
+```
 $ docker run clariform --help
 ```
 
 Docker will by default restrict filesystem access.
-[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to check the files in the current directory:
+[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to the files in the 
+current working directory:
 
 ```
 $ docker run -v `pwd`:/home clariform`
@@ -59,11 +63,10 @@ On Mac/Unix this may be accomplished by creating an executable script, or just a
 $ alias clariform="docker run -v \`pwd\`:/home clariform"
 ```
 
-With this alias, clariform can process contracts in the current working directory 
-by executing: 
+Using the shortcut:
 
 ```
-$ clariform *.clar
+$ clariform --help
 ```
 
 The rest of this section assumes there is a `clariform` alias. 
