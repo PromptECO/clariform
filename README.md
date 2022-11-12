@@ -48,7 +48,7 @@ Docker will by default restrict filesystem access.
 current working directory:
 
 ```
-$ docker run -v `pwd`:/home clariform`
+$ docker run -v `pwd`:/home clariform
 ```
 
 This will traverse all Clarity contract files (".clar") in the working directory and either

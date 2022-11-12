@@ -42,6 +42,10 @@ To generate an executable:
 
 $$ `npm run release`
 
+Execute the generated script:
+
+$ `node clariform.js --help`
+
 ## FINISH
 
 Detach from the container with a CTRL-p CTRL-q key sequence.

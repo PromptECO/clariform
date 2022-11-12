@@ -1,8 +1,6 @@
-## https://hub.docker.com/_/clojure https://github.com/Quantisan/docker-clojure
-
-## TODO: Consider using https://hub.docker.com/r/theasp/clojurescript-nodejs
-
-FROM clojure:latest
+FROM clojure
+## https://hub.docker.com/_/clojure 
+## https://github.com/Quantisan/docker-clojure
 
 RUN apt-get update  ## optional? 
 RUN apt-get install -y curl
