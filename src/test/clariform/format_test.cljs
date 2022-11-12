@@ -17,6 +17,10 @@
                          [:list [:symbol "inc"] [:list [:symbol "n"] [:symbol "int"]]] 
                          [:list [:symbol "+"] [:symbol "n"] [:int "1"]]]]])))
 
+(deftest remove-orphans-test
+  (is (= (format/remove-orphan-lines "(a)\n\n(b)" "(a\n)\n(b)")
+         "(a)\n(b)")))
+
 (defn process-retain [code]
   (-> (format/parse-code code)
       (format/format-retain)))

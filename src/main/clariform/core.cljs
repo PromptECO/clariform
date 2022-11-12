@@ -68,7 +68,6 @@
               (some? (next files)))
         (println (file-path path)))
       (let [code (slurp path)
-            code (if (:strict options) code (format/infer-normalize code))
             ast (format/parse-code code (:strict options))]
         (if (insta/failure? ast)
           (let [failure (insta/get-failure ast)]

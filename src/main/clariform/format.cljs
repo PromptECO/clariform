@@ -30,15 +30,19 @@
          (insta/add-line-and-column-info-to-metadata code)
          (#(add-between-to-metadata % code)))))
 
+(defn remove-orphan-lines [text code]
+  (->> (map string/split-lines [text code])
+       (apply map vector)
+       (remove (fn [[indented-line code-line]]
+                 (and (string/blank? indented-line)
+                      (not (string/blank? code-line)))))
+       (map first)
+       (clojure.string/join "\n")))
+
 (defn indent-code [code]
-  (let [text (infer-indent code)]
-    (->> (map string/split-lines [text code])
-         (apply map vector)
-         (remove (fn [[indented-line code-line]]
-                   (and (string/blank? indented-line)
-                        (not (string/blank? code-line)))))
-         (map first)
-         (clojure.string/join "\n"))))
+  (-> code
+      (infer-indent)
+      (remove-orphan-lines code)))
 
 (defn format-retain [ast]
   (serialize/format-retain ast))
