@@ -5,7 +5,7 @@ providing hot-loading of the recompiled clariform script.
 
 ## START WATCHER
 
-Start a watcher in the background recompiling the script whenever files are changed:
+Start a watcher in the background to recompile the script whenever files are changed:
 
 $ `docker-compose up -d watch`
 

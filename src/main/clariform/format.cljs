@@ -25,14 +25,13 @@
   (-> code infer-indent infer-parens))
 
 (defn parse-code [code & [strict]]
-  (let [parse (if strict parser/parse-strict parser/parse-robust)
-        code (if strict code (infer-normalize code))]
+  (let [parse (if strict parser/parse-strict parser/parse-robust)]
     (->> (parse code)
          (insta/add-line-and-column-info-to-metadata code)
          (#(add-between-to-metadata % code)))))
 
 (defn indent-code [code]
-  (let [text (infer-parens code)]
+  (let [text (infer-indent code)]
     (->> (map string/split-lines [text code])
          (apply map vector)
          (remove (fn [[indented-line code-line]]

@@ -99,10 +99,10 @@ The output formatting can be specified with the `--format` option:
 Examples:
 
 ```
-$ clariform --format=indent src/contract/basic.clar 
-$ clariform --format=retain src/contract/basic.clar   
-$ clariform --format=align src/contract/basic.clar  
-$ clariform --format=compact src/contract/basic.clar 
+$ clariform --format=indent src/test/clariform/malformed.clar
+$ clariform --format=retain src/test/clariform/malformed.clar   
+$ clariform --format=align src/test/clariform/malformed.clar  
+$ clariform --format=compact src/test/clariform/malformed.clar
 ```
 
 ## Usage Alternatives 

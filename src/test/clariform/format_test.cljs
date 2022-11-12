@@ -22,21 +22,28 @@
       (format/format-retain)))
 
 (defn process-align [code]
-  (-> (format/parse-code code)
+  (-> (format/infer-indent code) ;; fixing dangling parens
+      (format/parse-code)
       (format/format-align)))
 
 (defn process-indent [code]
   (-> (format/parse-code code)
       (format/format-indent)))
 
+(defn process-compact [code]
+  (-> (format/parse-code code)
+      (format/format-compact)))
+
 (deftest infer-parens-test
   (is (= (format/infer-parens "(hello")
          "(hello)"))
   (is (= (process-retain "(hello)")
          "(hello)"))
+  #_ ;; should not be default
   (is (= (process-retain "(hello")
          "(hello)")
       "Append missing endparen")
+  #_ ;; should not be default
   (is (= (process-retain "hello)")
          "hello")
       "Remove dangling endparen (is this preferable?)"))
@@ -84,8 +91,30 @@
                                                               [:list [:symbol "+"] [:symbol "n"] [:int "1"]]]] 
                           [:symbol "value"]]]]])
       "Parse robustly even if the indent is messed up")
+  (is (= (process-retain malformed-contract)
+         malformed-contract)
+      "Format as original")
+  (is (= (process-indent malformed-contract)
+         (str ";; Original is valid with correctly balanced parens\n"
+              ";; but having malformed layout and indentation.\n"
+              "(define-read-only (plus\n"
+              "                   (n int))\n"
+              " (let (\n"
+              "       (value (+ n 1)))\n"
+              "  value))"))
+      "Format with indentation (should indent two spaces and remove whitespace except comments after open parens)")
   (is (= (process-align malformed-contract)
-         (str "(define-read-only (plus\n(n int))\n\n"
-              "(let (\n(value (+ n 1)))\n\nvalue))\n\n"
-              ";; EOF\n"))
-      "Should eliminate unnecessary newlines (doesn't yet)"))
+         (str ";; Original is valid with correctly balanced parens\n"
+              ";; but having malformed layout and indentation.\n"
+              "(define-read-only (plus\n"
+              "(n int))\n\n"
+              "(let (\n"
+              "(value (+ n 1)))\n\n"
+              "value))"))
+      "Format left-aligned (should also eliminate unnecessary newlines)")
+  (is (= (process-compact malformed-contract)
+         (str "(define-read-only (plus (n int)) "
+              "(let ("
+              "(value (+ n 1))) "
+              "value))"))
+      "Format with each toplevel form on a single line and minimized whitespace"))

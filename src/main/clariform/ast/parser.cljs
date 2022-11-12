@@ -26,7 +26,8 @@
 ;; ROBUST PARSER
 
 ;; Missing end brackets should always be a failure for compatibility with parinfer / paren-soup
-;; Avoid using "ordered choice" in repetition as it lead to ambiguities (possible a bug in instaparse)
+;; For the grammar, avoid using "ordered choice" in repetition 
+;; as it leads to ambiguities (possible a bug in instaparse)
 
 (def robust-grammar (rc/inline "../../clarity/grammar/robust.ebnf"))
 
@@ -38,5 +39,5 @@
    "string = UNICODE? <DQUOTE> #'(?:[^\"\\\\]|\\\\.)*' <DQUOTE>\n"))
 
 (defn parse-robust [code]
-  (insta/parse robust-parser code :total true))
+  (insta/parse robust-parser (trailing-newline code) :total true))
 
