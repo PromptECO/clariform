@@ -16,7 +16,8 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
     branches: [ "main" ]
-    tags: [ 'v*.*.*' ]
+    # tags: [ 'v*.*.*' ]
+    tags: [ "latest" ]
 
 env:
   # Use docker.io for Docker Hub if empty
