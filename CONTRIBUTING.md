@@ -26,7 +26,7 @@ a little for the watcher to complete launching, then try again running the scrip
 
 Edit and save any project file to trigger recompilation and execution of script.
 
-$ `docker-compose run script --format src/test/clariform/basic.clar`
+$ `docker-compose run script --format=indent src/test/clariform/basic.clar`
 
 $ `docker-compose run script --check src/test/clariform/invalid.clar`
 
@@ -36,13 +36,13 @@ Exit from the execution loop with CTRL-c
 
 To run unit testing, execute in the development shell:
 
-$$ `npm run test`
+$$ `docker compose run test`
 
 ## GENERATE EXECUTABLE
 
 To generate an executable:
 
-$$ `npm run release`
+$$ `docker compose run release`
 
 Execute the generated script:
 

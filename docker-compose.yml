@@ -69,6 +69,14 @@ services:
       - default
     entrypoint: ["npx", "shadow-cljs", "compile", "test"]
     
+  release:  
+    build: .
+    working_dir: /home
+    volumes:
+      - .:/home
+      - m2:/root/.m2
+    entrypoint: "npm run release"
+    
   repl:
     build: .
     working_dir: /home

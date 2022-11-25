@@ -71,10 +71,15 @@ $ clariform --help
 ```
 
 The rest of this section assumes there is a `clariform` alias. 
-If not, use this in place of the clariform command below: 
+If not, use this in place of "clariform":
+ 
 `docker run -v ``pwd``:/home clariform` 
 
-### Select Files 
+### Select Files
+
+```
+$ clariform
+```
 
 Filenames and directories can be explicitly specified as arguments:
 
@@ -92,10 +97,10 @@ $ clariform --strict
 
 The output formatting can be specified with the `--format` option:
 
-* `indent`: Visualize the structure of the expressions in the code for readability.
-* `retain`: Keeps the whitespace similar as in the source.
+* `indent`: Indent the code for readability while removing other insignificant whitespace.
+* `retain`: Keeps the whitespace similar as in the source while balancing dangling end parens.
 * `align`: Remove whitespace from the start of every line (uses less space; can be rehydrated with indent).
-* `compact`: Minimize whitespace so each toplevel form is on a single line (useful for code meant to be evaluated by software rather than read by humans). 
+* `compact`: Collapse each toplevel form into on a single line (useful for code meant to be evaluated by software rather than read by humans). 
 
 Examples:
 
