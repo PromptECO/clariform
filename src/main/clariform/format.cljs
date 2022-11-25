@@ -12,9 +12,11 @@
    [clariform.ast.parser :as parser]))
 
 (defn infer-indent [code]
-  (-> (.parenMode parinfer code #js {:cursorLine 0 :cursorX 0})
-      (js->clj :keywordize-keys true)
-      :text))
+  (let [result (-> (.parenMode parinfer code #js{:cursorLine 0 :cursorX 0})
+                   (js->clj :keywordize-keys true))]
+    (when-some [error (:error result)]
+      (throw (ex-info "Indent failed" (js->clj error) :parinfer)))
+    (:text result)))
 
 (defn infer-parens [code]
   (-> (.indentMode parinfer code #js {:cursorLine 0 :cursorX 0})
@@ -30,19 +32,43 @@
          (insta/add-line-and-column-info-to-metadata code)
          (#(add-between-to-metadata % code)))))
 
-(defn remove-orphan-lines [text code]
-  (->> (map string/split-lines [text code])
-       (apply map vector)
-       (remove (fn [[indented-line code-line]]
-                 (and (string/blank? indented-line)
-                      (not (string/blank? code-line)))))
-       (map first)
-       (clojure.string/join "\n")))
+(defn remove-orphan-space [indented original & [{:keys [lint] :as options}]]
+  "Collapse whitespace left from inferring indentation"
+  (let [linted (if (some? indented)
+                (->> (map string/split-lines [indented original])
+                     (apply map vector)
+                     (remove (fn [[indented-line code-line]]
+                               (and (string/blank? indented-line)
+                                    (not (string/blank? code-line)))))))
+        collapsed (if (some? linted)
+                    (loop [out []
+                           source linted]
+                      (if (nil? source)
+                        out
+                        (let [[[line1 original1] & more1] source]
+                          (let [[[line2 original2] & more2] more1]
+                            (cond
+                              (and (or (get lint :hanging-open)
+                                       (not= line2 original2))
+                                   (#{"(" "{" "["} (last (string/trimr line1)))    
+                                   (<= (count (string/trimr line1)) 
+                                       (- (count line2) 
+                                          (count (string/triml line2)))))
+                              (recur 
+                                (conj out (str line1 (subs line2 (count line1))))
+                                more2)
+                              :else
+                              (recur 
+                                (conj out line1)
+                                more1)))))))]
+    (->> collapsed
+        (string/join "\n")
+        (string/triml))))
 
 (defn indent-code [code]
-  (-> code
-      (infer-indent)
-      (remove-orphan-lines code)))
+  (some-> code
+          (infer-indent)
+          (remove-orphan-space code {:lint true})))
 
 (defn format-retain [ast]
   (serialize/format-retain ast))

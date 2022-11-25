@@ -18,7 +18,7 @@
                          [:list [:symbol "+"] [:symbol "n"] [:int "1"]]]]])))
 
 (deftest remove-orphans-test
-  (is (= (format/remove-orphan-lines "(a)\n\n(b)" "(a\n)\n(b)")
+  (is (= (format/remove-orphan-space "(a)\n\n(b)" "(a\n)\n(b)")
          "(a)\n(b)")))
 
 (defn process-retain [code]
@@ -103,8 +103,7 @@
               ";; but having malformed layout and indentation.\n"
               "(define-read-only (plus\n"
               "                   (n int))\n"
-              " (let (\n"
-              "       (value (+ n 1)))\n"
+              " (let ((value (+ n 1)))\n"
               "  value))"))
       "Format with indentation (should indent two spaces and remove whitespace except comments after open parens)")
   (is (= (process-align malformed-contract)

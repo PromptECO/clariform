@@ -9,7 +9,7 @@ Start a watcher in the background to recompile the script whenever files are cha
 
 $ `docker-compose up -d watch`
 
-Open a dashboard for the watcher from a web browser (if at first you fail, try again):
+Open a dashboard for the watcher from a web browser (if at first you fail, wait and try again):
 
 $ `open http://localhost:9630/dashboard`
 
@@ -29,6 +29,8 @@ Edit and save any project file to trigger recompilation and execution of script.
 $ `docker-compose run script --format src/test/clariform/basic.clar`
 
 $ `docker-compose run script --check src/test/clariform/invalid.clar`
+
+Exit from the execution loop with CTRL-c
 
 ## UNIT TESTING 
 

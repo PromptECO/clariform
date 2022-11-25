@@ -16,7 +16,7 @@ services:
     build: .
     working_dir: /home
     volumes:
-      - .:/home
+      - $PWD:/home
       - m2:/root/.m2
     entrypoint: /bin/bash
   
