@@ -263,6 +263,10 @@
 (defmethod format-form :identifier [form options]
    (token/form->str form))
 
+(defmethod format-form :skip [form options]
+  ;; Ignoring skipped forms for robustness
+  "")
+
 (defmethod format-form :toplevel [form options]
   (format-separated-items :toplevel (token/content form) options))
 

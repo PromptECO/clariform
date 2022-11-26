@@ -1,6 +1,7 @@
 (ns clariform.core
   (:require 
    [clojure.tools.cli :refer [parse-opts]]
+   [cljs.pprint :as pprint]
    [clojure.string :as string]
    [shadow.resource :as rc]
    ["parinfer" :as parinfer]
@@ -51,24 +52,22 @@
 
 (defn check-all [{:keys [arguments options summary errors] :as params}]
   (when (not-empty arguments)
+    (if (:verbose options)
+      (println "CHECKING: " arguments))
     (doseq [path arguments]
       (if-let [err (check-file path options)]
-        (do
-          (binding [*print-fn* *print-err-fn*]
-            (println err))
-          (exit 1 (pr-str err)))
-        (if (:verbose options)
-          (println path))))))
+        (if (:debug options)
+          (printerr err)
+          (exit 1 (pr-str err)))))))
 
 (defn format-all [{:keys [arguments options summary errors] :as opts}]
-  (let [files (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))
-        options (update options :format (fnil identity "indent"))]
+  (let [files (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
     (when (:debug options)
-      (println "DEBUG:" options))
-    (doseq [path files]
-      (if (or (:verbose options)
-              (some? (next files)))
-        (println (file-path path)))
+      (println "FORMAT: " files))
+    (doseq [[path & [more]] (partition-all 2 1 files)]
+      (when (next files)
+        (pprint/fresh-line)
+        (println ";; " (file-path path)))
       (let [code (slurp path)
             ast (format/parse-code code (:strict options))]
         (if (insta/failure? ast)
@@ -78,13 +77,19 @@
             (print (format-code ast options))
             (catch ExceptionInfo e
               (printerr (ex-message e))
-              (printerr (ex-data e)))))))))
+              (printerr (ex-data e))))))
+      (when (some? more)
+        (pprint/fresh-line)
+        (println)))))
 
 (def cli-options
   [[nil "--version"]
    ["-h" "--help"]
    [nil "--check" "Exit with error on invalid code, supressing output"]
-   [nil "--format FORMAT" "Output format"]
+   [nil "--format FORMAT" "Output format"
+    :default "indent"
+    :validate [#{"indent" "align" "compact" "retain"} 
+               "Must be one of 'indent', 'retain', 'align' or 'compact'"]]
    [nil "--strict" "Expect strict Clarity syntax"]
    [nil "--verbose"]
    [nil "--debug"]])
@@ -113,12 +118,14 @@
 (defn main [& args]
   (let [{:keys [arguments options summary errors] :as opts}
         (parse-opts args cli-options)]
-    (execute-command opts)
+    (binding [*out* (pprint/get-pretty-writer *out*)]
+      (execute-command opts))
     (reset! command opts)))
 
 (defn ^:dev/before-load reload! []
-  (println "# RELOADING SCRIPT" @command))
+  #_(println "# RELOADING SCRIPT" @command))
 
 (defn ^:dev/after-load activate! []
-  (println "# Executing command:" @command)
-  (execute-command @command))
+  (binding [*out* (pprint/get-pretty-writer *out*)]
+    (println "\n-----\nExecuting command:\n" @command "\n>>>>>")
+    (execute-command @command)))
