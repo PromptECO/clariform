@@ -6,7 +6,7 @@
    [clojure.string :as string]
    [shadow.resource :as rc]
    ["parinfer" :as parinfer]
-   [cljs-node-io.core :as io 
+   [cljs-node-io.core
     :refer [slurp]]
    [cljs-node-io.file :as file
     :refer [File]]
@@ -15,15 +15,10 @@
    [clariform.ast.serialize :as serialize]
    [clariform.ast.parser :as parser]
    [clariform.format :as format
-    :refer [format-code]]))
+    :refer [format-code]]
+   [clariform.io :as io]))
 
 (def version-string "0.0.9")
-
-(defn file-path [file]
-  (.getPath ^File file))
-
-(defn file-ext [file]
-  (.getExt ^File file))
 
 (defn printerr [e]
   (binding [*print-fn* *print-err-fn*]
@@ -32,12 +27,6 @@
 (defn exit [status msg]
   (printerr msg)
   (.exit js/process status))
-
-(defn contracts-seq [& [path]]
-  (->> (io/file-seq (or path "."))
-       (filter #(.isFile %))
-       (filter #(or (= (file-path %) path)
-                    (= (file-ext %) ".clar")))))
 
 (defn parse-strict! [s]
   (let [ast (parser/parse-strict s)]
@@ -52,23 +41,26 @@
       (insta/get-failure ast))))
 
 (defn check-all [{:keys [arguments options summary errors] :as params}]
-  (let [contracts (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
-    (doseq [path (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
+  (let [contracts (if (empty? arguments) (io/contracts-seq) (mapcat io/contracts-seq arguments))]
+    (doseq [path (if (empty? arguments) (io/contracts-seq) (mapcat io/contracts-seq arguments))]
       (when (:debug options)
-        (println "CHECKING:" (file-path path)))
-      (when-let [err (check-file (file-path path) options)]
+        (println "CHECKING:" (io/file-path path)))
+      (when-let [err (check-file (io/file-path path) options)]
         (if (:debug options)
           (printerr err)
           (exit 1 (pr-str err)))))))
 
 (defn format-all [{:keys [arguments options summary errors] :as opts}]
-  (let [contracts (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
+  (let [contracts (if (empty? arguments) (io/contracts-seq) (mapcat io/contracts-seq arguments))]
+    (println "ARGUMENTS:" arguments)
+    (println "RESOLVE:" (map io/contracts-seq arguments))
+    (println "CONTRACTS:" contracts)
     (doseq [[path & [more]] (partition-all 2 1 contracts)]
       (when (:debug options)
-        (println "FORMAT: " (file-path path)))
+        (println "FORMAT: " (io/file-path path)))
       (when (next contracts)
         (pprint/fresh-line)
-        (println ";;" (file-path path)))
+        (println ";;" (io/file-path path)))
       (let [code (slurp path)
             ast (format/parse-code code (:strict options))]
         (if (insta/failure? ast)
