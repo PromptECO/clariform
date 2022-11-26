@@ -36,7 +36,7 @@
         (recur 
           (subs s 1)
           (conj result (first s)))
-        (let [seg (first (re-seq #"[.]*[\\n]?" s))]
+        (let [seg (first (re-seq #"[^\\n]*[\\n]?" s))]
           (recur 
             (subs s (max 1 (count seg)))
             (conj result seg)))))))
@@ -45,9 +45,13 @@
   "Trim toplevel gap(s) down to max two newlines and no invisible spaces"
   (string/replace gap #"\n[\s]+\n" "\n\n"))
 
+(defn gap-lines [gap]
+  ;; split-lines ignores trailing newlines
+  (string/split gap #"\r?\n" -1))
+
 (defn trim-lines [gap]
   "Remove blanks before newlines"
-  (let [lines (string/split gap #"\r?\n" -1)] ;; split-lines ignores trailing newlines
+  (let [lines (gap-lines gap)] 
     (string/join "\n"
       (concat (some->> 
                 (butlast lines)
@@ -87,15 +91,19 @@
         :else (str ": " gap))
       (:record) 
       (cond
-        (nil? front)
+        (nil? front) 
         (->> (spacing-segments gap)
              (remove (partial = ","))
              (apply str))
-        edge gap
+        (nil? back) 
+        gap 
         (empty? gap) ", "
-        (string/blank? gap) (str "," gap)
-        (= gap ",") ", "
-        (string/starts-with? gap ",") gap
+        (string/blank? gap) 
+        (str "," gap)
+        (= gap ",") 
+        ", "
+        (string/starts-with? gap ",") 
+        gap
         :else (str ", " gap))
       (do (timbre/warn "Cannot retain spacing for:" mode)
         ""))))
@@ -156,26 +164,55 @@
 (defn format-around [form options]
   (format-form form options))
 
-(defn format-separated-form [spacing [front back] options]
-  "Prefix a form with approproate separation"
-  (str
-    (spacing front back)
-    (if (some? back)
-      (format back options))))
+(defn gap-offset [gap offset]
+  "Returns updated horizontal offset minding the gap between forms"
+  ;; TODO optimize by avoding splitting lines?
+  (let [n (and gap (string/last-index-of gap \newline))]
+    (if n
+      (- (count gap) n 1)
+      (+ offset (count gap)))))
 
-(defn format-separated-items [mode forms & [{:keys [layout] :as options}]]
+(defn format-separated-form [spacing [front back] {:keys [layout offset tab] :as options}]
+  "Prefix a form with appropriate separation"
+  (let [gap (spacing front back)
+        offset (gap-offset gap offset)
+        options (assoc options :offset offset)]
+    (if (some? back)
+      (str gap (format back options))
+      (if (= layout "retain")
+        (if-let [n (and gap (string/last-index-of gap \newline))]
+          (apply str (subs gap 0 (inc n)) 
+                     (repeat tab \space))
+          gap)
+        gap))))
+
+(defn format-separated-items [mode forms & [{:keys [layout tab offset] :as options}]]
   {:post [string?]}
-  ;; ensures required separators}
+  "Separate the items with whitespace consistent with the expected layout"
   (let [spacing (-> (case layout
                       ("retain") retain-spacing
                       ("align") align-spacing
                       ("compact") compact-spacing)
                     (partial mode))]
-    (apply str 
-      (mapcat 
-       (partial format-separated-form spacing)
-       (partition-all 2 1 (list* nil forms))
-       (repeat options)))))
+    (case layout
+      ("retain")
+      (loop [offset (or offset 0)
+             result []
+             pairs (partition-all 2 1 (list* nil forms))]          
+        (if (empty? pairs)
+          (apply str result)
+          (let [segment (format-separated-form spacing (first pairs) 
+                                 (assoc options :offset offset))]
+            (recur
+              (gap-offset segment offset)
+              (conj result segment)                                    
+              (rest pairs)))))
+      ("align" "compact")
+      (apply str 
+        (mapcat 
+         (partial format-separated-form spacing)
+         (partition-all 2 1 (list* nil forms))
+         (repeat options))))))
 
 (defmethod format-form :default [form options]
    (pr-str form))
@@ -191,16 +228,20 @@
    (apply str "0x" (token/content form)))
   
 (defmethod format-form :list [form options]
-  (str "(" 
+  (str "("
     (format-separated-items 
      :list 
      (token/content form)
-     options)
-    ")")) 
-
+     (assoc options :tab (get options :offset 0)
+                    :offset (inc (get options :offset 0))))
+    ")"))
+ 
 (defmethod format-form :record [form options]
   (str "{" 
-    (format-separated-items :record (token/content form) options)
+    (format-separated-items :record 
+                            (token/content form)
+                            (assoc options :tab (get options :offset 0)
+                                           :offset (inc (get options :offset 0))))
    "}"))
 
 (defmethod format-form :prop [form options] 
@@ -255,7 +296,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn format-retain [ast]
-  (format-form ast {:layout "retain"}))
+  (format-form ast {:layout "retain" :tab 0}))
 
 (defn format-align [ast]
   (format-form ast {:layout "align"}))

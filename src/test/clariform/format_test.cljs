@@ -96,8 +96,18 @@
                           [:symbol "value"]]]]])
       "Parse robustly even if the indent is messed up")
   (is (= (process-retain malformed-contract)
-         malformed-contract)
-      "Format as original")
+         (str ";; Original is valid with correctly balanced parens\n"
+              ";; but having malformed layout and indentation.\n"
+              "(define-read-only (plus\n"
+              "                  (n int)\n"
+              "                  )\n"
+              "  (let (\n"
+              "    (value (+ n 1))\n"
+              "       )\n"
+              "    value\n"
+              "  )\n"
+              ")"))
+      "Format as original but with end parens adjusted to line up")
   (is (= (process-indent malformed-contract)
          (str ";; Original is valid with correctly balanced parens\n"
               ";; but having malformed layout and indentation.\n"

@@ -189,15 +189,12 @@
   (let [[start-index end-index] (insta/span token)]
     (fn [start end]
       {:pre [(integer? start) (integer? end) <= start end]} 
-      ; make the separator just right...
       (let [opening (= start start-index)
             closing (= end end-index)
             edge (or opening closing)
             sep (subs code (if opening (inc start) start)
                            (if closing (dec end) end))]
-        (if (or (and edge (empty? sep))
-                (not edge))
-          sep)))))
+        sep))))
 
 (defmethod add-betweens :record [token code]
   (let [separation (record-separation-fn token code)]                                                      
