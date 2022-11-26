@@ -15,6 +15,8 @@
    [clariform.format :as format
     :refer [format-code]]))
 
+(def version-string "0.0.7")
+
 (defn file-path [file]
   (.getPath ^File file))
 
@@ -100,7 +102,7 @@
       (println "Options:")
       (println summary))
     (some? (:version options))
-    (prn "0.0.4")
+    (prn version-string)
     (some? (:check options))
     (check-all params)
     :else
