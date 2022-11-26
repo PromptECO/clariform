@@ -47,7 +47,7 @@
   (let [code (slurp path) 
         ast (parser/parse-strict code)]
     (if (insta/failure? ast)
-      ast)))
+      (insta/get-failure ast))))
 
 (defn check-all [{:keys [arguments options summary errors] :as params}]
   (when (not-empty arguments)

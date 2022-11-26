@@ -7,7 +7,7 @@ inputs:
   path:
     description: 'Filename'
     required: true
-    default: 'src/test/clariform/basic.clar'
+    default: 'contracts/*.clar'
 outputs:
   time:
     description: 'The time of the last run'
