@@ -1,7 +1,8 @@
 (ns clariform.core
   (:require 
    [clojure.tools.cli :refer [parse-opts]]
-   [cljs.pprint :as pprint]
+   [cljs.pprint :as pprint
+    :refer [pprint]]
    [clojure.string :as string]
    [shadow.resource :as rc]
    ["parinfer" :as parinfer]
@@ -51,23 +52,23 @@
       (insta/get-failure ast))))
 
 (defn check-all [{:keys [arguments options summary errors] :as params}]
-  (when (not-empty arguments)
-    (if (:verbose options)
-      (println "CHECKING: " arguments))
-    (doseq [path arguments]
-      (if-let [err (check-file path options)]
+  (let [contracts (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
+    (doseq [path (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
+      (when (:debug options)
+        (println "CHECKING:" (file-path path)))
+      (when-let [err (check-file (file-path path) options)]
         (if (:debug options)
           (printerr err)
           (exit 1 (pr-str err)))))))
 
 (defn format-all [{:keys [arguments options summary errors] :as opts}]
-  (let [files (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
-    (when (:debug options)
-      (println "FORMAT: " files))
-    (doseq [[path & [more]] (partition-all 2 1 files)]
-      (when (next files)
+  (let [contracts (if (empty? arguments) (contracts-seq) (mapcat contracts-seq arguments))]
+    (doseq [[path & [more]] (partition-all 2 1 contracts)]
+      (when (:debug options)
+        (println "FORMAT: " (file-path path)))
+      (when (next contracts)
         (pprint/fresh-line)
-        (println ";; " (file-path path)))
+        (println ";;" (file-path path)))
       (let [code (slurp path)
             ast (format/parse-code code (:strict options))]
         (if (insta/failure? ast)
@@ -96,7 +97,8 @@
 
 (defn execute-command [{:keys [arguments options summary errors] :as params}]
   (when (:debug options)
-    (println "EXECUTE:" params))
+    (println "EXECUTE:")
+    (pprint params))
   (cond
     (not-empty errors)
     (exit 1 (clojure.string/join "\n" errors))
