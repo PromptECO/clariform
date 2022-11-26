@@ -14,7 +14,7 @@ This early version has limited functionality, but it's a start:
 - [ ] Process contract from link
 - [ ] Github action to validate Clarity contracts in repository
 
-[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/)
+[![GitHub release](https://img.shields.io/github/release/njordhov/clariform.js.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/)
 ![Version](https://img.shields.io/badge/version-0.0.9-blue)
 [![Clariform](https://github.com/njordhov/clariform/actions/workflows/main.yml/badge.svg)](https://github.com/njordhov/clariform/actions/workflows/main.yml)
 
