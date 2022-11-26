@@ -61,7 +61,7 @@ to build a distribution and publish as the latest docker image:
 
 1. Update the distribution version in "package.json" and clariform.core
 2. Push the main branch
-3. In the github repo, open Action tab, select Docker workflow.
-4. Run workflow using the menu button trigger.
+3. In the github repo, open Releases (link on right side)
+4. Draft a new release (using button)
 
 
