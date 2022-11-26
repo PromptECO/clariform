@@ -1,6 +1,6 @@
 {
   "name": "clariform",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "private": true,
   "scripts": {
     "repl": "npx shadow-cljs node-repl",

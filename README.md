@@ -29,13 +29,22 @@ Before continuing, ensure [Docker](https://www.docker.com/) is [installed](https
 Clariform can be run from a prebuilt container image distributed as a github package:
 
 ```
-$ docker run ghcr.io/njordhov/clariform:main --help
+$ docker run ghcr.io/njordhov/clariform --help
 ```
 
-For convenience, the prebuilt image can be preloaded and named:
+[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to the files in the 
+current working directory and subdirectories like `contracts`:
 
 ```
-$ docker create --rm --name clariform ghcr.io/njordhov/clariform:main
+$ docker run -v `pwd`:/home ghcr.io/njordhov/clariform contracts/basic.clar
+```
+
+### Installation
+
+For convenience and expediency, the prebuilt image can be preloaded and named:
+
+```
+$ docker create --rm --name clariform ghcr.io/njordhov/clariform
 ```
 
 Now you can run the preloaded container to execute clariform:
@@ -44,7 +53,13 @@ Now you can run the preloaded container to execute clariform:
 $ docker run clariform --help
 ```
 
-Docker will by default restrict filesystem access.
+Verify you have the latest version:
+
+```
+$ docker run clariform --version
+```
+
+Docker will by default restrict filesystem access for security.
 [Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to the files in the 
 current working directory:
 
@@ -105,10 +120,10 @@ The output formatting can be specified with the `--format` option:
 Examples:
 
 ```
-$ clariform --format=indent src/test/clariform/malformed.clar
-$ clariform --format=retain src/test/clariform/malformed.clar   
-$ clariform --format=align src/test/clariform/malformed.clar  
-$ clariform --format=compact src/test/clariform/malformed.clar
+$ clariform --format=indent contracts/malformed.clar
+$ clariform --format=retain contracts/malformed.clar   
+$ clariform --format=align contracts/malformed.clar  
+$ clariform --format=compact contracts/malformed.clar
 ```
 
 ## Usage Alternatives 
@@ -135,7 +150,7 @@ Note that Docker by default restricts filesystem access, which benefits security
 [Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly allow access to the filesystem:
 
 ```
-$ docker run -v `pwd`:/home clariform src/test/clariform/malformed.clar
+$ docker run -v `pwd`:/home clariform contracts/malformed.clar
 ```
 
 As alternative to ``pwd`` use the absolute path of a directory containing Clarity files.
