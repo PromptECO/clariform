@@ -53,3 +53,10 @@ $ `node clariform.js --help`
 Detach from the container with a CTRL-p CTRL-q key sequence.
 
 Use the docker desktop or docker from the command line.
+
+## DISTRIBUTE 
+
+The github docker-publish workflow has a workflow dispatch event trigger 
+to build a distribution and publish as the latest docker image.
+
+
