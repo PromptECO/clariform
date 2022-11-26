@@ -22,21 +22,24 @@ Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
-Before continuing, ensure [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/) and up running.
+### Prerequisites
+
+[Docker](https://www.docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running.
 
 ### Quick Start
 
-Clariform can be run from a prebuilt container image distributed as a github package:
+Clariform can be run from a prebuilt docker container distributed as a 
+[github package](https://github.com/njordhov/clariform/pkgs/container/clariform):
 
 ```
-$ docker run ghcr.io/njordhov/clariform --help
+$ docker run ghcr.io/njordhov/clariform:latest --help
 ```
 
 [Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to the files in the 
 current working directory:
 
 ```
-$ docker run -v `pwd`:/home ghcr.io/njordhov/clariform contracts/basic.clar
+$ docker run -v `pwd`:/home ghcr.io/njordhov/clariform:latest contracts/basic.clar
 ```
 
 ### Installation
@@ -128,7 +131,7 @@ $ clariform --format=compact contracts/malformed.clar
 
 ## Usage Alternatives 
 
-Below are alternative ways to run Clariform, most assuming [Docker](https://www.docker.com/) is [installed](https://docs.docker.com/engine/install/) and up running.
+Below are alternative ways to run Clariform.
  
 ### Build from Repo
 
