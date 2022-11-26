@@ -25,7 +25,8 @@ Please take it for a spin and post your feedback on the issue tracker.
 
 ### Prerequisites
 
-[Docker](https://www.docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running.
+[![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://https://docker.com/)
+should be [installed](https://docs.docker.com/engine/install/) and up running.
 
 ### Quick Start
 
