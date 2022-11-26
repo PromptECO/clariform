@@ -15,7 +15,7 @@
    [clariform.format :as format
     :refer [format-code]]))
 
-(def version-string "0.0.8")
+(def version-string "0.0.9")
 
 (defn file-path [file]
   (.getPath ^File file))

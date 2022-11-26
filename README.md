@@ -88,6 +88,16 @@ Using the shortcut:
 $ clariform --help
 ```
 
+### Uninstall
+
+The local docker image can be removed when no longer needed or to reinstall: 
+
+```
+$ docker rmi ghcr.io/njordhov/clariform
+```
+
+## Features
+
 The rest of this section assumes there is a `clariform` alias. 
 If not, use this in place of "clariform":
  
