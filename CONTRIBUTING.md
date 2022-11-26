@@ -57,6 +57,11 @@ Use the docker desktop or docker from the command line.
 ## PUBLISH 
 
 The github docker-publish workflow has a workflow dispatch event trigger 
-to build a distribution and publish as the latest docker image.
+to build a distribution and publish as the latest docker image:
+
+1. Update the distribution version in "package.json" and clariform.core
+2. Push the main branch
+3. In the github repo, open Action tab, select Docker workflow.
+4. Run workflow using the menu button trigger.
 
 
