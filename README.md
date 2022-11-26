@@ -14,6 +14,7 @@ This early version has limited functionality, but it's a start:
 - [ ] Process contract from link
 - [ ] Github action to validate Clarity contracts in repository
 
+![version](https://img.shields.io/badge/version-0.0.8-blue)
 [![Clariform](https://github.com/njordhov/clariform/actions/workflows/main.yml/badge.svg)](https://github.com/njordhov/clariform/actions/workflows/main.yml)
 
 ## Usage
