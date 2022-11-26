@@ -2,7 +2,7 @@
 
 "Painless linting & formatting for Clarity."
 
-Finds and automatically fixes problems in Clarity code.
+Detects and automatically fixes problems in Clarity code.
 
 This early version has limited functionality, but it's a start:
 
@@ -33,7 +33,7 @@ $ docker run ghcr.io/njordhov/clariform --help
 ```
 
 [Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to the files in the 
-current working directory and subdirectories like `contracts`:
+current working directory:
 
 ```
 $ docker run -v `pwd`:/home ghcr.io/njordhov/clariform contracts/basic.clar
@@ -41,7 +41,7 @@ $ docker run -v `pwd`:/home ghcr.io/njordhov/clariform contracts/basic.clar
 
 ### Installation
 
-For convenience and expediency, the prebuilt image can be preloaded and named:
+For convenience and expediency, the prebuilt image can be installed and named:
 
 ```
 $ docker create --rm --name clariform ghcr.io/njordhov/clariform
