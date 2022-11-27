@@ -96,7 +96,6 @@
   (serialize/format-compact ast))
 
 (defn format-code [ast {:keys [format strict]}]
-  (println "=" format)
   (case format
     ("retain" nil)       
     (format-retain ast)

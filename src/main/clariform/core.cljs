@@ -58,7 +58,6 @@
             (pprint/fresh-line)
             (println ";;" (io/file-path locator)))
           (let [ast (format/parse-code text (:strict options))]
-            (println ast)
             (if (insta/failure? ast)
               (let [failure (insta/get-failure ast)]
                 (printerr failure))

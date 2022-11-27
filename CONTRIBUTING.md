@@ -68,6 +68,8 @@ to build a distribution and publish as the latest docker image:
 1. Update the distribution version in "package.json" and clariform.core
 2. Push the main branch
 3. In the github repo, open Releases (link on right side)
-4. Draft a new release (using button)
+4. Draft a new release (using button) with a version tag to be created on publish.
+5. A docker page for the tag is automatically generated in
+   https://github.com/njordhov/clariform/pkgs/container/clariform
 
 
