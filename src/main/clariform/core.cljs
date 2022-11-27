@@ -1,15 +1,14 @@
 (ns clariform.core
   (:require 
+   [cljs.core.async :as async
+    :refer [go go-loop]]
+   [cljs.core.async.interop :refer-macros [<p!]]
    [clojure.tools.cli :refer [parse-opts]]
    [cljs.pprint :as pprint
     :refer [pprint]]
    [clojure.string :as string]
    [shadow.resource :as rc]
    ["parinfer" :as parinfer]
-   [cljs-node-io.core
-    :refer [slurp]]
-   [cljs-node-io.file :as file
-    :refer [File]]
    [instaparse.core :as insta
     :refer-macros [defparser]]
    [clariform.ast.serialize :as serialize]
@@ -20,60 +19,57 @@
 
 (def version-string "0.0.9")
 
-(defn printerr [e]
+(defn printerr [& vals]
   (binding [*print-fn* *print-err-fn*]
-    (println e)))
+    (apply println vals)))
 
 (defn exit [status msg]
   (printerr msg)
   (.exit js/process status))
 
-(defn parse-strict! [s]
-  (let [ast (parser/parse-strict s)]
-    (if (insta/failure? ast)
-      (exit 1 (pr-str ast))
-      ast)))
-
-(defn check-file [path options]
-  (let [code (slurp path) 
-        ast (parser/parse-strict code)]
-    (if (insta/failure? ast)
-      (insta/get-failure ast))))
-
 (defn check-all [{:keys [arguments options summary errors] :as params}]
-  (let [contracts (if (empty? arguments) (io/contracts-seq) (mapcat io/contracts-seq arguments))]
-    (doseq [path (if (empty? arguments) (io/contracts-seq) (mapcat io/contracts-seq arguments))]
-      (when (:debug options)
-        (println "CHECKING:" (io/file-path path)))
-      (when-let [err (check-file (io/file-path path) options)]
-        (if (:debug options)
-          (printerr err)
-          (exit 1 (pr-str err)))))))
+  (let [resources (io/resources-seq arguments)
+        con-chan (io/contracts-chan resources)]
+    (go-loop []
+      (when-let [{:keys [locator error text] :as res} (<! con-chan)]
+        (if (some? error)
+          (if (:debug options)
+            (printerr (ex-message error))
+            (exit 1 (ex-message error)))
+          (let [ast (parser/parse-strict text)]
+            (when-let [err (if (insta/failure? ast)
+                             (insta/get-failure ast))]
+              (if (:debug options)
+                (printerr err)
+                (exit 1 (pr-str err)))))
+          (recur))))))  
 
 (defn format-all [{:keys [arguments options summary errors] :as opts}]
-  (let [contracts (if (empty? arguments) (io/contracts-seq) (mapcat io/contracts-seq arguments))]
-    (println "ARGUMENTS:" arguments)
-    (println "RESOLVE:" (map io/contracts-seq arguments))
-    (println "CONTRACTS:" contracts)
-    (doseq [[path & [more]] (partition-all 2 1 contracts)]
-      (when (:debug options)
-        (println "FORMAT: " (io/file-path path)))
-      (when (next contracts)
-        (pprint/fresh-line)
-        (println ";;" (io/file-path path)))
-      (let [code (slurp path)
-            ast (format/parse-code code (:strict options))]
-        (if (insta/failure? ast)
-          (let [failure (insta/get-failure ast)]
-            (printerr failure))
-          (try
-            (print (format-code ast options))
-            (catch ExceptionInfo e
-              (printerr (ex-message e))
-              (printerr (ex-data e))))))
-      (when (some? more)
-        (pprint/fresh-line)
-        (println)))))
+  (let [resources (io/resources-seq arguments)
+        multiple (some? (next resources))
+        con-chan (io/contracts-chan resources)]
+    (go-loop [{:keys [locator error text] :as res} (<! con-chan)]
+      (binding [*out* (pprint/get-pretty-writer *out*)]
+        (when (some? res)
+          (when error
+            (printerr (ex-message error))
+            (recur (<! con-chan)))
+          (when multiple
+            (pprint/fresh-line)
+            (println ";;" (io/file-path locator)))
+          (let [ast (format/parse-code text (:strict options))]
+            (if (insta/failure? ast)
+              (let [failure (insta/get-failure ast)]
+                (printerr failure))
+              (try
+                (print (format-code ast options))
+                (catch ExceptionInfo e
+                  (printerr (ex-message e))
+                  (printerr (ex-data e)))))
+            (pprint/fresh-line)
+            (when-some [more (<! con-chan)]
+              (println)
+              (recur more))))))))
 
 (def cli-options
   [[nil "--version"]
@@ -112,14 +108,12 @@
 (defn main [& args]
   (let [{:keys [arguments options summary errors] :as opts}
         (parse-opts args cli-options)]
-    (binding [*out* (pprint/get-pretty-writer *out*)]
-      (execute-command opts))
+    (execute-command opts)
     (reset! command opts)))
 
 (defn ^:dev/before-load reload! []
-  #_(println "# RELOADING SCRIPT" @command))
+  (println "\n# RELOADING SCRIPT"))
 
 (defn ^:dev/after-load activate! []
-  (binding [*out* (pprint/get-pretty-writer *out*)]
-    (println "\n-----\nExecuting command:\n" @command "\n>>>>>")
-    (execute-command @command)))
+  (println "\n-----\nExecuting command:\n" @command "\n>>>>>")
+  (execute-command @command))
