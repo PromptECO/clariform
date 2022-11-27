@@ -35,14 +35,20 @@ Clariform can be run from a prebuilt docker container distributed as a
 [github package](https://github.com/njordhov/clariform/pkgs/container/clariform):
 
 ```
-$ docker run ghcr.io/njordhov/clariform:latest --help
+$ docker run ghcr.io/njordhov/clariform --help
+```
+
+Clariform can lint a Clarity contract from a URL and format it to output:
+
+```
+$ docker run ghcr.io/njordhov/clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
 [Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to the files in the 
 current working directory:
 
 ```
-$ docker run -v `pwd`:/home ghcr.io/njordhov/clariform:latest contracts/basic.clar
+$ docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
 ```
 
 ### Installation
