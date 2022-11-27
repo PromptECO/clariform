@@ -17,7 +17,7 @@
     :refer [format-code]]
    [clariform.io :as io]))
 
-(def version-string "0.1.0")
+(def version-string "0.1.1")
 
 (defn printerr [& vals]
   (binding [*print-fn* *print-err-fn*]
