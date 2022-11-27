@@ -11,7 +11,7 @@ This early version has limited functionality, but it's a start:
 - [x] Normalize whitespace and decorative tokens.
 - [x] Expand record shorthand notation
 - [x] Custom formatting of the output code.
-- [ ] Process contract from url
+- [x] Process contract from url
 - [ ] Github action to validate Clarity contracts in repository
 
 [![GitHub release](https://img.shields.io/github/release/njordhov/clariform.svg)](https://GitHub.com/njordhov/clariform/releases/)
