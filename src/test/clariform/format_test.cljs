@@ -25,18 +25,24 @@
   (-> (format/parse-code code)
       (format/format-retain)))
 
-(defn process-align [code]
-  (-> (format/infer-indent code) ;; fixing dangling parens
-      (format/parse-code)
-      (format/format-align)))
-
 (defn process-indent [code]
   (-> (format/parse-code code)
       (format/format-indent)))
 
+(defn process-auto [code]
+  (-> (format/parse-code code)
+      (format/format-auto)))
+
+(defn process-align [code]
+  (-> (format/infer-indent code) ;; fixing dangling parens FIXME eliminate
+      (format/parse-code)
+      (format/format-align)))
+
 (defn process-compact [code]
   (-> (format/parse-code code)
       (format/format-compact)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftest infer-parens-test
   (is (= (format/infer-parens "(hello")
@@ -52,13 +58,23 @@
          "hello")
       "Remove dangling endparen (is this preferable?)"))
 
-(deftest infer-indent-test
-  (is (= (format/infer-indent "(XXX\nYYY)")
-         "(XXX\n YYY)")))
-
 (deftest format-retain-test
   (is (= (process-retain basic-contract)
          (string/trim basic-contract))))
+
+(deftest format-indent-test
+  (is (= (format/infer-indent "(XXX\nYYY)")
+         "(XXX\n YYY)"))
+  (is (= (format/infer-indent "(XXX\n   YYY)")
+         "(XXX\n   YYY)")
+      "No change when the nesting is valid"))
+
+(deftest format-auto-test
+  (is (= (process-auto "(XXX\nYYY)")
+         "(XXX\n YYY)"))
+  (is (= (process-auto "(XXX\n   YYY)")
+         "(XXX\n YYY)")
+      "Override original indentation"))
 
 (deftest format-align-test
   (is (= (-> (format/parse-code basic-contract)
@@ -109,6 +125,14 @@
               ")"))
       "Format as original but with end parens adjusted to line up")
   (is (= (process-indent malformed-contract)
+         (str ";; Original is valid with correctly balanced parens\n"
+              ";; but having malformed layout and indentation.\n"
+              "(define-read-only (plus\n"
+              "                   (n int))\n"
+              "  (let ((value (+ n 1)))\n"
+              "    value))"))
+      "Format with indentation (should indent two spaces and remove whitespace except comments after open parens)")
+  (is (= (process-auto malformed-contract)
          (str ";; Original is valid with correctly balanced parens\n"
               ";; but having malformed layout and indentation.\n"
               "(define-read-only (plus\n"

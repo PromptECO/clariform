@@ -58,11 +58,13 @@
             (pprint/fresh-line)
             (println ";;" (io/file-path locator)))
           (let [ast (format/parse-code text (:strict options))]
+            (println ast)
             (if (insta/failure? ast)
               (let [failure (insta/get-failure ast)]
                 (printerr failure))
               (try
-                (print (format-code ast options))
+                (let [formatted (format-code ast options)]
+                  (print formatted))
                 (catch ExceptionInfo e
                   (printerr (ex-message e))
                   (printerr (ex-data e)))))
@@ -77,8 +79,8 @@
    [nil "--check" "Exit with error on invalid code, supressing output"]
    [nil "--format FORMAT" "Output format"
     :default "indent"
-    :validate [#{"indent" "align" "compact" "retain"} 
-               "Must be one of 'indent', 'retain', 'align' or 'compact'"]]
+    :validate [#{"retain" "indent" "auto" "align" "compact"} 
+               "Must be one of 'retain', 'indent', 'auto', 'align' or 'compact'"]]
    [nil "--strict" "Expect strict Clarity syntax"]
    [nil "--verbose"]
    [nil "--debug"]])

@@ -70,26 +70,41 @@
           (infer-indent)
           (remove-orphan-space code {:lint true})))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; FORMATTING
+
 (defn format-retain [ast]
+  "Retain original indentation"
   (serialize/format-retain ast))
 
+(defn format-indent [ast]
+  "Closing parenthesis never dangles nor is to the left of its matching opening parenthesis"
+  (-> (format-retain ast)
+      indent-code))
+
 (defn format-align [ast]
+  "Left-align by removing all indentation"
   (serialize/format-align ast))
 
-(defn format-compact [ast]
-  (serialize/format-compact ast))
-
-(defn format-indent [ast]
+(defn format-auto [ast]
+  "Autoindent ignoring original indentation"
   (-> (format-align ast)
       indent-code))
 
+(defn format-compact [ast]
+  "Remove insignificant whitespace, placing each toplevel expression on a separate line"
+  (serialize/format-compact ast))
+
 (defn format-code [ast {:keys [format strict]}]
+  (println "=" format)
   (case format
-    "indent" 
-    (format-indent ast)
+    ("retain" nil)       
+    (format-retain ast)
+    "indent"
+    (format-indent ast)  
+    "auto" 
+    (format-auto ast)
     "align" 
     (format-align ast)
     "compact" 
-    (format-compact ast)
-    ("retain" nil) 
-    (format-retain ast)))
+    (format-compact ast)))
