@@ -145,8 +145,14 @@ Examples:
 
 ```
 clariform --format=indent contracts/malformed.clar
+```
+```
 clariform --format=retain contracts/malformed.clar   
+```
+```
 clariform --format=align contracts/malformed.clar  
+```
+```
 clariform --format=compact contracts/malformed.clar
 ```
 
