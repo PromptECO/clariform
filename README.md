@@ -151,15 +151,6 @@ clariform --format=adjust contracts/malformed.clar
 ```
 clariform --format=indent contracts/malformed.clar   
 ```
-```
-clariform --format=auto contracts/malformed.clar   
-```
-```
-clariform --format=align contracts/malformed.clar  
-```
-```
-clariform --format=compact contracts/malformed.clar
-```
 
 ## Usage Alternatives 
 
