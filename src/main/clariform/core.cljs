@@ -29,21 +29,26 @@
 
 (defn check-all [{:keys [arguments options summary errors] :as params}]
   (let [resources (io/resources-seq arguments)
+        multiple (some? (next resources))
         con-chan (io/contracts-chan resources)]
     (go-loop []
-      (when-let [{:keys [locator error text] :as res} (<! con-chan)]
-        (if (some? error)
-          (if (:debug options)
-            (printerr (ex-message error))
-            (exit 1 (ex-message error)))
-          (let [ast (parser/parse-strict text)]
-            (when-let [err (if (insta/failure? ast)
-                             (insta/get-failure ast))]
-              (if (:debug options)
-                (printerr err)
-                (exit 1 (pr-str err)))))
+      (binding [*out* (pprint/get-pretty-writer *out*)]
+        (when-let [{:keys [locator error text] :as res} (<! con-chan)]
+          (when multiple
+            (pprint/fresh-line)
+            (println (io/file-path locator)))
+          (if (some? error)
+            (if (:debug options)
+              (printerr (ex-message error))
+              (exit 1 (ex-message error)))
+            (let [ast (parser/parse-strict text)]
+              (when-let [err (if (insta/failure? ast)
+                               (insta/get-failure ast))]
+                (if (:debug options)
+                  (printerr err)
+                  (exit 1 (pr-str err))))))
           (recur))))))  
-
+ 
 (defn format-all [{:keys [arguments options summary errors] :as opts}]
   (let [resources (io/resources-seq arguments)
         multiple (some? (next resources))
