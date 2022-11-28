@@ -110,7 +110,9 @@ docker rmi ghcr.io/njordhov/clariform
 The rest of this section assumes there is a `clariform` alias. 
 If not, use this in place of "clariform":
  
-`docker run -v ``pwd``:/home clariform` 
+```
+docker run -v `pwd`:/home clariform
+``` 
 
 ### Select Files
 
@@ -144,10 +146,13 @@ The output formatting can be specified with the `--format` option:
 Examples:
 
 ```
-clariform --format=indent contracts/malformed.clar
+clariform --format=adjust contracts/malformed.clar   
 ```
 ```
-clariform --format=retain contracts/malformed.clar   
+clariform --format=indent contracts/malformed.clar   
+```
+```
+clariform --format=auto contracts/malformed.clar   
 ```
 ```
 clariform --format=align contracts/malformed.clar  
