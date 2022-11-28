@@ -25,7 +25,7 @@ Please take it for a spin and post your feedback on the issue tracker.
 
 Clariform is available as prebuilt docker image distributed as a 
 [github package](https://github.com/njordhov/clariform/pkgs/container/clariform).
-Docker can download and run the image for you. If you prefer to clone the repo 
+Docker will download and run the image for you. If you prefer to clone the repo 
 and build your own, see the instructions in [BUILD.md](BUILD.md).
 
 ### Prerequisites
@@ -94,12 +94,6 @@ Now you can run the preloaded container to execute clariform:
 docker run clariform --help
 ```
 
-Verify you have the latest version:
-
-```
-docker run clariform --version
-```
-
 Docker will by default restrict filesystem access for security.
 [Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to the files in the 
 current working directory:
@@ -132,8 +126,8 @@ The rest of this section assumes there is a `clariform` alias.
 If not, use this in place of "clariform":
  
 ```
-docker run -v `pwd`:/home clariform
-``` 
+docker run -v `pwd`:/home ghcr.io/njordhov/clariform
+```
 
 ### Select Files
 
@@ -151,6 +145,18 @@ clariform *.clar
 
 When the input contains multiple contracts, Clariform will concatenate 
 the contracts in formatted output, prefixing each with their source location as a comment.
+
+### Check Validity
+
+Clariform can check whether a contract is valid Clarity code. If invalid, Clarity 
+will report the error and exit. Use the `--check` flag to activate validation:
+
+```
+clariform --check "https://raw.githubusercontent.com/njordhov/clariform/main/src/test/invalid.clar"
+```
+
+There will be no output if the contract is valid. When checking multiple
+contracts it will output the name of each contract before validation.
 
 ### Format Output
 
@@ -181,7 +187,7 @@ To disable auto-correct and require valid Clarity syntax, add a `--strict` flag:
 clariform --strict "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
-For formatting with autocorrect, don't add a `--strict` flag.
+For autocorrected formatting, don't add a `--strict` flag.
 
 Clariform can insert required whitespace:
 

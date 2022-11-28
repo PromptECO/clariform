@@ -7,9 +7,9 @@
    [clariform.ast.parser :as parser]
    [clariform.format :as format]))
 
-(def basic-contract (rc/inline "./basic.clar")) 
+(def basic-contract (rc/inline "../basic.clar")) 
 
-(def malformed-contract (rc/inline "./malformed.clar"))
+(def malformed-contract (rc/inline "../malformed.clar"))
 
 (deftest parse-test
   (is (= (parser/parse-strict basic-contract)
