@@ -35,20 +35,20 @@ Clariform can be run from a prebuilt docker container distributed as a
 [github package](https://github.com/njordhov/clariform/pkgs/container/clariform):
 
 ```
-$ docker run ghcr.io/njordhov/clariform --help
+docker run ghcr.io/njordhov/clariform --help
 ```
 
 Clariform can lint a Clarity contract from a URL and format it to output:
 
 ```
-$ docker run ghcr.io/njordhov/clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
+docker run ghcr.io/njordhov/clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
 [Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to the files in the 
 current working directory:
 
 ```
-$ docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
+docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
 ```
 
 ### Installation
@@ -56,19 +56,19 @@ $ docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
 For convenience and expediency, the prebuilt image can be installed and named:
 
 ```
-$ docker create --rm --name clariform ghcr.io/njordhov/clariform
+docker create --rm --name clariform ghcr.io/njordhov/clariform
 ```
 
 Now you can run the preloaded container to execute clariform:
 
 ```
-$ docker run clariform --help
+docker run clariform --help
 ```
 
 Verify you have the latest version:
 
 ```
-$ docker run clariform --version
+docker run clariform --version
 ```
 
 Docker will by default restrict filesystem access for security.
@@ -76,7 +76,7 @@ Docker will by default restrict filesystem access for security.
 current working directory:
 
 ```
-$ docker run -v `pwd`:/home clariform
+docker run -v `pwd`:/home clariform
 ```
 
 This will traverse all Clarity contract files (".clar") in the working directory and either
@@ -88,13 +88,13 @@ For convenience you may create a shortcut for the `clariform` command.
 On Mac/Unix this may be accomplished by creating an executable script, or just an alias: 
 
 ```
-$ alias clariform="docker run -v \`pwd\`:/home clariform"
+alias clariform="docker run -v \`pwd\`:/home clariform"
 ```
 
 Using the shortcut:
 
 ```
-$ clariform --help
+clariform --help
 ```
 
 ### Uninstall
@@ -102,7 +102,7 @@ $ clariform --help
 The local docker image can be removed when no longer needed or to reinstall: 
 
 ```
-$ docker rmi ghcr.io/njordhov/clariform
+docker rmi ghcr.io/njordhov/clariform
 ```
 
 ## Features
@@ -115,19 +115,19 @@ If not, use this in place of "clariform":
 ### Select Files
 
 ```
-$ clariform
+clariform
 ```
 
 Filenames and directories can be explicitly specified as arguments:
 
 ```
-$ clariform *.clar
+clariform *.clar
 ```
 
 To disable autocorrect and validate correct Clarity syntax, add a `--strict` flag:
 
 ```
-$ clariform --strict
+clariform --strict
 ```
 
 ### Format Output
@@ -144,10 +144,10 @@ The output formatting can be specified with the `--format` option:
 Examples:
 
 ```
-$ clariform --format=indent contracts/malformed.clar
-$ clariform --format=retain contracts/malformed.clar   
-$ clariform --format=align contracts/malformed.clar  
-$ clariform --format=compact contracts/malformed.clar
+clariform --format=indent contracts/malformed.clar
+clariform --format=retain contracts/malformed.clar   
+clariform --format=align contracts/malformed.clar  
+clariform --format=compact contracts/malformed.clar
 ```
 
 ## Usage Alternatives 
@@ -159,22 +159,22 @@ Below are alternative ways to run Clariform.
 Build clariform in Docker:
 
 ```
-$ git clone https://github.com/njordhov/clariform   
-$ cd clariform   
-$ docker build -t clariform .  
+git clone https://github.com/njordhov/clariform   
+cd clariform   
+docker build -t clariform .  
 ```
 
 Run the clariform image:
 
 ```
-$ docker run clariform --help
+docker run clariform --help
 ```
 
 Note that Docker by default restricts filesystem access, which benefits security.
 [Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly allow access to the filesystem:
 
 ```
-$ docker run -v `pwd`:/home clariform contracts/malformed.clar
+docker run -v `pwd`:/home clariform contracts/malformed.clar
 ```
 
 As alternative to ``pwd`` use the absolute path of a directory containing Clarity files.
@@ -184,21 +184,21 @@ As alternative to ``pwd`` use the absolute path of a directory containing Clarit
 To build clariform with docker-compose, execute in a terminal:
 
 ```
-$ git clone https://github.com/njordhov/clariform    
-$ cd clariform   
-$ docker-compose build clariform  
+git clone https://github.com/njordhov/clariform    
+cd clariform   
+docker-compose build clariform  
 ```
 
 Execute the `clariform` image in Docker: 
 
 ```
-$ docker-compose run clariform --help
+docker-compose run clariform --help
 ```
 
 Check whether Clarity code is invalid:
 
 ```
-$ docker-compose run clariform --check src/test/clariform/invalid.clar
+docker-compose run clariform --check src/test/clariform/invalid.clar
 ```
 
 ### Run in Console
@@ -206,7 +206,7 @@ $ docker-compose run clariform --check src/test/clariform/invalid.clar
 To open a Clariform docker container console: 
  
 ```
-$ docker-compose run console  
+docker-compose run console  
 ```
 
 Clariform can be called from the container's console command line:
@@ -238,13 +238,13 @@ $$ exit
 To run Clariform as a docker task:
 
 ```
-$ docker-compose run clariform --help
+docker-compose run clariform --help
 ```
 
 To allow access to files elsewhere, mount another directory as the 'home' volume:
 
 ```
-$ docker-compose run -v "$PWD/src/test/clariform:/home" clariform basic.clar
+docker-compose run -v "$PWD/src/test/clariform:/home" clariform basic.clar
 ```
 
 ### Node Script
@@ -253,10 +253,9 @@ The Docker limited file access can be bypassed by generating a script in
 the repo and run it in [node](https://nodejs.org/en/) from a terminal outside Docker:
 
 ```
-$ git clone https://github.com/njordhov/clariform    
-$ cd clariform  
-$ node install  
-$ docker-compose run install  
-$ node clariform.js --help
-```  
-
+git clone https://github.com/njordhov/clariform    
+cd clariform  
+node install  
+docker-compose run install  
+node clariform.js --help
+```
