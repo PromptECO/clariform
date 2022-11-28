@@ -27,11 +27,11 @@ Please take it for a spin and post your feedback on the issue tracker.
 
 [![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://https://docker.com/)
 
-[Docker](https://https://docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running.
+[Docker](https://https://docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running. 
 
 ### Quick Start
 
-Clariform can be run from a prebuilt docker container distributed as a 
+Run `clariform` as a prebuilt docker container distributed as a 
 [github package](https://github.com/njordhov/clariform/pkgs/container/clariform):
 
 ```
@@ -54,7 +54,7 @@ docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
 ### Troubleshooting
 
 If `clariform` doesn't work as expected, make sure you are running 
-[![GitHub release](https://img.shields.io/github/release/njordhov/clariform.svg)](https://GitHub.com/njordhov/clariform/releases/) the latest version:
+the latest version:
 
 ```
 docker run ghcr.io/njordhov/clariform --version
