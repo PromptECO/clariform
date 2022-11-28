@@ -29,10 +29,12 @@ Please take it for a spin and post your feedback on the issue tracker.
 
 [Docker](https://https://docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running. 
 
+Clariform is available as prebuilt docker image distributed as a 
+[github package](https://github.com/njordhov/clariform/pkgs/container/clariform):
+
 ### Quick Start
 
-Run `clariform` as a prebuilt docker container distributed as a 
-[github package](https://github.com/njordhov/clariform/pkgs/container/clariform):
+Run `clariform` in a docker container:
 
 ```
 docker run ghcr.io/njordhov/clariform --help
@@ -69,7 +71,7 @@ docker run ghcr.io/njordhov/clariform:v0.1.2 --version
 To avoid running an older version of clariform, remove all clariform images: 
 
 ```
-docker image rm --force $(docker images ghcr.io/njordhov/clariform)
+docker rmi --force $(docker images -q ghcr.io/njordhov/clariform)
 ```
 
 If this doesn't resolve your troubles, please report the issue on the 
