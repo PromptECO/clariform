@@ -25,6 +25,10 @@
   (-> (format/parse-code code)
       (format/format-retain)))
 
+(defn process-adjust [code]
+  (-> (format/parse-code code)
+      (format/format-adjust)))
+
 (defn process-indent [code]
   (-> (format/parse-code code)
       (format/format-indent)))
@@ -58,14 +62,28 @@
          "hello")
       "Remove dangling endparen (is this preferable?)"))
 
-(deftest format-retain-test
-  (is (= (process-retain basic-contract)
-         (string/trim basic-contract))))
-
-(deftest format-indent-test
+(deftest infer-indent-test
   (is (= (format/infer-indent "(XXX\nYYY)")
          "(XXX\n YYY)"))
   (is (= (format/infer-indent "(XXX\n   YYY)")
+         "(XXX\n   YYY)")
+      "No change when the nesting is valid"))
+
+(deftest format-retain-test
+  (is (= (process-retain basic-contract)
+         (string/trim basic-contract))))
+  
+(deftest format-adjust-test
+  (is (= (process-adjust "(XXX\nYYY)")
+         "(XXX\nYYY)"))
+  (is (= (process-adjust "(list\n   (list\n)\n  )")
+         "(list\n   (list\n   )\n)")
+      "Line up close parens with the offset of the open parens"))
+
+(deftest format-indent-test
+  (is (= (process-indent "(XXX\nYYY)")
+         "(XXX\n YYY)"))
+  (is (= (process-indent "(XXX\n   YYY)")
          "(XXX\n   YYY)")
       "No change when the nesting is valid"))
 
@@ -112,6 +130,9 @@
                           [:symbol "value"]]]]])
       "Parse robustly even if the indent is messed up")
   (is (= (process-retain malformed-contract)
+         malformed-contract)
+      "Format as original but with end parens adjusted to line up")
+  (is (= (process-adjust malformed-contract)
          (str ";; Original is valid with correctly balanced parens\n"
               ";; but having malformed layout and indentation.\n"
               "(define-read-only (plus\n"

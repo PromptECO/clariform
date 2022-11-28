@@ -134,8 +134,9 @@ $ clariform --strict
 
 The output formatting can be specified with the `--format` option:
 
-* `retain`: Keeps the whitespace similar as in the source while balancing dangling end parens.
-* `indent`: Indent to nest parens while removing other insignificant spaces.
+* `retain`: Retain whitespace and formatting from the source.
+* `adjust`: Keep formatting from the source while lining up dangling close parens.
+* `indent` (default): Nest expressions and collapse dangling close parens.
 * `auto`: Autoindent for consistency and readibility.
 * `align`: Remove whitespace from the start of every line (uses less space; can be rehydrated with indent).
 * `compact`: Collapse each toplevel form into on a single line (useful for code meant to be evaluated by software rather than read by humans). 

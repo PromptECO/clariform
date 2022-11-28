@@ -78,8 +78,8 @@
    [nil "--check" "Exit with error on invalid code, supressing output"]
    [nil "--format FORMAT" "Output format"
     :default "indent"
-    :validate [#{"retain" "indent" "auto" "align" "compact"} 
-               "Must be one of 'retain', 'indent', 'auto', 'align' or 'compact'"]]
+    :validate [#{"retain" "adjust" "indent" "auto" "align" "compact"} 
+               "Must be one of 'retain', 'adjust', 'indent', 'auto', 'align' or 'compact'"]]
    [nil "--strict" "Expect strict Clarity syntax"]
    [nil "--verbose"]
    [nil "--debug"]])
