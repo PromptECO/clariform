@@ -38,7 +38,7 @@ Clariform can be run from a prebuilt docker container distributed as a
 docker run ghcr.io/njordhov/clariform --help
 ```
 
-Clariform can lint a Clarity contract from a URL and format it to output:
+Lint a Clarity contract from a URL and format it to output:
 
 ```
 docker run ghcr.io/njordhov/clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
@@ -53,23 +53,23 @@ docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
 
 ### Troubleshooting
 
-If `clariform` doesn't work as expected, make sure you are using 
+If `clariform` doesn't work as expected, make sure you are running 
 [![GitHub release](https://img.shields.io/github/release/njordhov/clariform.svg)](https://GitHub.com/njordhov/clariform/releases/) the latest version:
 
 ```
 docker run ghcr.io/njordhov/clariform --version
 ```
 
-To avoid running an older version of clariform, remove the current image: 
-
-```
-docker rmi ghcr.io/njordhov/clariform
-```
-
 To run a specific version of clariform, append the version at the end:
 
 ```
 docker run ghcr.io/njordhov/clariform:v0.1.2 --version
+```
+
+To avoid running an older version of clariform, remove all clariform images: 
+
+```
+docker image rm --force $(docker images ghcr.io/njordhov/clariform)
 ```
 
 If this doesn't resolve your troubles, please report the issue on the 
