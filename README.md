@@ -51,6 +51,27 @@ current working directory:
 docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
 ```
 
+### Troubleshooting
+
+If `clariform` doesn't work as expected, make sure you are using 
+[![GitHub release](https://img.shields.io/github/release/njordhov/clariform.svg)](https://GitHub.com/njordhov/clariform/releases/) the latest version:
+
+```
+docker run ghcr.io/njordhov/clariform --version
+```
+
+To avoid running an older version of clariform, remove the current image: 
+
+```
+docker rmi ghcr.io/njordhov/clariform
+```
+
+To run a specific version of clariform, append the version at the end:
+
+```
+docker run ghcr.io/njordhov/clariform:v0.1.2 --version
+```
+
 ### Installation
 
 For convenience and expediency, the prebuilt image can be installed and named:
@@ -97,14 +118,6 @@ Using the shortcut:
 clariform --help
 ```
 
-### Uninstall
-
-The local docker image can be removed when no longer needed or to reinstall: 
-
-```
-docker rmi ghcr.io/njordhov/clariform
-```
-
 ### Usage Alternatives
 
 [USAGE.md](USAGE.md) documents other ways to run Clariform.
@@ -120,8 +133,10 @@ docker run -v `pwd`:/home clariform
 
 ### Select Files
 
+Clariform can open a contract from a url:
+
 ```
-clariform
+clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
 Filenames and directories can be explicitly specified as arguments:
@@ -130,11 +145,8 @@ Filenames and directories can be explicitly specified as arguments:
 clariform *.clar
 ```
 
-To disable autocorrect and validate correct Clarity syntax, add a `--strict` flag:
-
-```
-clariform --strict
-```
+When the input contains multiple contracts, Clariform will concatenate 
+the contracts in formatted output, prefixing each with their source location as a comment.
 
 ### Format Output
 
@@ -155,3 +167,42 @@ clariform --format=adjust contracts/malformed.clar
 ```
 clariform --format=indent contracts/malformed.clar   
 ```
+
+### Auto Correct 
+
+Clariform automatically fixes many common syntax errors in Clarity contracts. 
+To disable auto-correct and require valid Clarity syntax, add a `--strict` flag:
+
+```
+clariform --strict "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
+```
+
+For formatting with autocorrect, don't add a `--strict` flag.
+
+Clariform can insert required whitespace:
+
+```clarity 
+;; invalid syntax
+(*(+ 1 2)(+ 3 4)) 
+```
+=>
+```clarity 
+(* (+ 1 2) (+ 3 4))
+```
+
+Clariform can fix missing delimiters and incomplete properties in a _record literal_ (aka "tuple"):
+
+```clarity 
+;; invalid syntax
+{name,
+ age:5
+ address "home"}
+```
+=>
+```clarity 
+{name: name,
+ age: 5,
+ address: "home"}
+```
+
+
