@@ -23,12 +23,14 @@ Clariform is not yet *painless* but we're getting there.
 
 Please take it for a spin and post your feedback on the issue tracker.
 
+Clariform is available as prebuilt docker image distributed as a 
+[github package](https://github.com/njordhov/clariform/pkgs/container/clariform).
+Docker can download and run the image for you. If you prefer to clone the repo 
+and build your own, see the instructions in [BUILD.md](BUILD.md).
+
 ### Prerequisites
 
 [![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://https://docker.com/)
-
-Clariform is available as prebuilt docker image distributed as a 
-[github package](https://github.com/njordhov/clariform/pkgs/container/clariform).
 
 [Docker](https://https://docker.com/) should be [installed](https://docs.docker.com/engine/install/) 
 and up running. 
@@ -123,10 +125,6 @@ Using the shortcut:
 ```
 clariform --help
 ```
-
-### Usage Alternatives
-
-[USAGE.md](USAGE.md) documents other ways to run Clariform.
 
 ## Features
 

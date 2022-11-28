@@ -1,6 +1,6 @@
-## Usage Alternatives 
+## BUILDING CLARIFORM
 
-Below are alternative ways to run Clariform.
+Below are alternative ways to run Clariform based on the repo.
  
 ### Build from Repo
 
