@@ -77,6 +77,10 @@
   "Retain original indentation"
   (serialize/format-retain ast))
 
+(defn format-adjust [ast]
+  "Retain original indentation"
+  (serialize/format-adjust ast))
+
 (defn format-indent [ast]
   "Closing parenthesis never dangles nor is to the left of its matching opening parenthesis"
   (-> (format-retain ast)
@@ -97,8 +101,10 @@
 
 (defn format-code [ast {:keys [format strict]}]
   (case format
-    ("retain" nil)       
+    "retain"     
     (format-retain ast)
+    "adjust"
+    (format-adjust ast)
     "indent"
     (format-indent ast)  
     "auto" 

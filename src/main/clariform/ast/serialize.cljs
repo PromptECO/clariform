@@ -172,14 +172,14 @@
       (- (count gap) n 1)
       (+ offset (count gap)))))
 
-(defn format-separated-form [spacing [front back] {:keys [layout offset tab] :as options}]
+(defn format-separated-form [spacing [front back] {:keys [layout adjust-close offset tab] :as options}]
   "Prefix a form with appropriate separation"
   (let [gap (spacing front back)
         offset (gap-offset gap offset)
         options (assoc options :offset offset)]
     (if (some? back)
       (str gap (format back options))
-      (if (= layout "retain")
+      (if adjust-close
         (if-let [n (and gap (string/last-index-of gap \newline))]
           (apply str (subs gap 0 (inc n)) 
                      (repeat tab \space))
@@ -300,7 +300,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn format-retain [ast]
-  (format-form ast {:layout "retain" :tab 0}))
+  (format-form ast {:layout "retain"}))
+
+(defn format-adjust [ast]
+  (format-form ast {:layout "retain" :adjust-close true}))
 
 (defn format-align [ast]
   (format-form ast {:layout "align"}))
