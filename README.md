@@ -72,6 +72,9 @@ To run a specific version of clariform, append the version at the end:
 docker run ghcr.io/njordhov/clariform:v0.1.2 --version
 ```
 
+If this doesn't resolve your troubles, please report the issue on the 
+[issue tracker](https://github.com/njordhov/clariform/issues).
+
 ### Installation
 
 For convenience and expediency, the prebuilt image can be installed and named:
