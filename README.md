@@ -27,10 +27,11 @@ Please take it for a spin and post your feedback on the issue tracker.
 
 [![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://https://docker.com/)
 
-[Docker](https://https://docker.com/) should be [installed](https://docs.docker.com/engine/install/) and up running. 
-
 Clariform is available as prebuilt docker image distributed as a 
-[github package](https://github.com/njordhov/clariform/pkgs/container/clariform):
+[github package](https://github.com/njordhov/clariform/pkgs/container/clariform).
+
+[Docker](https://https://docker.com/) should be [installed](https://docs.docker.com/engine/install/) 
+and up running. 
 
 ### Quick Start
 
@@ -46,8 +47,8 @@ Lint a Clarity contract from a URL and format it to output:
 docker run ghcr.io/njordhov/clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
-[Mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` to explicitly give Clariform access to the files in the 
-current working directory:
+To process local contracts [mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` and list the files
+as arguments:
 
 ```
 docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
