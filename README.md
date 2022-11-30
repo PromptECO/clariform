@@ -101,7 +101,7 @@ If this doesn't resolve your troubles, please report the issue on the
 For convenience and expediency, create a named container from the prebuilt image:
 
 ```
-docker create --rm --pull always ghcr.io/njordhov/clariform
+docker create --rm --name clariform --pull always ghcr.io/njordhov/clariform
 docker image tag ghcr.io/njordhov/clariform clariform
 ```
 
@@ -116,7 +116,7 @@ Docker will by default restrict filesystem access for security.
 current working directory:
 
 ```
-docker run -v `pwd`:/home clariform
+docker run -v `pwd`:/home clariform .
 ```
 
 This will traverse all Clarity contract files (".clar") in the working directory and either
