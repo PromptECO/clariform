@@ -39,7 +39,7 @@ and up running.
 Pull the clariform image (optional):
 
 ```
-docker create --rm --pull always ghcr.io/njordhov/clariform
+docker pull ghcr.io/njordhov/clariform
 ```
 
 This will download _clariform_ and prebuild a docker image. It may take some time 
@@ -101,7 +101,7 @@ If this doesn't resolve your troubles, please report the issue on the
 For convenience and expediency, create a named container from the prebuilt image:
 
 ```
-docker create --rm --name clariform --pull always ghcr.io/njordhov/clariform
+docker pull ghcr.io/njordhov/clariform
 docker image tag ghcr.io/njordhov/clariform clariform
 ```
 
