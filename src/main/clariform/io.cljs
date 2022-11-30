@@ -1,14 +1,14 @@
 (ns clariform.io
   (:require
     [cljs.core.async :as async
-     :refer [go]]
+     :refer [go chan put! close!]]
     [cljs.core.async.interop 
      :refer-macros [<p!]]
-    ["node-fetch" :as fetch]
-    [cljs-node-io.core :as node-io
-     :refer [slurp]]
+    ["https" :as https]
+    [cljs-node-io.core :as node-io]
     [cljs-node-io.file :as file
      :refer [File]]
+    [cljs-node-io.async :as node-async]
     [goog.Uri :as uri]))
 
 (defn file-path [file]
@@ -28,14 +28,15 @@
 
 (defn fetch-text [resource]
   (if (cljs.core/instance? goog.Uri resource)
-    (go (try 
-          (let [response (<p! (fetch resource))]
-            (if (.-ok response)
-              (<p! (.text response))
-              (ex-info "HTTP error" {:error response} ::io)))
-          (catch :default e 
-            e)))
-    (go (slurp resource))))
+    (let [event-chan (chan)]                  
+      (-> (https/get "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar")
+          (node-async/readable-onto-ch event-chan ["response"]))
+      (async/map (fn [[tag payload :as event]]
+                   (case tag
+                     :response (str (.read (first payload)))
+                     :close nil))   
+           [event-chan]))
+    (node-io/aslurp resource)))
 
 (defn resources-seq [arguments]
   #_ ;; preferable
