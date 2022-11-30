@@ -78,6 +78,8 @@ To avoid running an older version of clariform, remove all clariform images:
 docker rmi --force $(docker images -q ghcr.io/njordhov/clariform)
 ```
 
+Alternatively, open the _Docker Desktop_ application to inspect or delete containers and images.
+
 If this doesn't resolve your troubles, please report the issue on the 
 [issue tracker](https://github.com/njordhov/clariform/issues).
 
@@ -181,7 +183,7 @@ clariform --format=indent contracts/malformed.clar
 
 ### Auto Correct 
 
-Clariform automatically fixes many common syntax errors in Clarity contracts. 
+Clariform automatically fixes many common errors in Clarity contracts. 
 To disable auto-correct and require valid Clarity syntax, add a `--strict` flag:
 
 ```
@@ -231,3 +233,6 @@ Clariform wraps a multi-expression function body in a `begin` form:
     (asserts! (<= 0 digit 9))
     (/ digit 2)))
 ```
+
+Please [submit a new issue](https://github.com/njordhov/clariform/issues/new)
+if you have suggestions about how `clariform` can be improved.
