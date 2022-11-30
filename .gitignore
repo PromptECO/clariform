@@ -8,15 +8,8 @@ public/js
 
 pom.xml
 pom.xml.asc
-*.iml
-*.jar
-*.log
-.shadow-cljs
-.idea
-.lein-*
-.nrepl-*
-.DS_Store
+.*
+!.gitignore
+!.github
 
-.hgignore
-.hg/
 clariform.js

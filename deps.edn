@@ -1,4 +1,4 @@
-{:paths ["src/dev" "src/main" "src/test"]
+{:paths ["src/main" "src/test"]
  :deps {org.clojure/tools.cli {:mvn/version "1.0.214"}
         instaparse/instaparse {:mvn/version "1.4.12"}
         com.taoensso/timbre {:mvn/version "5.2.1"}

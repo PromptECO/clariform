@@ -59,7 +59,8 @@ docker compose run test
 ```
 
 Optionally enable automatic testing from the "builds" tab of the shadow browser 
-dashboard, then wait a bit and open the test result in http://localhost:8090/
+dashboard. The output can be viewed in the Docker Desktop in the logs for the
+container.
 
 ## GENERATE EXECUTABLE
 
