@@ -7,11 +7,15 @@ providing hot-loading of the recompiled clariform script.
 
 Start a watcher in the background to recompile the script whenever files are changed:
 
-$ `docker-compose up -d watch`
+```
+docker-compose up -d watch
+```
 
 Open a dashboard for the watcher from a web browser (if at first you fail, wait and try again):
 
-$ `open http://localhost:9630/dashboard`
+```
+open http://localhost:9630/dashboard
+```
 
 Tip: Don't stop the script from the dashboard.
 
@@ -19,40 +23,57 @@ Tip: Don't stop the script from the dashboard.
 
 Execute from a terminal to run the development script in a loop (with hotloading):
 
-$ `docker-compose run script --help`
+```
+docker-compose run script --help
+```
 
 Troubleshooting: If it outputs "shadow-cljs: giving up trying to connect", wait 
 a little for the watcher to complete launching, then try again running the script. 
 
 Edit and save any project file to trigger recompilation and execution of script.
 
-$ `docker-compose run script --format=indent contracts/basic.clar`
+```
+docker-compose run script --format=indent contracts/basic.clar
+```
 
-$ `docker-compose run script --check src/test/clariform/invalid.clar`
+```
+docker-compose run script --check src/test/clariform/invalid.clar
+```
 
 Exit from the execution loop with CTRL-c
 
 ## REBUILD SCRIPT 
 
-You may have to rebuild the script after changes in dependecies:
+You may have to rebuild the script after changes in dependencies:
 
-$ `docker-compose build script`
+```
+docker-compose build script
+```
 
 ## UNIT TESTING 
 
-To run unit testing, execute in the development shell:
+To run unit testing, execute:
 
-$$ `docker compose run test`
+```
+docker compose run test
+```
+
+Optionally enable automatic testing from the "builds" tab of the shadow browser 
+dashboard, then wait a bit and open the test result in http://localhost:8090/
 
 ## GENERATE EXECUTABLE
 
 To generate an executable:
 
-$$ `docker compose run release`
+```
+docker compose run release
+```
 
 Execute the generated script:
 
-$ `node clariform.js --help`
+```
+node clariform.js --help
+```
 
 ## FINISH
 
@@ -66,7 +87,7 @@ The github docker-publish workflow has a workflow dispatch event trigger
 to build a distribution and publish as the latest docker image:
 
 1. Update the distribution version in "package.json" and clariform.core
-2. Push the main branch
+2. Push the main branch and wait for integration testing to succeed.
 3. In the github repo, open Releases (link on right side)
 4. Draft a new release (using button) with a version tag to be created on publish.
 5. A docker page for the tag is automatically generated in

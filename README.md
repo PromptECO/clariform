@@ -2,7 +2,7 @@
 
 "Painless linting & formatting for Clarity."
 
-Detects and automatically fixes problems in Clarity code.
+Detects and automatically fixes problems in [Clarity](https://clarity-lang.org/) code.
 
 This early version has limited functionality, but it's a start:
 
@@ -48,7 +48,7 @@ pulled the first time you run clariform.
 
 ### Quick Start
 
-Run `clariform` in a docker container:
+Run _clariform_ in a docker container:
 
 ```
 docker run ghcr.io/njordhov/clariform --help
