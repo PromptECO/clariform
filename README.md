@@ -36,6 +36,16 @@ and build your own, see the instructions in [BUILD.md](BUILD.md).
 [Docker](https://https://docker.com/) should be [installed](https://docs.docker.com/engine/install/) 
 and up running. 
 
+Pull the clariform image (optional):
+
+```
+docker create --rm --pull always ghcr.io/njordhov/clariform
+```
+
+This will download _clariform_ and prebuild a docker image. It may take some time 
+and generates plenty of output. If you don't do it in advance, the image will be
+pulled the first time you run clariform.
+
 ### Quick Start
 
 Run `clariform` in a docker container:
@@ -59,7 +69,7 @@ docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
 
 ### Troubleshooting
 
-If `clariform` doesn't work as expected, make sure you are running 
+If _clariform_ doesn't work as expected, make sure you are running 
 the latest version:
 
 ```
@@ -190,12 +200,16 @@ To disable auto-correct and require valid Clarity syntax, add a `--strict` flag:
 clariform --strict "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
-For autocorrected formatting, _don't_ add a `--strict` flag.
+For formatting with autocorrect _don't_ add a `--strict` flag:
+
+```
+clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
+```
 
 Clariform inserts required whitespace in expressions and between them:
 
 ```clarity 
-;; invalid: missing whitespace
+;; invalid clarity: missing whitespace
 (*(+ 1 2)(+ 3 4)) 
 ```
 =>
@@ -206,7 +220,7 @@ Clariform inserts required whitespace in expressions and between them:
 Clariform fixes missing delimiters and incomplete properties in a _record literal_ (aka "tuple"):
 
 ```clarity 
-;; invalid: missing property value and delimiters
+;; invalid clarity: missing property value and delimiters
 {name,
  age:5
  address "home"}
@@ -221,7 +235,7 @@ Clariform fixes missing delimiters and incomplete properties in a _record litera
 Clariform wraps a multi-expression function body in a `begin` form:
 
 ```clarity
-;; invalid: multiple expressions in function definition
+;; invalid clarity: multiple expressions in function definition
 (define-read-only (half (digit int))
   (asserts! (<= 0 digit 9))
   (/ digit 2))
