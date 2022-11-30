@@ -192,7 +192,7 @@ For autocorrected formatting, _don't_ add a `--strict` flag.
 Clariform inserts required whitespace in expressions and between them:
 
 ```clarity 
-;; invalid syntax
+;; invalid: missing whitespace
 (*(+ 1 2)(+ 3 4)) 
 ```
 =>
@@ -203,7 +203,7 @@ Clariform inserts required whitespace in expressions and between them:
 Clariform fixes missing delimiters and incomplete properties in a _record literal_ (aka "tuple"):
 
 ```clarity 
-;; invalid syntax
+;; invalid: missing property value and delimiters
 {name,
  age:5
  address "home"}
