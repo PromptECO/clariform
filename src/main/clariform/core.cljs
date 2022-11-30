@@ -105,7 +105,7 @@
       (println "Options:")
       (println summary))
     (some? (:version options))
-    (prn version-string)
+    (println version-string)
     (some? (:check options))
     (check-all params)
     :else

@@ -67,6 +67,9 @@ as arguments:
 docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
 ```
 
+This assumes that the current directory contains Clarity contracts with a ".clar" file extension.
+The formatted contracts will be written to output.
+
 ### Troubleshooting
 
 If _clariform_ doesn't work as expected, make sure you are running 
@@ -79,7 +82,7 @@ docker run ghcr.io/njordhov/clariform --version
 To run a specific version of clariform, append the version at the end:
 
 ```
-docker run ghcr.io/njordhov/clariform:v0.1.2 --version
+docker run ghcr.io/njordhov/clariform:v0.1.3 --version
 ```
 
 To avoid running an older version of clariform, remove all clariform images: 
@@ -95,16 +98,22 @@ If this doesn't resolve your troubles, please report the issue on the
 
 ### Installation
 
-For convenience and expediency, the prebuilt image can be installed and named:
+For convenience and expediency, create a named container from the prebuilt image:
 
 ```
 docker create --rm --name clariform ghcr.io/njordhov/clariform
 ```
 
-Now you can run the preloaded container to execute clariform:
+Run the container to execute clariform:
 
 ```
 docker run clariform --help
+```
+
+alternatively:
+
+```
+docker start -a clariform --help
 ```
 
 Docker will by default restrict filesystem access for security.
