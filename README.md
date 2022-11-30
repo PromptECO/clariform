@@ -101,19 +101,14 @@ If this doesn't resolve your troubles, please report the issue on the
 For convenience and expediency, create a named container from the prebuilt image:
 
 ```
-docker create --rm --name clariform ghcr.io/njordhov/clariform
+docker create --rm --pull always ghcr.io/njordhov/clariform
+docker image tag ghcr.io/njordhov/clariform clariform
 ```
 
 Run the container to execute clariform:
 
 ```
 docker run clariform --help
-```
-
-If that doesn't work as expected, do this instead:
-
-```
-docker start -a clariform --help
 ```
 
 Docker will by default restrict filesystem access for security.
