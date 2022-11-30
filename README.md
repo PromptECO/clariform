@@ -110,7 +110,7 @@ Run the container to execute clariform:
 docker run clariform --help
 ```
 
-alternatively:
+If that doesn't work as expected, do this instead:
 
 ```
 docker start -a clariform --help
