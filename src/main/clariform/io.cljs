@@ -5,7 +5,8 @@
     [cljs.core.async.interop 
      :refer-macros [<p!]]
     ["https" :as https]
-    [cljs-node-io.core :as node-io]
+    [cljs-node-io.core :as node-io
+     :refer [slurp]]
     [cljs-node-io.file :as file
      :refer [File]]
     [cljs-node-io.async :as node-async]
@@ -29,14 +30,17 @@
 (defn fetch-text [resource]
   (if (cljs.core/instance? goog.Uri resource)
     (let [event-chan (chan)]                  
-      (-> (https/get "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar")
+      (-> (https/get (str resource))
           (node-async/readable-onto-ch event-chan ["response"]))
       (async/map (fn [[tag payload :as event]]
                    (case tag
                      :response (str (.read (first payload)))
-                     :close nil))   
+                     :error (ex-info "HTTP get failed." {:payload payload} :io)
+                     :close nil
+                     nil))   
            [event-chan]))
-    (node-io/aslurp resource)))
+    #_(node-io/aslurp resource)
+    (go (slurp resource))))
 
 (defn resources-seq [arguments]
   #_ ;; preferable
