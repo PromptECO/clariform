@@ -15,7 +15,9 @@
    [clariform.ast.parser :as parser]
    [clariform.format :as format
     :refer [format-code]]
-   [clariform.io :as io]))
+   [clariform.io :as io]
+   [clariform.transform :as transform
+    :refer [transform]]))
 
 (def version-string "0.1.2")
 
@@ -67,11 +69,11 @@
               (let [failure (insta/get-failure ast)]
                 (printerr failure))
               (try
-                (let [formatted (format-code ast options)]
+                (let [formatted (-> (transform ast)
+                                    (format-code options))]
                   (print formatted))
                 (catch ExceptionInfo e
-                  (printerr (ex-message e))
-                  (printerr (ex-data e)))))
+                  (printerr (ex-message e)))))
             (pprint/fresh-line)
             (when-some [more (<! con-chan)]
               (println)

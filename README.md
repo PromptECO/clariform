@@ -187,12 +187,12 @@ To disable auto-correct and require valid Clarity syntax, add a `--strict` flag:
 clariform --strict "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
-For autocorrected formatting, don't add a `--strict` flag.
+For autocorrected formatting, _don't_ add a `--strict` flag.
 
-Clariform can insert required whitespace:
+Clariform inserts required whitespace in expressions and between them:
 
 ```clarity 
-;; invalid syntax
+;; invalid: missing whitespace
 (*(+ 1 2)(+ 3 4)) 
 ```
 =>
@@ -200,10 +200,10 @@ Clariform can insert required whitespace:
 (* (+ 1 2) (+ 3 4))
 ```
 
-Clariform can fix missing delimiters and incomplete properties in a _record literal_ (aka "tuple"):
+Clariform fixes missing delimiters and incomplete properties in a _record literal_ (aka "tuple"):
 
 ```clarity 
-;; invalid syntax
+;; invalid: missing property value and delimiters
 {name,
  age:5
  address "home"}
@@ -215,4 +215,18 @@ Clariform can fix missing delimiters and incomplete properties in a _record lite
  address: "home"}
 ```
 
+Clariform wraps a multi-expression function body in a `begin` form:
 
+```clarity
+;; invalid: multiple expressions in function definition
+(define-read-only (half (digit int))
+  (asserts! (<= 0 digit 9))
+  (/ digit 2))
+```
+=>
+```clarity
+(define-read-only (half (digit int))
+  (begin
+    (asserts! (<= 0 digit 9))
+    (/ digit 2)))
+```
