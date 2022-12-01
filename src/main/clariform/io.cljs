@@ -29,15 +29,20 @@
 
 (defn fetch-text [resource]
   (if (cljs.core/instance? goog.Uri resource)
-    (let [event-chan (chan)]                  
-      (-> (https/get (str resource))
-          (node-async/readable-onto-ch event-chan ["response"]))
-      (async/map (fn [[tag payload :as event]]
+    (let [event-chan (chan)] 
+      (let [req (https/get (str resource))]
+        (.on req "response"
+             (fn [response]
+               ;; NOTE using .-Readable just to work around optimization issue 
+               ;; in node-cljs-io 2.0.332 reported as "Right-hand side of 'instanceof' is not an object"
+               (when (instance? (.-Readable cljs-node-io.async/stream) response)
+                 (node-async/readable-onto-ch response event-chan)))))
+      (async/map (fn [[tag & [payload] :as event]]
                    (case tag
-                     :response (str (.read (first payload)))
+                     :data (apply str payload)
                      :error (ex-info "HTTP get failed." {:payload payload} :io)
-                     :close nil
-                     nil))   
+                     :end nil
+                     tag))   
            [event-chan]))
     #_(node-io/aslurp resource)
     (go (slurp resource))))
