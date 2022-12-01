@@ -10,6 +10,7 @@
     [cljs-node-io.file :as file
      :refer [File]]
     [cljs-node-io.async :as node-async]
+    [cljs-node-io.url :as node-url]
     [goog.Uri :as uri]))
 
 (defn file-path [file]
@@ -17,6 +18,9 @@
 
 (defn file-ext [file]
   (.getExt ^File file))
+
+(defn fetch-text [locator]
+  (node-url/aslurp locator))
 
 (defn contracts-seq [path]
   (let [url (uri/parse path)]
@@ -26,26 +30,6 @@
            (filter #(.isFile %))
            (filter #(or (= (file-path %) path)
                         (= (file-ext %) ".clar")))))))
-
-(defn fetch-text [resource]
-  (if (cljs.core/instance? goog.Uri resource)
-    (let [event-chan (chan)] 
-      (let [req (https/get (str resource))]
-        (.on req "response"
-             (fn [response]
-               ;; NOTE using .-Readable just to work around optimization issue 
-               ;; in node-cljs-io 2.0.332 reported as "Right-hand side of 'instanceof' is not an object"
-               (when (instance? (.-Readable cljs-node-io.async/stream) response)
-                 (node-async/readable-onto-ch response event-chan)))))
-      (async/map (fn [[tag & [payload] :as event]]
-                   (case tag
-                     :data (apply str payload)
-                     :error (ex-info "HTTP get failed." {:payload payload} :io)
-                     :end nil
-                     tag))   
-           [event-chan]))
-    #_(node-io/aslurp resource)
-    (go (slurp resource))))
 
 (defn resources-seq [arguments]
   #_ ;; preferable

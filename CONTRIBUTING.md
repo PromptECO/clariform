@@ -71,7 +71,7 @@ To generate an executable:
 docker compose run release
 ```
 
-If you don't have node installed, fire up a console in docker:
+If you don't have _node_ installed, fire up a console in docker:
 
 ```
 docker compose run console
