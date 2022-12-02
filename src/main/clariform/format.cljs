@@ -26,7 +26,7 @@
 (defn infer-normalize [code]
   (-> code infer-indent infer-parens))
 
-(defn parse-code [code & [strict]]
+(defn parse-code [code & [{:keys [strict]}]]
   (let [parse (if strict parser/parse-strict parser/parse-robust)]
     (->> (parse code)
          (insta/add-line-and-column-info-to-metadata code)

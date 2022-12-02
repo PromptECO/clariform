@@ -64,7 +64,8 @@
           (when multiple
             (pprint/fresh-line)
             (println ";;" (io/file-path locator)))
-          (let [ast (format/parse-code text (:strict options))]
+          (let [parser-options (select-keys options [:strict])
+                ast (format/parse-code text parser-options)]
             (if (insta/failure? ast)
               (let [failure (insta/get-failure ast)]
                 (printerr failure))
