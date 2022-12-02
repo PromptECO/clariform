@@ -24,7 +24,11 @@
 (defn list-symbol [node]
   (if (and (= (node-tag node) :list)
            (= (node-tag (first (node-content node))) :symbol))
-    (node-head (node-head node))))  
+    (node-head (node-head node))))
+
+(defn node-seq [node]
+  "Traverse node into a sequence of the node and its children"
+  (tree-seq vector? (comp (partial filter vector?) node-content) node))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

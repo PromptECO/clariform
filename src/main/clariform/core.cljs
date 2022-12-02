@@ -69,12 +69,22 @@
             (if (insta/failure? ast)
               (let [failure (insta/get-failure ast)]
                 (printerr failure))
-              (try
-                (let [formatted (-> (transform ast)
-                                    (format-code options))]
-                  (print formatted))
-                (catch ExceptionInfo e
-                  (printerr (ex-message e)))))
+              (do
+                (when-not (:strict options)
+                  (doseq [node (transform/node-seq ast)]
+                    (case (transform/node-tag node)
+                      (:invalid :skip)
+                      (printerr "Invalid or misplaced code on line" 
+                                (apply str 
+                                  (get-in (meta node) [:instaparse.gll/start-line]) ": " 
+                                  (transform/node-content node)))
+                      nil)))
+                (try
+                  (let [formatted (-> (transform ast)
+                                      (format-code options))]
+                    (print formatted))
+                  (catch ExceptionInfo e
+                    (printerr (ex-message e))))))
             (pprint/fresh-line)
             (when-some [more (<! con-chan)]
               (println)
