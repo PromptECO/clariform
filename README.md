@@ -2,18 +2,19 @@
 
 "Painless linting & formatting for Clarity."
 
-Clariform is a tool for detecting and automatically fixing problems in [Clarity](https://clarity-lang.org/) code.
+Clariform is a command-line tool for automatically correcting and formatting 
+[Clarity](https://clarity-lang.org/) code.
 
 This early version has limited functionality, but it's a start:
 
-- [x] Validate the syntax of a Clarity contract file.
-- [x] Fix confusing indentation and dangling close-parens.
-- [x] Normalize whitespace and decorative tokens.
+- [x] Validate the syntax of a Clarity contract file
+- [x] Fix confusing indentation and dangling close-parens
+- [x] Normalize whitespace and decorative tokens
 - [x] Expand record shorthand notation
-- [x] Custom formatting of the output code.
+- [x] Custom formatting of the output code
 - [x] Process contract from url
 - [x] Autofix multi-expression function bodies
-- [ ] Github action to validate Clarity contracts in repository
+- [ ] Github action to validate Clarity contracts in a repository
 
 [![GitHub release](https://img.shields.io/github/release/njordhov/clariform.svg)](https://GitHub.com/njordhov/clariform/releases/)
 [![Clariform](https://github.com/njordhov/clariform/actions/workflows/main.yml/badge.svg)](https://github.com/njordhov/clariform/actions/workflows/main.yml)
@@ -46,20 +47,20 @@ Run Clariform in a Docker container:
 docker run ghcr.io/njordhov/clariform --help
 ```
 
-Lint a Clarity contract from a URL and format it for output:
+Lint a Clarity contract from a URL and format it:
 
 ```
 docker run ghcr.io/njordhov/clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
-To process local contracts [mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` and list the files
-as arguments:
+To process local contracts [mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` and list files as arguments:
 
 ```
 docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
 ```
 
 This assumes that the current directory contains Clarity contracts with a ".clar" file extension.
+
 The formatted contracts will be written to output.
 
 ### Troubleshooting
@@ -167,7 +168,7 @@ contracts it will output the name of each contract before validation.
 
 ### Formatting Options
 
-The --format option allows you to specify the output formatting for Clariform. 
+The --format option allows you to specify the output formatting of Clarity code. 
 The following options are available:
 
 * `retain`: Preserves the original whitespace and formatting from the source.
@@ -175,7 +176,7 @@ The following options are available:
 * `indent` (default): Nests expressions and collapses dangling closing parentheses.
 * `auto`: Auto-indents for consistency and readability.
 * `align`: Removes whitespace from the start of each line (uses less space; can be re-indented with the indent option).
-* `compact`: Collapses each top-level form into a single line (useful for code that will be evaluated by software rather than read by humans).
+* `compact`: Collapses each top-level form into a single line (dense but useful for parsing by other tools).
 
 Here are some examples of using the --format option:
 
