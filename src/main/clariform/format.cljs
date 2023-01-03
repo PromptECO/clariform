@@ -92,7 +92,7 @@
 
 (defn format-auto [ast]
   "Autoindent ignoring original indentation"
-  (-> (format-align ast)
+  (-> (serialize/format-auto ast)
       indent-code))
 
 (defn format-compact [ast]

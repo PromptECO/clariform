@@ -192,10 +192,11 @@
   (let [spacing (-> (case layout
                       ("retain") retain-spacing
                       ("align") align-spacing
+                      ("auto") align-spacing
                       ("compact") compact-spacing)
                     (partial mode))]
     (case layout
-      ("retain")
+      ("retain" "auto")
       (loop [offset (or offset 0)
              result []
              pairs (partition-all 2 1 (list* nil forms))]          
@@ -307,6 +308,9 @@
 
 (defn format-align [ast]
   (format-form ast {:layout "align"}))
+
+(defn format-auto [ast]
+  (format-form ast {:layout "auto"}))
 
 (defn format-compact [ast]
   (format-form ast {:layout "compact"}))
