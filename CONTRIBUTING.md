@@ -9,7 +9,7 @@ Start a watcher to recompile the script whenever files are changed (optionally
 with `-d` to run in the background):
 
 ```
-docker-compose up watch
+docker-compose up -d watch
 ```
 
 Open a dashboard for the watcher from a web browser (if at first you fail, wait and try again):
@@ -18,7 +18,8 @@ Open a dashboard for the watcher from a web browser (if at first you fail, wait 
 open http://localhost:9630/dashboard
 ```
 
-Tip: Don't stop the script from the dashboard.
+The watcher should be running and ready before executing any of the 
+commands below. 
 
 ## RUN SCRIPT
 
@@ -42,6 +43,14 @@ docker-compose run script --check src/test/clariform/invalid.clar
 ```
 
 Exit from the execution loop with CTRL-c
+
+## EVAL IN REPL 
+
+Start a _repl_ to evaluate cljs expressions in a hotloaded running script: 
+
+```
+docker-compose run repl
+```
 
 ## REBUILD SCRIPT 
 
