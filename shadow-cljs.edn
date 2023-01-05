@@ -6,10 +6,10 @@
  :builds
  {:script 
   {:target    :node-script
-   :devtools {:devtools-url "http://watch:9630"
-              :autoload true
+   :devtools {:autoload true
               :ignore-warnings false}
    :main      clariform.core/main
+   :dev {:output-to "out/runtime.js"}
    :output-to "clariform.js"}
   :test
   {:target    :node-test

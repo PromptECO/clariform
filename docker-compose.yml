@@ -2,7 +2,7 @@ version: "3"
 
 volumes:
   m2:
-
+    
 services:
   install:  
     build: .
@@ -18,8 +18,10 @@ services:
     volumes:
       - $PWD:/home
       - m2:/root/.m2
+    networks:
+      - default
     entrypoint: /bin/bash
-  
+      
   clariform:  
     build: .
     working_dir: /home
@@ -28,24 +30,24 @@ services:
       - $PWD:/home
       - m2:/root/.m2
     entrypoint: node /app/clariform.js
-    
+          
   watch:  
     build: .
     working_dir: /home
-    # stdin_open: true
-    # tty: true
-    ports:
-      - "9630:9630"
-      #- "9090:9090"
-      #- "9099:9099"
-    volumes:
-      - .:/home
-      - m2:/root/.m2
     networks:
       - default
-    entrypoint: npx shadow-cljs watch script --config-merge '{:http {:host "watch"} :socket-repl {:port 9090} :nrepl {:port 9099}}'
+    ports:
+      - "9630:9630"
+    expose:
+      - "9090:9090"
+      - "9099:9099"
+    volumes:
+      - .:/home
+      - m2:/root/.m2 
+    ## NOTE shadow-cljs apparently ignores config-merge, relying on :host from shadow-cljs.edn 
+    entrypoint: npx shadow-cljs watch script --config-merge '{:http {:host "watch-xxx"}}'
     
-  script:
+  runtime:
     build: .
     working_dir: /home
     depends_on:
@@ -54,8 +56,8 @@ services:
       - .:/home
       - m2:/root/.m2
     networks:
-      - default
-    entrypoint: ["node", "clariform.js"]
+      - default 
+    entrypoint: ["node", "out/runtime.js"]
     
   test:
     build: .
@@ -67,7 +69,7 @@ services:
       - m2:/root/.m2
     networks:
       - default
-    entrypoint: ["npx", "shadow-cljs", "compile", "test"]
+    entrypoint: npx shadow-cljs compile test --config-merge '{:http {:host "watch"}}'
     
   release:  
     build: .
@@ -82,9 +84,11 @@ services:
     working_dir: /home
     depends_on:
       - watch
+      - runtime
     volumes:
       - .:/home
       - m2:/root/.m2
     networks:
-      - default
-    entrypoint: ["/bin/bash"] ## npx shadow-cljs cljs-repl script ## not yet working right
+      - default 
+    # TODO incomplete as shadow-cljs ignores the overide of host instead connecting to localhost      
+    entrypoint: npx shadow-cljs cljs-repl script --config-merge '{:http {:host "watch"}}'

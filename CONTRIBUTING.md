@@ -1,60 +1,68 @@
 # CLARIFORM DEVELOPMENT
 
-The development environment is based on [shadow-cljs](https://github.com/thheller/shadow-cljs)
-providing hot-loading of the recompiled clariform script.
+This development environment is built on [shadow-cljs](https://github.com/thheller/shadow-cljs) and allows you to live reload code changes into the clariform runtime.
 
-## START WATCHER
+## Starting a Watcher
 
-Start a watcher to recompile the script whenever files are changed (optionally 
-with `-d` to run in the background):
+To start a watcher, which will recompile whenever any code files change, use the following command (you can use `-d` to run it in the background):
 
 ```
 docker-compose up -d watch
 ```
 
-Open a dashboard for the watcher from a web browser (if at first you fail, wait and try again):
+You can then open the dashboard in a web browser by running:
 
 ```
 open http://localhost:9630/dashboard
 ```
 
-The watcher should be running and ready before executing any of the 
-commands below. 
+Note that the watcher should be running and ready before you execute any of the commands below.
 
-## RUN SCRIPT
+## Starting the Runtime
 
-Execute from a terminal to run the development script in a loop (with hotloading):
-
-```
-docker-compose run script --help
-```
-
-Troubleshooting: If it outputs "shadow-cljs: giving up trying to connect", wait 
-a little for the watcher to complete launching, then try again running the script. 
-
-Edit and save any project file to trigger recompilation and execution of script.
+To start the development runtime, which will reload and repeat the command whenever there are code changes, run the following command in a terminal:
 
 ```
-docker-compose run script --format=indent contracts/basic.clar
+docker-compose run runtime --help
+```
+
+If you encounter the error "shadow-cljs: giving up trying to connect," wait a little for the watcher to finish launching, then try again.
+
+Edit and save any project file to trigger recompilation and repeated execution.
+
+Here are additional examples of runtime commands:
+
+```
+docker-compose run runtime --format=indent contracts/basic.clar
 ```
 
 ```
-docker-compose run script --check src/test/clariform/invalid.clar
+docker-compose run runtime --check src/test/clariform/invalid.clar
 ```
 
-Exit from the execution loop with CTRL-c
+Exit the runtime with CTRL-c
 
 ## EVAL IN REPL 
 
-Start a _repl_ to evaluate cljs expressions in a hotloaded running script: 
+The REPL allows you to evaluate Clojure expressions _within_ the runtime.
+
+Start a _repl_: 
 
 ```
-docker-compose run repl
+docker compose exec -it watch npx shadow-cljs cljs-repl script
 ```
 
-## REBUILD SCRIPT 
+Evaluate a Clojure expression by typing it after the prompt and hit return:
 
-You may have to rebuild the script after changes in dependencies:
+```
+(clariform.core/main "--help")
+```
+
+Type CTRL-c to exit the repl.
+
+## REBUILD
+
+You may have to rebuild after changes in dependencies:
 
 ```
 docker-compose build script
@@ -86,7 +94,7 @@ If you don't have _node_ installed, fire up a console in docker:
 docker compose run console
 ```
 
-Execute the generated script:
+Execute the generated executable:
 
 ```
 node clariform.js --help
@@ -100,7 +108,7 @@ Use the docker desktop or docker from the command line.
 
 ## PUBLISH 
 
-The github docker-publish workflow has a workflow dispatch event trigger 
+The github docker-publish workflow has a dispatch event trigger 
 to build a distribution and publish as the latest docker image:
 
 1. Update the distribution version in "package.json" and clariform.core
