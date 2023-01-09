@@ -38,7 +38,11 @@ jobs:
       id-token: write
 
     steps:
-      - name: Checkout repository
+      - # TN "useful if you want to add emulation support with QEMU to be able to build against more platforms"
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Checkout repository
         uses: actions/checkout@v3
 
       # Install the cosign tool except on PR
