@@ -1,26 +1,67 @@
-version: "3"
+version: "3.7"
 
 volumes:
   m2:
+  .cpcache:
+  .shadow-cljs:
+
+networks:
+  server:
     
 services:
+  server:
+    container_name: server  
+    image: ghcr.io/njordhov/docker-shadow-cljs:v0.2
+    networks:
+      - server
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:9630"]
+      interval: 10s
+      timeout: 30s
+      retries: 12
+    ports:
+      - "9630:9630" 
+      - "9090:9090"
+      - "9099:9099"
+      - "8080:8080"
+    volumes:
+      - .:/home
+      - m2:/root/.m2
+      - .cpcache:/tmp/.cpcache
+      - .shadow-cljs:/tmp/.shadow-cljs
+    working_dir: /home
+    entrypoint: 
+      - npx
+      - shadow-cljs 
+      - server
+  
+  shadow-cljs:
+    image: ghcr.io/njordhov/docker-shadow-cljs:v0.2
+    depends_on:
+      server:
+        condition: service_healthy
+    networks:
+      - server
+    network_mode: service:server
+    working_dir: /home
+    volumes:
+      - .:/home
+      - m2:/root/.m2
+      - .cpcache:/tmp/.cpcache
+      - .shadow-cljs:/tmp/.shadow-cljs
+    entrypoint: 
+      - npx
+      - shadow-cljs 
+      
+  ## ------- 
+  
   install:  
-    build: .
+    image: .
     working_dir: /home
     volumes:
       - .:/home
       - m2:/root/.m2
     entrypoint: "cp /app/clariform.js /home"
-  
-  console:  
-    build: .
-    working_dir: /home
-    volumes:
-      - $PWD:/home
-      - m2:/root/.m2
-    networks:
-      - default
-    entrypoint: /bin/bash
       
   clariform:  
     build: .
@@ -30,46 +71,6 @@ services:
       - $PWD:/home
       - m2:/root/.m2
     entrypoint: node /app/clariform.js
-          
-  watch:  
-    build: .
-    working_dir: /home
-    networks:
-      - default
-    ports:
-      - "9630:9630"
-    expose:
-      - "9090:9090"
-      - "9099:9099"
-    volumes:
-      - .:/home
-      - m2:/root/.m2 
-    ## NOTE shadow-cljs apparently ignores config-merge, relying on :host from shadow-cljs.edn 
-    entrypoint: npx shadow-cljs watch script --config-merge '{:http {:host "watch-xxx"}}'
-    
-  runtime:
-    build: .
-    working_dir: /home
-    depends_on:
-      - watch
-    volumes:
-      - .:/home
-      - m2:/root/.m2
-    networks:
-      - default 
-    entrypoint: ["node", "out/runtime.js"]
-    
-  test:
-    build: .
-    working_dir: /home
-    depends_on:
-      - watch
-    volumes:
-      - .:/home
-      - m2:/root/.m2
-    networks:
-      - default
-    entrypoint: npx shadow-cljs compile test --config-merge '{:http {:host "watch"}}'
     
   release:  
     build: .
@@ -78,17 +79,3 @@ services:
       - .:/home
       - m2:/root/.m2
     entrypoint: "npm run release"
-    
-  repl:
-    build: .
-    working_dir: /home
-    depends_on:
-      - watch
-      - runtime
-    volumes:
-      - .:/home
-      - m2:/root/.m2
-    networks:
-      - default 
-    # TODO incomplete as shadow-cljs ignores the overide of host instead connecting to localhost      
-    entrypoint: npx shadow-cljs cljs-repl script --config-merge '{:http {:host "watch"}}'
