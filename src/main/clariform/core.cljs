@@ -19,7 +19,7 @@
    [clariform.transform :as transform
     :refer [transform]]))
 
-(def version-string "0.1.6")
+(def version-string "0.2.0")
 
 (defn printerr [& vals]
   (binding [*print-fn* *print-err-fn*]
