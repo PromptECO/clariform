@@ -1,4 +1,4 @@
-FROM ghcr.io/njordhov/docker-shadow-cljs
+FROM ghcr.io/njordhov/docker-shadow-cljs:v0.2
 
 MAINTAINER "terje@in-progress.com"
 

@@ -2,7 +2,6 @@
 {:deps {:aliases [:shadow]}
  :nrepl {:port 9090}
  :socket-repl {:port 9099}
- :http {:host "watch"}
  :builds
  {:script 
   {:target    :node-script
