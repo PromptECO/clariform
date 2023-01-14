@@ -6,15 +6,16 @@ list = <LPAR> <OWS> (!RPAR safe-form <OWS>)* <RPAR>
 vector = <LBRA> <OWS> (!<RBRA> form <OWS>)* <RBRA>
 record = <LCUR> <OWS> (&RCUR missing | !RCUR content) <RCUR>
 <content> = (!ws !RCUR !COMMA prop <OWS> (<COMMA> <OWS>)? )+
-prop = name (&COLON SEP (form | !form missing)
-         |  !COLON <ws> ( &RCUR | form | !RCUR !form missing)
-         |  !SEP (&COMMA | &(OWS RCUR) 
-                        | !(COMMA|OWS RCUR) missing)) 
-   | !name (SEP missing form 
-          |!SEP (&form missing form | !form skip (safe-form / missing)))  
+prop = name <OWS>
+        (<COLON> <OWS> (form | !form missing)
+        |&RCUR 
+        |&COMMA 
+        |!(COLON|RCUR|COMMA) (form | !form missing))
+     | !name (<COLON> <OWS> missing form 
+             |!COLON (&form missing form 
+                     |!form skip (safe-form / missing))) 
 
 <name> = !operator symbol
-<SEP> = <COLON> (&ws <ws> | !ws) | !<COLON> <ws>
 <OWS> = #'([\s]+|(;[^\n]*[\n]?))*'
 <WS> = #'([\s]+|(;[^\n]*[\n]?))+'
 <bypass> =  skip | !skip invalid  (* for toplevel *)

@@ -1,10 +1,10 @@
 # CLARIFORM DEVELOPMENT
 
-This development environment is built on [shadow-cljs](https://github.com/thheller/shadow-cljs) and allows you to live reload code changes into the clariform runtime.
+This development environment is built on [shadow-cljs](https://github.com/thheller/shadow-cljs) which supports live reload of code changes into the clariform runtime.
 
 ## Starting a Watcher
 
-To start a watcher, which will recompile whenever any code files change, use the following command (you can use `-d` to run it in the background):
+To start a shadow-cljs watcher, which will recompile whenever any code files change, use the following command (you can use `-d` to run it in the background):
 
 ```
 docker-compose run --rm shadow-cljs watch script
@@ -16,10 +16,10 @@ Wait until the watch server has completed starting up, then [open the build moni
 open http://localhost:9630/builds
 ```
 
-From the monitor, you can compile the project, enable a watch process for live reloading of automatically compiled code changes, run unit testing,
+From the monitor, you can compile the project, control the watch process for live reloading of automatically compiled code changes, run unit testing,
 and generate an executable release.
 
-The watch server should be running and ready before you execute any of the commands below.
+Alternatively, do it from the command line. The watch server should be running and ready before you execute any of the commands below.
 
 ## Starting the Runtime
 
