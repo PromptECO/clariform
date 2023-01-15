@@ -14,12 +14,14 @@
    (first (node-content node)))
 
 (defn update-content [node f]
-  (into (subvec node 0 1) 
-        (f (map identity (subvec node 1)))))
+  (between/with-meta-from node
+    (into (subvec node 0 1) 
+          (f (map identity (subvec node 1))))))
 
 (defn update-children [node f]
-  (into (subvec node 0 1) 
-        (map f (subvec node 1))))
+  (between/with-meta-from node
+    (into (subvec node 0 1) 
+          (map f (subvec node 1)))))
 
 (defn list-symbol [node]
   (if (and (= (node-tag node) :list)

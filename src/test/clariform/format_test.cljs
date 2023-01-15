@@ -89,9 +89,10 @@
 
 (deftest format-auto-test
   (is (= (process-auto "(XXX\nYYY)")
-         "(XXX\n YYY)"))
+         "(XXX\n  YYY)")
+      "Offset children")
   (is (= (process-auto "(XXX\n   YYY)")
-         "(XXX\n YYY)")
+         "(XXX\n  YYY)")
       "Override original indentation"))
 
 (deftest format-align-test
@@ -157,9 +158,9 @@
          (str ";; Original is valid with correctly balanced parens\n"
               ";; but having malformed layout and indentation.\n"
               "(define-read-only (plus\n"
-              "                   (n int))\n"
-              " (let ((value (+ n 1)))\n"
-              "  value))"))
+              "                    (n int))\n"
+              "  (let ((value (+ n 1)))\n"
+              "    value))"))
       "Format with indentation (should indent two spaces and remove whitespace except comments after open parens)")
   (is (= (process-align malformed-contract)
          (str ";; Original is valid with correctly balanced parens\n"

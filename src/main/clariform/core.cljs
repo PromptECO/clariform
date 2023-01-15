@@ -131,9 +131,10 @@
     (reset! command opts)))
 
 (defn ^:dev/before-load reload! []
-  (println "\n# RELOADING SCRIPT"))
+  (println "\n-----"))
 
 (defn ^:dev/after-load activate! []
-  (println "\n-----\nExecuting command:\n" @command "\n>>>>>")
+  (println "Executing command:\n" 
+           (select-keys @command [:options :arguments]) "\n>>>>>")
   (execute-command @command))
 

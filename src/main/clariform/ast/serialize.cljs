@@ -172,34 +172,54 @@
       (- (count gap) n 1)
       (+ offset (count gap)))))
 
-(defn format-separated-form [spacing [front back] {:keys [layout adjust-close offset tab] :as options}]
+(defn indent-gap [gap tab]
+  "Add spaces so the last line in the gap is indented to tab level"
+  ;; TODO handle comments
+  (if-let [n (and gap (string/last-index-of gap \newline))]
+    (if (string/blank? (subs gap (inc n))) ;; TODO eliminate blank test?
+      (apply str (subs gap 0 (inc n)) 
+                 (repeat tab \space))
+      gap)
+    gap))
+
+(defn format-separated-form [spacing [front back] {:keys [layout offset tab] :as options}]
   "Prefix a form with appropriate separation"
-  (let [gap (spacing front back)
-        offset (gap-offset gap offset)
-        options (assoc options :offset offset)]
+  (let [gap (spacing front back)] 
     (if (some? back)
-      (str gap (format back options))
-      (if adjust-close
-        (if-let [n (and gap (string/last-index-of gap \newline))]
-          (apply str (subs gap 0 (inc n)) 
-                     (repeat tab \space))
-          gap)
+      (let [offset (gap-offset gap offset)
+            options (assoc options :offset offset)]
+        (str gap (format back options)))
+      (case layout
+        ("adjust" "auto") (indent-gap gap tab)      
         gap))))
+
+(defn auto-spacing-fn [tab]
+  (fn [mode front back]
+    (let [offset (cond
+                   (nil? back) 0
+                   (= mode :toplevel) 0
+                   (nil? front) 1
+                   (= mode :list) 2
+                   :else 1)]
+      (-> (retain-spacing mode front back)
+          (indent-gap (+ tab offset))))))
 
 (defn format-separated-items [mode forms & [{:keys [layout tab offset] :as options}]]
   {:post [string?]}
   "Separate the items with whitespace consistent with the expected layout"
   (let [spacing (-> (case layout
                       ("retain") retain-spacing
-                      ("align") align-spacing
-                      ("auto") align-spacing
+                      ("adjust") retain-spacing
+                      ("auto")   (auto-spacing-fn tab)  
+                      ("align")  align-spacing
                       ("compact") compact-spacing)
-                    (partial mode))]
+                    (partial mode))
+        pairs (partition-all 2 1 (list* nil forms))]
     (case layout
-      ("retain" "auto")
+      ("retain" "adjust" "auto")
       (loop [offset (or offset 0)
              result []
-             pairs (partition-all 2 1 (list* nil forms))]          
+             pairs pairs]          
         (if (empty? pairs)
           (apply str result)
           (let [segment (format-separated-form spacing (first pairs) 
@@ -208,11 +228,11 @@
               (gap-offset segment offset)
               (conj result segment)                                    
               (rest pairs)))))
-      ("align" "compact")
+      ("align" "compact") ;; TODO consider eliminate by using the other for all layouts
       (apply str 
         (mapcat 
          (partial format-separated-form spacing)
-         (partition-all 2 1 (list* nil forms))
+         pairs
          (repeat options))))))
 
 (defmethod format-form :default [form options]
@@ -304,7 +324,7 @@
   (format-form ast {:layout "retain"}))
 
 (defn format-adjust [ast]
-  (format-form ast {:layout "retain" :adjust-close true}))
+  (format-form ast {:layout "adjust"}))
 
 (defn format-align [ast]
   (format-form ast {:layout "align"}))
