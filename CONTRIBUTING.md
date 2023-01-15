@@ -114,10 +114,13 @@ The github docker-publish workflow has a dispatch event trigger
 to build a distribution and publish as the latest docker image:
 
 1. Update the distribution version in "package.json" and clariform.core
-2. Push the main branch and wait for integration testing to succeed.
-3. In the github repo, open Releases (link on right side)
-4. Draft a new release (using button) with a version tag to be created on publish.
-5. A docker page for the tag is automatically generated in
+2. Stage and commit as "Bump version to x.x.x"
+3. Push the main branch and wait for integration testing to succeed
+4. In the github repo, open Releases (link on right side)
+5. Draft a new release (using button) with a version tag to be created on publish
+6. A docker page for the tag is automatically generated in
    https://github.com/njordhov/clariform/pkgs/container/clariform
+7. Under the Action tag, select the Docker workflow. 
+8. Under _Run workflow_ select tag matching the version then Run to generate distribution.
 
 

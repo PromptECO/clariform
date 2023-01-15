@@ -74,7 +74,7 @@ docker run ghcr.io/njordhov/clariform --version
 To run a specific version of clariform, append the version at the end:
 
 ```
-docker run ghcr.io/njordhov/clariform:v0.1.3 --version
+docker run ghcr.io/njordhov/clariform:v0.3.0 --version
 ```
 
 To avoid running an older version of clariform, remove all clariform images using this command:
