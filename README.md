@@ -14,6 +14,7 @@ This early version has limited functionality, but it's a start:
 - [x] Custom formatting of the output code
 - [x] Process contract from url
 - [x] Autofix multi-expression function bodies
+- [ ] Distributed as npm package
 - [ ] Github action to validate Clarity contracts in a repository
 
 [![GitHub release](https://img.shields.io/github/release/njordhov/clariform.svg)](https://GitHub.com/njordhov/clariform/releases/)
