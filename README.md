@@ -191,16 +191,17 @@ clariform --format=adjust contracts/malformed.clar
 clariform --format=indent contracts/malformed.clar   
 ```
 
-### Auto Correct 
+### Validate Syntax 
 
-Clariform automatically fixes many common errors in Clarity contracts. 
-To disable auto-correct and require valid Clarity syntax, add a `--strict` flag:
+To validate that the contracts have strict Clarity syntax, add a `--strict` flag:
 
 ```
 clariform --strict "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
-For formatting with autocorrect, do NOT add a `--strict` flag:
+### Auto Correct 
+
+Clariform automatically fixes many common errors in Clarity contracts. You can use this to keep your contract files valid, or as a preprocessor to allow shorthand notations and more relaxed syntax during editing.
 
 ```
 clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
