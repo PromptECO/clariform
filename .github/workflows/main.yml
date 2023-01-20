@@ -15,7 +15,7 @@ jobs:
         uses: ./ # Uses an action in the root directory
         id: clariform
         with:
-          path: 'src/test/clariform/basic.clar'
+          path: 'src/test/basic.clar'
       # Use the output from the `hello` step
       - name: Get the output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"
