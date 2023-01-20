@@ -128,6 +128,18 @@
     (robust-test code expected
       "Parse string with a single escaped backslash (backslash-backslash) into same (decoding happens later)"))) 
 
+(deftest parse-unicode-string
+  ;; TODO strict parser should disallow unicode codepoints?
+  (parse-test "u\"A smiley face emoji \\u{1F600} string\""
+               [:S [:toplevel [:string [:UNICODE] "A smiley face emoji \\u{1F600} string"]]]
+    "Keep escaped codepoints as is in unicode strings")
+  (robust-test "u\"abc🎁xyz\""
+               [:S [:toplevel [:string [:UNICODE] "abc🎁xyz"]]]
+    "Parses unicode string with unicode codepoint")
+  (robust-test "\"abc🎁xyz\""
+               [:S [:toplevel [:string "abc🎁xyz"]]]
+    "No unicode-tag required to parse string with unicode codepoint (robust only)"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; WHITESPACE
 

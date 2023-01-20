@@ -247,5 +247,15 @@ Clariform wraps a multi-expression function body in a `begin` form:
     (/ digit 2)))
 ```
 
+Clariform escapes [unicode](https://home.unicode.org/) glyphs and ensures unicode/utf8 strings are prefixed:
+
+```clarity 
+"A special 🎁 for you"
+```
+=>
+```clarity 
+u"A special \u{1F381} for you"
+```
+
 Please [submit a new issue](https://github.com/njordhov/clariform/issues/new)
-if you have suggestions about how `clariform` can be improved.
+if you have suggestions for improvements.

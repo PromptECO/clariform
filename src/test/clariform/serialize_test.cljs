@@ -22,3 +22,12 @@
            "{a: 1, b: 2}"))
     (is (= (emit form {:layout "retain"})
            "{a: 1, b: 2}"))))
+
+(deftest serialize-unicode-string
+  (is (= (serialize/format-form [:S [:toplevel [:string "abc🎁xyz"]]] {})
+         "u\"abc\\u{1F381}xyz\""))
+  (is (= (serialize/format-form [:S [:toplevel [:string "abc\\u{1F381}xyz"]]] {})
+         "u\"abc\\u{1F381}xyz\""))
+  (is (= (serialize/format-form [:S [:toplevel [:string "abc\\\\u{1F381}xyz"]]] {})
+         "\"abc\\\\u{1F381}xyz\"")
+      "Not confused by '\\u' in non-unicode string (slash and 'u' rather than a unicode escape)"))

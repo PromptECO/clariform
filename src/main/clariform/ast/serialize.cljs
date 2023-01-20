@@ -5,7 +5,8 @@
    [taoensso.timbre :as timbre]
    [clariform.token :as token]
    [clariform.ast.between :as between
-     :refer [ToplevelSeparator Separator]]))
+     :refer [ToplevelSeparator Separator]]
+   [clariform.ast.escape :as escape]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -204,7 +205,9 @@
       (-> (retain-spacing mode front back)
           (indent-gap (+ tab offset))))))
 
-(defn format-separated-items [mode forms & [{:keys [layout tab offset] :as options}]]
+(defn format-separated-items [mode forms & [{:keys [layout tab offset] 
+                                             :or {layout "retain" tab 0 offset 0}
+                                             :as options}]]
   {:post [string?]}
   "Separate the items with whitespace consistent with the expected layout"
   (let [spacing (-> (case layout
@@ -234,6 +237,8 @@
          (partial format-separated-form spacing)
          pairs
          (repeat options))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod format-form :default [form options]
    (pr-str form))
@@ -271,9 +276,16 @@
     (format-separated-items :prop (token/content form) options)))
 
 (defmethod format-form :string [form options]
-  (let [escaped-string (token/form->str form)]
-    (str (if (some #{[:UNICODE]} (token/content form)) "u")
-         "\"" escaped-string "\"")))
+  ;; NOTE mirrors parsed string, which may contain unicode glyph but also escapes
+  (let [string (->> (token/content form)
+                    (filter string?)
+                    (apply str))
+        escaped (escape/clarity-escape-string string :unicode-only true)
+        unicode (or (some #{[:UNICODE]} (token/content form))
+                    (:unicode (meta form))
+                    (not= string escaped)
+                    (escape/unicode-escaped? escaped))]                            
+    (str (if unicode "u") "\"" escaped "\"")))
 
 (defmethod format-form :symbol [form options]
    (apply str (token/content form)))
