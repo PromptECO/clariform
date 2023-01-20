@@ -326,11 +326,11 @@
 (defn format-adjust [ast]
   (format-form ast {:layout "adjust"}))
 
-(defn format-align [ast]
-  (format-form ast {:layout "align"}))
-
 (defn format-auto [ast]
   (format-form ast {:layout "auto"}))
+
+(defn format-align [ast]
+  (format-form ast {:layout "align"}))
 
 (defn format-compact [ast]
   (format-form ast {:layout "compact"}))

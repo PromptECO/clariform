@@ -26,5 +26,6 @@
                      :end nil
                      tag))  
                  [event-chan]))
-    (go (node-io/slurp resource))
+    (go (try (node-io/slurp resource)
+          (catch :default e e)))
     #_(node-io/aslurp resource)))

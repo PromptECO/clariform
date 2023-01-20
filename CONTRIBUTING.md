@@ -7,7 +7,7 @@ This development environment is built on [shadow-cljs](https://github.com/thhell
 To start a shadow-cljs watcher, which will recompile whenever any code files change, use the following command (you can use `-d` to run it in the background):
 
 ```
-docker-compose run --rm shadow-cljs watch script
+docker-compose run --rm -v shadow-cljs watch script
 ```
 
 Wait until the watch server has completed starting up, then [open the build monitor](http://localhost:9630/builds) in a web browser:
@@ -40,12 +40,12 @@ docker exec -it server node out/runtime.js --format=indent contracts/basic.clar
 ```
 
 ```
-docker exec -it server node out/runtime.js --check src/test/clariform/invalid.clar
+docker exec -it server node out/runtime.js --check src/test/invalid.clar
 ```
 
 ## EVAL IN REPL 
 
-The REPL allows you to evaluate Clojure expressions as _within_ the runtime. 
+The REPL allows you to evaluate Clojure expressions _on_ the runtime. 
 It requires both the server and a runtime to be running.
 
 Start a _repl_: 
@@ -108,7 +108,7 @@ Detach from the container with a CTRL-p CTRL-q key sequence.
 
 Use the docker desktop or docker from the command line.
 
-## PUBLISH 
+## PUBLISH DISTRIBUTION
 
 The github docker-publish workflow has a dispatch event trigger 
 to build a distribution and publish as the latest docker image:

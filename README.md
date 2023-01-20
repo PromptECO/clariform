@@ -65,6 +65,9 @@ The formatted contracts will be written to output.
 
 ### Troubleshooting
 
+If Clariform cannot open a file, make sure the directory containing the file is
+[mounted](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) and that the pathname of the file is relative to the mount.
+
 If Clariform isn't working as expected, make sure you are running the latest version:
 
 ```

@@ -81,19 +81,19 @@
   "Retain original indentation"
   (serialize/format-adjust ast))
 
-(defn format-indent [ast]
+(defn format-indent [ast] ;; TODO rename to format-nest ?
   "Closing parenthesis never dangles nor is to the left of its matching opening parenthesis"
   (-> (format-retain ast)
+      indent-code))
+
+(defn format-auto [ast] ;; TODO rename to format-indent ?
+  "Autoindent ignoring original indentation"
+  (-> (serialize/format-auto ast)
       indent-code))
 
 (defn format-align [ast]
   "Left-align by removing all indentation"
   (serialize/format-align ast))
-
-(defn format-auto [ast]
-  "Autoindent ignoring original indentation"
-  (-> (serialize/format-auto ast)
-      indent-code))
 
 (defn format-compact [ast]
   "Remove insignificant whitespace, placing each toplevel expression on a separate line"
