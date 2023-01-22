@@ -1,5 +1,5 @@
 (ns clariform.ast.between
-  "Separation between forms as metadata for optional restoration of original comments and formatting"
+  "Capture separation between forms as metadata for optional restoration of original comments and formatting"
   (:require 
    [clojure.string :as str]
    [clojure.spec.alpha :as spec]

@@ -66,7 +66,7 @@ The formatted contracts will be written to output.
 
 ### Troubleshooting
 
-If Clariform cannot open a file, make sure the directory containing the file is
+If Clariform fails to open a file, make sure the directory containing the file is
 [mounted](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) and that the pathname of the file is relative to the mount.
 
 If Clariform isn't working as expected, make sure you are running the latest version:
@@ -78,7 +78,7 @@ docker run ghcr.io/njordhov/clariform --version
 To run a specific version of clariform, append the version at the end:
 
 ```
-docker run ghcr.io/njordhov/clariform:v0.3.0 --version
+docker run ghcr.io/njordhov/clariform:v0.4.0 --version
 ```
 
 To avoid running an older version of clariform, remove all clariform images using this command:
@@ -107,16 +107,14 @@ Run the container to execute clariform:
 docker run clariform --help
 ```
 
-Docker restricts filesystem access for security reasons. To give Clariform access
-to the files in your current working directory,
-[Mount the directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home`:
+Docker restricts filesystem access by default. To give Clariform access
+to files, [mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home`:
 
 ```
 docker run -v `pwd`:/home clariform .
 ```
 
-This will traverse all Clarity contract files (".clar") in the working directory and either
-output an autocorrected indented version or report a syntax error.
+This will traverse all Clarity contract files (".clar") in the working directory and either output an autocorrected indented version or report a syntax error.
 
 ### Create Shortcut
 
@@ -257,6 +255,21 @@ Clariform escapes [unicode](https://home.unicode.org/) glyphs and ensures unicod
 =>
 ```clarity 
 u"A special \u{1F381} for you"
+```
+
+Clariform formats `let` bindings according to best practices (disabled when `format` option is `retain` or `adjust`):
+
+```clarity
+;; Confusing formatting making the binding resemble a function call
+(let (
+  (foo (+ n 1))
+     )
+  foo)
+```
+=>
+```clarity 
+(let ((foo (+ n 1)))
+  foo)
 ```
 
 Please [submit a new issue](https://github.com/njordhov/clariform/issues/new)
