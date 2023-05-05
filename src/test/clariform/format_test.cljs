@@ -42,6 +42,14 @@
       (format/parse-code)
       (format/format-align)))
 
+(defn process-tight [code]
+  (-> (format/parse-code code)
+      (format/format-tight)))
+
+(defn process-spread [code]
+  (-> (format/parse-code code)
+      (format/format-spread)))
+
 (defn process-compact [code]
   (-> (format/parse-code code)
       (format/format-compact)))
@@ -105,6 +113,24 @@
   (is (= (-> (format/parse-code basic-contract)
              (format/format-compact))
          "(define-read-only (inc (n int)) (+ n 1))")))
+
+#_
+(deftest format-tight-test
+  (is (= (-> (format/parse-code "(if (> n 0) n (- n))")
+             (format/format-tight))
+        (str 
+         "(if (> n 0)\n" 
+         "n\n"
+         "(- n))"))))
+
+(deftest format-spread-test
+             (format/format-spread)
+        (str 
+         "(if\n"
+         "(> n 0)\n" 
+         "n\n"
+         "(-\n"
+         "n))"))
 
 (deftest record-shorthand-test
   (is (= (process-retain "{a:1}")
@@ -177,3 +203,13 @@
               "(value (+ n 1))) "
               "value))"))
       "Format with each toplevel form on a single line and minimized whitespace"))
+
+(def codecov-contract (rc/inline "../sbtc-testnet-debug-controller.clar"))
+
+(def spread-contract (rc/inline "../sbtc-testnet-debug-controller.spread.clar"))
+
+
+(deftest codecov--test 
+  (is (= (process-spread codecov-contract)
+         spread-contract)
+      "Codecov contract is formatted with spread expressions"))
