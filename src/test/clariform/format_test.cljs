@@ -208,7 +208,6 @@
 
 (def spread-contract (rc/inline "../sbtc-testnet-debug-controller.spread.clar"))
 
-
 (deftest codecov--test 
   (is (= (process-spread codecov-contract)
          spread-contract)

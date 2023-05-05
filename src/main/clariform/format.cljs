@@ -121,5 +121,7 @@
     (format-auto ast)
     "align" 
     (format-align ast)
-    "compact" 
+    "spread" 
+    (format-spread ast)
+    ("tight" "compact") 
     (format-compact ast)))

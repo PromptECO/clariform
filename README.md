@@ -17,14 +17,14 @@ This early version has limited functionality, but it's a start:
 - [ ] Distributed as npm package
 - [ ] Github action to validate Clarity contracts in a repository
 
-[![GitHub release](https://img.shields.io/github/release/njordhov/clariform.svg)](https://GitHub.com/njordhov/clariform/releases/)
-[![Clariform](https://github.com/njordhov/clariform/actions/workflows/main.yml/badge.svg)](https://github.com/njordhov/clariform/actions/workflows/main.yml)
+[![GitHub release](https://img.shields.io/github/release/prompteco/clariform.svg)](https://GitHub.com/njordhov/clariform/releases/)
+[![Clariform](https://github.com/prompteco/clariform/actions/workflows/main.yml/badge.svg)](https://github.com/prompteco/clariform/actions/workflows/main.yml)
 
 ## Usage
 
 While Clariform isn't quite *painless* yet, it's getting there. Please give it a try and let us know what you think on the issue tracker.
 
-Clariform is available as a pre-built Docker image that is distributed as a [GitHub package](https://github.com/njordhov/clariform/pkgs/container/clariform). Docker will download and run the image for you. If you prefer to clone the repository and build your own, see the instructions in [BUILD.md](BUILD.md).
+Clariform is available as a pre-built Docker image that is distributed as a [GitHub package](https://github.com/prompteco/clariform/pkgs/container/clariform). Docker will download and run the image for you. If you prefer to clone the repository and build your own, see the instructions in [BUILD.md](BUILD.md).
 
 ### Prerequisites
 
