@@ -6,6 +6,12 @@
 
 (def trailing-newline #(if (= \newline (last %)) % (str % \newline)))
 
+(defn parse [parser code & args]
+  (apply insta/parse parser (trailing-newline code) args))
+
+(defn parses [parser code & args]
+  (apply insta/parses parser (trailing-newline code) args))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TOKENS
 
@@ -20,7 +26,7 @@
   (str strict-grammar tokens-grammar))
 
 (defn parse-strict [code]
-  (insta/parse strict-parser (trailing-newline code) :total true))
+  (parse strict-parser code :total true))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ROBUST PARSER
@@ -39,5 +45,5 @@
    "string = UNICODE? <DQUOTE> #'(?:[^\"\\\\]|\\\\.)*' <DQUOTE>\n"))
 
 (defn parse-robust [code]
-  (insta/parse robust-parser (trailing-newline code) :total true))
+  (parse robust-parser code :total true))
 

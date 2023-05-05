@@ -13,13 +13,14 @@
     (let [mode :default
           result (case mode
                         :allow-ambiguous
-                        (insta/parse parser code :partial false :total true)
+                        (parser/parse parser code :partial false :total true)
                         :default
-                        (insta/parses parser code :partial false :total true))
+                        (parser/parses parser code :partial false :total true))
           token (case mode allow-ambiguous result (first result))] 
-      (when (insta/failure? result)
-        (timbre/debug "insta/failure" 
-                      (insta/get-failure result))) 
+      (when (and (insta/failure? result)
+                 (not= token expected))
+        (timbre/warn "insta/failure" 
+                      (insta/get-failure result)))
       (is (= token expected) feedback)
       (when (= mode :default)
         (is (= [token] result)  
@@ -27,10 +28,10 @@
                  feedback))))))      
 
 (def robust-test 
-  (parse-tester robust-parser))
+  (parse-tester parser/robust-parser))
 
 (def strict-test 
-  (parse-tester strict-parser))
+  (parse-tester parser/strict-parser))
 
 (def parse-test 
   (juxt robust-test strict-test)) 
@@ -130,7 +131,7 @@
 
 (deftest parse-unicode-string
   ;; TODO strict parser should disallow unicode codepoints?
-  (parse-test "u\"A smiley face emoji \\u{1F600} string\""
+  (parse-test "u\"A smiley face emoji \\u{1F600} string\"\n"
                [:S [:toplevel [:string [:UNICODE] "A smiley face emoji \\u{1F600} string"]]]
     "Keep escaped codepoints as is in unicode strings")
   (robust-test "u\"abc🎁xyz\""
@@ -394,5 +395,5 @@
 
 (deftest strict-record-miss-comma
   (strict-test "(list 1 2 3)\n\n{a: 1 ;; no comma\n b: 2}\n\n(list 1 2 3)"
-               [:S [:instaparse/failure "(list 1 2 3)\n\n{a: 1 ;; no comma\n b: 2}\n\n(list 1 2 3)"]]
+               [:S [:instaparse/failure "(list 1 2 3)\n\n{a: 1 ;; no comma\n b: 2}\n\n(list 1 2 3)\n"]]
      "error encapsulating record"))
