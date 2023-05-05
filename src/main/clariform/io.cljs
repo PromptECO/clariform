@@ -25,7 +25,10 @@
 (defn fetch-text [locator]
   (try
     (node-url/aslurp locator)
-    (catch :default e e)))
+    (catch :default e 
+      (let [c (async/promise-chan)]
+        (async/put! c e)
+        c))))
 
 (defn contracts-seq [path]
   "Generate a sequence of potential contract resources matching the path"

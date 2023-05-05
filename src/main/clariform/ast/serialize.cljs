@@ -148,20 +148,27 @@
 ;; SPREAD
 
 (defn spread-spacing [mode front back]
-  "Spread expressions onto their own lines"
+  "Spread expressions over multiple lines (codecov friendly)"
   (let [pre (get-spacing front :after stringify)
         sep (get-spacing back :before stringify)
         align (fn [s]
                 (string/replace s #"\n[ ]+" "\n"))
         gap (align (trim-lines (str pre sep)))
-        edge (or (nil? front) (nil? back))]
+        edge (or (nil? front) (nil? back))
+        literal (and (token/form? back) 
+                     (#{:int :uint :string :hex :principal} (first back)))]
     (case mode 
       (:toplevel)
       (if-not edge
         (if (empty? gap) "\n\n" (toplevel-gap gap)) 
         (if (string/blank? gap) "" (toplevel-gap gap)))
-      (:list :<>) 
-      (if-not edge "\n" "")
+      (:<>) 
+      (if-not edge "\n" " ")
+      (:list) 
+      (cond 
+        edge ""
+        literal " "
+        :else "\n")
       (:prop) 
       (if-not edge ": " "")
       (:record) 
@@ -374,6 +381,9 @@
 
 (defn format-spread [ast]
   (format-form ast {:layout "spread"}))
+
+(defn format-tight [ast]
+  (format-form ast {:layout "compact"}))
 
 (defn format-compact [ast]
   (format-form ast {:layout "compact"}))

@@ -23,7 +23,7 @@
                    (case tag
                      :data (apply str payload)
                      :error (ex-info "HTTP get failed." {:payload payload} :io)
-                     :end nil
+                     :end (ex-info "End" {:payload payload} :io)
                      tag))  
                  [event-chan]))
     (go (try (node-io/slurp resource)
