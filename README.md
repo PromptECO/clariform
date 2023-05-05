@@ -35,7 +35,7 @@ Clariform is available as a pre-built Docker image that is distributed as a [Git
 Pull the Clariform image (optional):
 
 ```
-docker pull ghcr.io/njordhov/clariform
+docker pull ghcr.io/prompteco/clariform
 ```
 
 This will download Clariform and pre-build a Docker image. It may take some time and produce a lot of output. If you don't do this in advance, the image will be pulled the first time you run Clariform.
@@ -45,19 +45,19 @@ This will download Clariform and pre-build a Docker image. It may take some time
 Run Clariform in a Docker container:
 
 ```
-docker run ghcr.io/njordhov/clariform --help
+docker run ghcr.io/prompteco/clariform --help
 ```
 
 Lint a Clarity contract from a URL and format it:
 
 ```
-docker run ghcr.io/njordhov/clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
+docker run ghcr.io/prompteco/clariform "https://raw.githubusercontent.com/njordhov/clariform/main/contracts/malformed.clar"
 ```
 
 To process local contracts [mount the current working directory](https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v---read-only) as `/home` and list files as arguments:
 
 ```
-docker run -v `pwd`:/home ghcr.io/njordhov/clariform *.clar
+docker run -v `pwd`:/home ghcr.io/prompteco/clariform *.clar
 ```
 
 This assumes that the current directory contains Clarity contracts with a ".clar" file extension.
@@ -72,33 +72,33 @@ If Clariform fails to open a file, make sure the directory containing the file i
 If Clariform isn't working as expected, make sure you are running the latest version:
 
 ```
-docker run ghcr.io/njordhov/clariform --version
+docker run ghcr.io/prompteco/clariform --version
 ```
 
 To run a specific version of clariform, append the version at the end:
 
 ```
-docker run ghcr.io/njordhov/clariform:v0.4.0 --version
+docker run ghcr.io/prompteco/clariform:v0.5.0 --version
 ```
 
 To avoid running an older version of clariform, remove all clariform images using this command:
 
 ```
-docker rmi --force $(docker images -q ghcr.io/njordhov/clariform)
+docker rmi --force $(docker images -q ghcr.io/prompteco/clariform)
 ```
 
 Alternatively, open the _Docker Desktop_ application to inspect or delete containers and images.
 
 If these actions don't resolve your issue, please report it on the
-[issue tracker](https://github.com/njordhov/clariform/issues).
+[issue tracker](https://github.com/prompteco/clariform/issues).
 
 ### Installation
 
 To make it easier to use clariform, create a named container from the prebuilt image:
 
 ```
-docker pull ghcr.io/njordhov/clariform
-docker image tag ghcr.io/njordhov/clariform clariform
+docker pull ghcr.io/prompteco/clariform
+docker image tag ghcr.io/prompteco/clariform clariform
 ```
 
 Run the container to execute clariform:

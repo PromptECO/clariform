@@ -119,7 +119,7 @@ to build a distribution and publish as the latest docker image:
 4. In the github repo, open Releases (link on right side)
 5. Draft a new release (using button) with a version tag to be created on publish
    A docker page for the tag is automatically generated in
-   https://github.com/njordhov/clariform/pkgs/container/clariform
+   https://github.com/prompteco/clariform/pkgs/container/clariform
 7. Under the Actions tab, select the Docker workflow. 
 8. Under _Run workflow_ select tag matching the version then hit the Run workflow button to generate a distribution.
 
