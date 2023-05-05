@@ -6,13 +6,13 @@ This development environment is built on [shadow-cljs](https://github.com/thhell
 
 To start a shadow-cljs watcher, which will recompile whenever any code files change, use the following command (you can use `-d` to run it in the background):
 
-```
-docker-compose run --rm -v shadow-cljs watch script
+```bash
+docker-compose run --rm shadow-cljs watch script
 ```
 
 Wait until the watch server has completed starting up, then [open the build monitor](http://localhost:9630/builds) in a web browser:
 
-```
+```bash
 open http://localhost:9630/builds
 ```
 
