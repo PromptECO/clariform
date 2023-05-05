@@ -178,6 +178,8 @@ The following options are available:
 * `indent` (default): Nests expressions and collapses dangling closing parentheses.
 * `auto`: Auto-indents for consistency and readability.
 * `align`: Removes whitespace from the start of each line (uses less space; can be re-indented with the indent option).
+* `tight`: Collapses each branch expression into a single line (ugly but accommodates test coverage tooling).
+* `spread`: Each expression on its own indented line (accommodates line oriented test coverage tooling).
 * `compact`: Collapses each top-level form into a single line (dense but useful for parsing by other tools).
 
 Here are some examples of using the --format option:

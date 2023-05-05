@@ -144,6 +144,33 @@
               :else gap)
         gap))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SPREAD
+
+(defn spread-spacing [mode front back]
+  "Spread expressions onto their own lines"
+  (let [pre (get-spacing front :after stringify)
+        sep (get-spacing back :before stringify)
+        align (fn [s]
+                (string/replace s #"\n[ ]+" "\n"))
+        gap (align (trim-lines (str pre sep)))
+        edge (or (nil? front) (nil? back))]
+    (case mode 
+      (:toplevel)
+      (if-not edge
+        (if (empty? gap) "\n\n" (toplevel-gap gap)) 
+        (if (string/blank? gap) "" (toplevel-gap gap)))
+      (:list :<>) 
+      (if-not edge "\n" "")
+      (:prop) 
+      (if-not edge ": " "")
+      (:record) 
+      (if-not edge ",\n" "")
+      nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; COMPACT
+
 (defn compact-spacing [mode front back]
   "Minimalistic spacing, each toplevel on its own line"
   (let [edge (or (nil? front) (nil? back))]
@@ -191,7 +218,7 @@
             options (assoc options :offset offset)]
         (str gap (format back options)))
       (case layout
-        ("adjust" "auto") (indent-gap gap tab)      
+        ("adjust" "spread" "auto") (indent-gap gap tab)      
         gap))))
 
 (defn auto-spacing-fn [tab]
@@ -215,6 +242,7 @@
                       ("adjust") retain-spacing
                       ("auto")   (auto-spacing-fn tab)  
                       ("align")  align-spacing
+                      ("spread")  spread-spacing
                       ("compact") compact-spacing)
                     (partial mode))
         pairs (partition-all 2 1 (list* nil forms))]
@@ -231,7 +259,7 @@
               (gap-offset segment offset)
               (conj result segment)                                    
               (rest pairs)))))
-      ("align" "compact") ;; TODO consider eliminate by using the other for all layouts
+      ("align" "spread" "compact") ;; TODO consider consolidate with processing of other layouts
       (apply str 
         (mapcat 
          (partial format-separated-form spacing)
@@ -343,6 +371,9 @@
 
 (defn format-align [ast]
   (format-form ast {:layout "align"}))
+
+(defn format-spread [ast]
+  (format-form ast {:layout "spread"}))
 
 (defn format-compact [ast]
   (format-form ast {:layout "compact"}))

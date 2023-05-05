@@ -6,6 +6,7 @@
    ["parinfer" :as parinfer]
    [instaparse.core :as insta
     :refer-macros [defparser]]
+   [clariform.ast.parser :as parser]
    [clariform.ast.between :as between
     :refer [add-between-to-metadata]]
    [clariform.ast.serialize :as serialize]
@@ -94,6 +95,15 @@
 (defn format-align [ast]
   "Left-align by removing all indentation"
   (serialize/format-align ast))
+
+(defn format-tight [ast]
+  "Remove comments, with each branch as a single line expression"
+  (serialize/format-tight ast))
+
+(defn format-spread [ast]
+  "Format each expression on its own indented line"
+  (-> (serialize/format-spread ast)
+      indent-code))
 
 (defn format-compact [ast]
   "Remove insignificant whitespace, placing each toplevel expression on a separate line"
