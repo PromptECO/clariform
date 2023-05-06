@@ -15,6 +15,8 @@
    [clariform.ast.parser :as parser]
    [clariform.format :as format
     :refer [format-code]]
+   [cljs-node-io.core :as node-io]
+   [cljs-node-io.file :as node-file]
    [clariform.io :as io]
    [clariform.transform :as transform
     :refer [transform]]))
@@ -51,19 +53,20 @@
                   (exit 1 (pr-str err))))))
           (recur))))))  
  
-(defn format-all [{:keys [arguments options summary errors] :as opts}]
-  (let [resources (io/resources-seq arguments)
+(defn format-all [{:keys [arguments options summary errors] :as opts} & {:keys [output-dir]}]
+  (let [resources (doall (io/resources-seq arguments))
         multiple (some? (next resources))
         con-chan (io/contracts-chan resources)]
     (go-loop [{:keys [locator error text] :as res} (<! con-chan)]
-      (binding [*out* (pprint/get-pretty-writer *out*)]
-        (when (some? res)
-          (when error
-            (printerr (ex-message error))
-            (recur (<! con-chan)))
-          (when multiple
-            (pprint/fresh-line)
-            (println ";;" (io/file-path locator)))
+      (when (some? res)
+        (when (some? error)
+          (printerr (ex-message error))
+          (recur (<! con-chan)))
+        (when multiple
+          (println "") ;; pprint/fresh-line fails!
+          (when (some? locator)
+            (println ";; " (.toString locator))))
+        (binding [*out* (pprint/get-pretty-writer *out*)]
           (let [parser-options (select-keys options [:strict])
                 ast (format/parse-code text parser-options)]
             (if (insta/failure? ast)
@@ -82,7 +85,20 @@
                 (try
                   (let [formatted (-> (transform ast)
                                       (format-code options))]
-                    (print formatted))
+                        ;_ (node-io/spit "contracts-out/file61-locator.clar" (pr-str locator))
+                        ;dir (if true output-dir #_(node-io/as-file output-dir))
+                        ;_ (node-io/spit "contracts-out/file62-dir.clar" (pr-str dir))
+                        ;filepath (case :prod
+                        ;           :prod (node-io/filepath (str output-dir) #_"contracts-out" (str locator) #_"contracts/basic.clar")
+                        ;           :test "contracts-out/contracts/basic.clar")]
+                    ;(node-io/spit "contracts-out/file70-filepath.clar" (pr-str filepath))
+                    ; (apply node-io/make-parents (string/split filepath #"/"))
+                    (if-some [path (and (some? output-dir)
+                                        (node-io/filepath (str output-dir) (str locator)))]
+                      (do #_(node-io/spit "contracts-out/filexx.clar" (pr-str path))
+                          (apply node-io/make-parents (string/split path #"/"))              
+                          (node-io/spit path formatted))
+                      (print formatted)))
                   (catch ExceptionInfo e
                     (printerr (ex-message e))))))
             (pprint/fresh-line)
@@ -99,6 +115,7 @@
     :validate [#{"retain" "adjust" "indent" "auto" "align" "tight" "spread" "compact"} 
                "Must be one of 'retain', 'adjust', 'indent', 'auto', 'align', 'tight', 'spread' or 'compact'"]]
    [nil "--strict" "Expect strict Clarity syntax"]
+   ["-o" "--output-dir DIR" "Output directory"]
    [nil "--verbose"]
    [nil "--debug"]])
 
@@ -120,7 +137,7 @@
     (some? (:check options))
     (check-all params)
     :else
-    (format-all params)))
+    (format-all params :output-dir (:output-dir options))))
     
 (defonce command (atom nil))
 
