@@ -116,7 +116,7 @@ to build a distribution and publish as the latest docker image:
 
 1. Update CHANGELOG and the distribution version in "package.json" and clariform.core
 2. Stage and commit as "Bump version to x.x.x"
-3. Push the main branch and wait for integration testing to succeed
+3. Push and wait for integration testing actions on github to succeed
 4. In the github repo, open Releases (link on right side)
 5. Draft a new release (using button) with a version tag to be created on publish
    A docker page for the tag is automatically generated in

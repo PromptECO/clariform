@@ -84,10 +84,10 @@ docker run ghcr.io/prompteco/clariform --version
 To run a specific version of clariform, append the version at the end:
 
 ```
-docker run ghcr.io/prompteco/clariform:v0.5.0 --version
+docker run ghcr.io/prompteco/clariform:v0.6.0 --version
 ```
 
-To avoid running an older version of clariform, remove all clariform images using this command:
+To avoid running an older version of clariform, remove all cached clariform images using this command:
 
 ```
 docker rmi --force $(docker images -q ghcr.io/prompteco/clariform)
