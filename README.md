@@ -62,7 +62,13 @@ docker run -v `pwd`:/home ghcr.io/prompteco/clariform *.clar
 
 This assumes that the current directory contains Clarity contracts with a ".clar" file extension.
 
-The formatted contracts will be written to output.
+The formatted contracts will be written to output. 
+
+Use the `--output-dir` option to specify a directory for formatted contracts: 
+
+```
+docker run -v `pwd`:/home ghcr.io/prompteco/clariform --output-dir "out" *.clar
+```
 
 ### Troubleshooting
 
