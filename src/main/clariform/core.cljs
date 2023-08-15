@@ -96,6 +96,7 @@
                     (if-some [path (and (some? output-dir)
                                         (node-io/filepath (str output-dir) (str locator)))]
                       (do #_(node-io/spit "contracts-out/filexx.clar" (pr-str path))
+                          ;; FIXME should work fine with urls rather than create "http" directory:
                           (apply node-io/make-parents (string/split path #"/"))              
                           (node-io/spit path formatted))
                       (print formatted)))
@@ -110,7 +111,7 @@
   [[nil "--version"]
    ["-h" "--help"]
    [nil "--check" "Exit with error on invalid code, supressing output"]
-   [nil "--format FORMAT" "Output format"
+   [nil "--format FORMAT" "Output format for code"
     :default "indent"
     :validate [#{"retain" "adjust" "indent" "auto" "align" "tight" "spread" "compact"} 
                "Must be one of 'retain', 'adjust', 'indent', 'auto', 'align', 'tight', 'spread' or 'compact'"]]

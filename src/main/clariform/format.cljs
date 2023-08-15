@@ -28,9 +28,10 @@
   (-> code infer-indent infer-parens))
 
 (defn parse-code [code & [{:keys [strict]}]]
-  (let [parse (if strict parser/parse-strict parser/parse-robust)]
+  (let [parse (if strict parser/parse-strict parser/parse-robust)
+        code (parser/trailing-newline code)]
     (->> (parse code)
-         (insta/add-line-and-column-info-to-metadata code)
+         (parser/add-line-and-column-info-to-metadata code)
          (#(add-between-to-metadata % code)))))
 
 (defn remove-orphan-space [indented original & [{:keys [lint] :as options}]]

@@ -12,6 +12,9 @@
 (defn parses [parser code & args]
   (apply insta/parses parser (trailing-newline code) args))
 
+(defn add-line-and-column-info-to-metadata [parsed code]
+  (insta/add-line-and-column-info-to-metadata (trailing-newline code)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TOKENS
 
