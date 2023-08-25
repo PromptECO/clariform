@@ -2,6 +2,7 @@
  :deps {org.clojure/tools.cli {:mvn/version "1.0.214"}
         instaparse/instaparse {:mvn/version "1.4.12"}
         com.taoensso/timbre {:mvn/version "5.2.1"}
-        com.github.pkpkpk/cljs-node-io {:mvn/version "2.0.332"}}
+        io.github.PromptECO/cljs-node-io {:git/tag "v2.0.332" :git/sha "f157c84"}}
+        ;; com.github.pkpkpk/cljs-node-io {:mvn/version "2.0.332"}}
  :aliases {:shadow  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.23.3"}}}}}
  
